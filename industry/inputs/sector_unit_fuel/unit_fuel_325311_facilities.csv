@@ -1,0 +1,15 @@
+Facility Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type
+1002380,AGRIUM US BORGER NITROGEN OPERATIONS,35.6411,-101.4203,EPN-2 Reformer,325311.0,287266.6,Natural Gas (Weighted U.S. Average)
+1002380,AGRIUM US BORGER NITROGEN OPERATIONS,35.6411,-101.4203,PKGB1,325311.0,72341.9,Natural Gas (Weighted U.S. Average)
+1004236,AGRIUM US INC - KFO,46.165957,-119.017218,Agrium KFO,325311.0,1904.0,Natural Gas (Weighted U.S. Average)
+1001908,APACHE NITROGEN PRODUCTS - PLANT,31.88,-110.24,CP-1,325311.0,24771.9,Natural Gas (Weighted U.S. Average)
+1005924,Cheyenne Plant,41.0949,-104.908,GP-01,325311.0,148558.3,Natural Gas (Weighted U.S. Average)
+1005766,Dyno Nobel,45.911158,-122.824231,GP-01,325311.0,68474.3,Natural Gas (Weighted U.S. Average)
+1003636,J R SIMPLOT COMPANY,36.551156,-120.113717,Butane Combustor,325311.0,6424.2,Butane
+1003636,J R SIMPLOT COMPANY,36.551156,-120.113717,GP- Shop & Admin Meter,325311.0,23.4,Natural Gas (Weighted U.S. Average)
+1003636,J R SIMPLOT COMPANY,36.551156,-120.113717,GP-Process Meter,325311.0,194.4,Natural Gas (Weighted U.S. Average)
+1006575,"KOCH FERTILIZER BEATRICE, LLC",40.319088,-96.8414,CP-1,325311.0,222813.2,Natural Gas (Weighted U.S. Average)
+1006575,"KOCH FERTILIZER BEATRICE, LLC",40.319088,-96.8414,Diesel Engine,325311.0,58.1,Distillate Fuel Oil No. 2
+1013265,"NE Nitro Geneva, LLC",40.53892,-97.58003,EP-Engine,325311.0,1.4,Distillate Fuel Oil No. 2
+1013265,"NE Nitro Geneva, LLC",40.53892,-97.58003,EU-MSC EMG Engine,325311.0,86.9,Distillate Fuel Oil No. 2
+1013265,"NE Nitro Geneva, LLC",40.53892,-97.58003,GP-NATGAS,325311.0,18285.3,Natural Gas (Weighted U.S. Average)

@@ -1,0 +1,24 @@
+Facility Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type
+1000604,Big Spring Carbon Black Plant,32.279444,-101.408055,GP-Dryers/miscellaneous sources,325180.0,16312.7,Natural Gas (Weighted U.S. Average)
+1003533,Borger Carbon Black Plant,35.665695,-101.43327,B-6B,325180.0,5810.9,Natural Gas (Weighted U.S. Average)
+1003533,Borger Carbon Black Plant,35.665695,-101.43327,GP-1,325180.0,53869.0,Natural Gas (Weighted U.S. Average)
+1000605,Borger Carbon Black Plant,35.665516,-101.435748,GP- Miscellaneous,325180.0,67783.0,Natural Gas (Weighted U.S. Average)
+1004701,Borman Specialty Materials,36.03544,-114.99994,CP-SWGAS,325180.0,25714.6,Natural Gas (Weighted U.S. Average)
+1004071,CONTINENTAL CARBON Sunray Plant,35.980941,-101.891253,Sunray Units,325180.0,20570.2,Natural Gas (Weighted U.S. Average)
+1007539,ECO SERVICES DOMINGUEZ,33.843333,-118.232844,CP-1,325180.0,35771.6,Natural Gas (Weighted U.S. Average)
+1000044,Eco-Services BAYTOWN PLANT,29.74877,-95.00277,CP- Sitewide,325180.0,30137.0,Natural Gas (Weighted U.S. Average)
+1000042,Eco-Services HOUSTON PLANT,29.71829,-95.27112,CP- Sitewide,325180.0,23987.1,Natural Gas (Weighted U.S. Average)
+1003570,Ketjen Bayport Plant,29.64174,-95.0654,GP-Bayport,325180.0,112776.2,Natural Gas (Weighted U.S. Average)
+1003570,Ketjen Bayport Plant,29.64174,-95.0654,GP-Bayport,325180.0,112776.2,Distillate Fuel Oil No. 2
+1003570,Ketjen Bayport Plant,29.64174,-95.0654,GP-Bayport,325180.0,112776.2,Motor Gasoline
+1001713,OXY VINYLS LP - LA PORTE VCM PLANT,29.7237,-95.07408,BGU-026,325180.0,348262.7,Natural Gas (Weighted U.S. Average)
+1001713,OXY VINYLS LP - LA PORTE VCM PLANT,29.7237,-95.07408,BGU-029,325180.0,380936.2,Natural Gas (Weighted U.S. Average)
+1001713,OXY VINYLS LP - LA PORTE VCM PLANT,29.7237,-95.07408,BGU-030,325180.0,228842.4,Natural Gas (Weighted U.S. Average)
+1001713,OXY VINYLS LP - LA PORTE VCM PLANT,29.7237,-95.07408,GP-LaPorte VCM,325180.0,210319.0,Natural Gas (Weighted U.S. Average)
+1003781,Orange Carbon Black Plant,30.153872,-93.727108,GP-1,325180.0,11544.6,Natural Gas (Weighted U.S. Average)
+1007943,P4 PRODUCTION L L C,42.687031,-111.5878,CP-Natural Gas,325180.0,47422.7,Natural Gas (Weighted U.S. Average)
+1007943,P4 PRODUCTION L L C,42.687031,-111.5878,GP-Liquified Petroleum Gas,325180.0,100.7,Propane
+1007943,P4 PRODUCTION L L C,42.687031,-111.5878,HWSB Boiler,325180.0,0.0,Wood and Wood Residuals (dry basis)
+1007943,P4 PRODUCTION L L C,42.687031,-111.5878,Rotary Kiln,325180.0,417378.5,Bituminous
+1007943,P4 PRODUCTION L L C,42.687031,-111.5878,Rotary Kiln,325180.0,417378.5,Fuel Gas
+1003134,PAMPA PLANT,35.4834,-101.0492,GP-1,325180.0,40222.2,Natural Gas (Weighted U.S. Average)

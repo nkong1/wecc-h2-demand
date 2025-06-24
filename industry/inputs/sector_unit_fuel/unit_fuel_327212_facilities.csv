@@ -1,0 +1,4 @@
+Facility Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type
+1003520,Owens Corning - Amarillo Plant,35.1154,-101.8569,10-01 Furnace and Front End,327212.0,29257.9,Natural Gas (Weighted U.S. Average)
+1003520,Owens Corning - Amarillo Plant,35.1154,-101.8569,10-02 Furnace / Front end,327212.0,2784.0,Natural Gas (Weighted U.S. Average)
+1003520,Owens Corning - Amarillo Plant,35.1154,-101.8569,GP- Heat Units,327212.0,5906.5,Natural Gas (Weighted U.S. Average)

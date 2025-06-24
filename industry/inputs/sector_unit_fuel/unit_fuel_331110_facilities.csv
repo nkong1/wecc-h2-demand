@@ -1,0 +1,36 @@
+Facility Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type
+1012625,ArcelorMittal Texas HBI,27.888611,-97.277778,GP-2 Preheaters,331110.0,1090.2,Natural Gas (Weighted U.S. Average)
+1012625,ArcelorMittal Texas HBI,27.888611,-97.277778,Reformer Burner,331110.0,32409.5,Natural Gas (Weighted U.S. Average)
+1014686,"Steel Dynamics Southwest, LLC",28.0570723324037,-97.4649652751662,GP-NGCOMB,331110.0,74546.9,Natural Gas (Weighted U.S. Average)
+1004259,STRUCTURAL METALS INC,29.57906,-98.02368,GP-Plant,331110.0,59343.7,Natural Gas (Weighted U.S. Average)
+1007695,NUCOR STEEL NEBRASKA,42.078346,-97.360153,GP-NSNE Stationary Combustion Sources,331110.0,72610.7,Natural Gas (Weighted U.S. Average)
+1007695,NUCOR STEEL NEBRASKA,42.078346,-97.360153,GP-NSNE Stationary Combustion Sources,331110.0,72610.7,Distillate Fuel Oil No. 2
+1005832,NUCOR STEEL-TEXAS,31.354802,-96.165199,CP-1,331110.0,71070.7,Natural Gas (Weighted U.S. Average)
+1005832,NUCOR STEEL-TEXAS,31.354802,-96.165199,GP-1,331110.0,1786.5,Propane
+1005344,CHAPARRAL STEEL MIDLOTHIAN PLANT,32.458249,-97.036607,GP-Grouped,331110.0,127995.6,Natural Gas (Weighted U.S. Average)
+1005344,CHAPARRAL STEEL MIDLOTHIAN PLANT,32.458249,-97.036607,LSM-ReheatFurnace,331110.0,45696.2,Natural Gas (Weighted U.S. Average)
+1007348,Optimus Steel LLC,30.12445,-94.01262,GP-Grouped,331110.0,55016.7,Natural Gas (Weighted U.S. Average)
+1003580,VINTON STEEL LLC,31.96534,-106.585052,CP-NG Main Billing Meter,331110.0,27498.7,Natural Gas (Weighted U.S. Average)
+1003580,VINTON STEEL LLC,31.96534,-106.585052,CP-NG Rock Office,331110.0,7.1,Natural Gas (Weighted U.S. Average)
+1003580,VINTON STEEL LLC,31.96534,-106.585052,CP-NG_Main Office,331110.0,7.9,Natural Gas (Weighted U.S. Average)
+1012352,Nucor Steel Longview,32.3817587,-94.7070616,GP-1,331110.0,57435.4,Natural Gas (Weighted U.S. Average)
+1012352,Nucor Steel Longview,32.3817587,-94.7070616,GP-1,331110.0,57435.4,Propylene
+1005777,NUCOR STEEL - UTAH,41.8825,-112.1964,CP-Plantwide natural gas/co-located faci,331110.0,83881.0,Natural Gas (Weighted U.S. Average)
+1005777,NUCOR STEEL - UTAH,41.8825,-112.1964,GP-HEG,331110.0,0.1,Motor Gasoline
+1005777,NUCOR STEEL - UTAH,41.8825,-112.1964,MCG,331110.0,1.6,Distillate Fuel Oil No. 2
+1005777,NUCOR STEEL - UTAH,41.8825,-112.1964,MPHEP,331110.0,5.3,Distillate Fuel Oil No. 2
+1005777,NUCOR STEEL - UTAH,41.8825,-112.1964,R2EP,331110.0,1.5,Distillate Fuel Oil No. 2
+1003902,CF & I STEEL L P/ DBA ROCKY MOUNTAIN STEEL MILLS,38.232627,-104.607257,CP-General Stationary Fuel Combustion,331110.0,158047.4,Natural Gas (Weighted U.S. Average)
+1003902,CF & I STEEL L P/ DBA ROCKY MOUNTAIN STEEL MILLS,38.232627,-104.607257,CP-General Stationary Fuel Combustion,331110.0,158047.4,Kerosene
+1004038,CMC Steel Arizona,33.2853,-111.5863,GP- DRYERS AND PREHEATERS AZ2,331110.0,2371.1,Natural Gas (Weighted U.S. Average)
+1004038,CMC Steel Arizona,33.2853,-111.5863,GP-Dryers and Preheaters,331110.0,6426.1,Natural Gas (Weighted U.S. Average)
+1000029,NUCOR STEEL SEATTLE INC,47.569331,-122.367332,CP-1,331110.0,39202.1,Natural Gas (Weighted U.S. Average)
+1005755,CASCADE STEEL ROLLING MILLS INC,45.22863,-123.15905,CP-GU-1,331110.0,40299.9,Natural Gas (Weighted U.S. Average)
+1005755,CASCADE STEEL ROLLING MILLS INC,45.22863,-123.15905,CP-GU-2,331110.0,7362.6,Natural Gas (Weighted U.S. Average)
+1001840,Evraz Oregon Steel,45.62849,-122.78125,CP-1,331110.0,92747.1,Natural Gas (Weighted U.S. Average)
+1014023,JSW Steel (USA) Inc.,29.698855,-94.900224,Heat Treating Furnace 10,331110.0,7246.5,Natural Gas (Weighted U.S. Average)
+1014023,JSW Steel (USA) Inc.,29.698855,-94.900224,Heat Treating Furnace 9,331110.0,296.4,Natural Gas (Weighted U.S. Average)
+1014023,JSW Steel (USA) Inc.,29.698855,-94.900224,Miscellaneous Natural Gas Usage,331110.0,1279.3,Natural Gas (Weighted U.S. Average)
+1014023,JSW Steel (USA) Inc.,29.698855,-94.900224,Reheat Furnace #1,331110.0,39419.7,Natural Gas (Weighted U.S. Average)
+1014023,JSW Steel (USA) Inc.,29.698855,-94.900224,Reheat Furnace #2,331110.0,31344.1,Natural Gas (Weighted U.S. Average)
+1014023,JSW Steel (USA) Inc.,29.698855,-94.900224,Reheat Furnace #3,331110.0,0.0,Natural Gas (Weighted U.S. Average)

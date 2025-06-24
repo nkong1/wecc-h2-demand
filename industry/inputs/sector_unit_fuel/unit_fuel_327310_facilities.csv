@@ -1,0 +1,46 @@
+Facility Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type
+1002308,CEMEX Construction Materials Pacific LLC,34.39654,-117.150005,Coal Mill 1,327310.0,3195.6,Natural Gas (Weighted U.S. Average)
+1002308,CEMEX Construction Materials Pacific LLC,34.39654,-117.150005,CP- Raw Mill #1,327310.0,606.9,Natural Gas (Weighted U.S. Average)
+1002308,CEMEX Construction Materials Pacific LLC,34.39654,-117.150005,CP-Raw Mill #2,327310.0,1257.3,Natural Gas (Weighted U.S. Average)
+1002308,CEMEX Construction Materials Pacific LLC,34.39654,-117.150005,GP-Quarry Aux Bldging Heat-hot water,327310.0,56.3,Natural Gas (Weighted U.S. Average)
+1002308,CEMEX Construction Materials Pacific LLC,34.39654,-117.150005,GP-Quarry Heating,327310.0,7.8,Propane Gas
+1002308,CEMEX Construction Materials Pacific LLC,34.39654,-117.150005,GP-River Plant Heating,327310.0,286.7,Natural Gas (Weighted U.S. Average)
+1007927,CalPortland Company Oro Grande Plant,34.6045,-117.3382,GP-Office Heating,327310.0,244.6,Natural Gas (Weighted U.S. Average)
+1005662,Mitsubishi Cement Corp Cushenbury Cement Plant,34.437557,-116.891034,CP-MCC non kiln natural gas,327310.0,423.8,Natural Gas (Weighted U.S. Average)
+1006842,CalPortland Company Mojave Plant,35.03837,-118.2977,CP- Other NG Devices,327310.0,834.3,Natural Gas (Weighted U.S. Average)
+1006669,CalPortland Company Rillito Plant,32.4108,-111.15055,CP- Other Gas Devices,327310.0,1054.4,Natural Gas (Weighted U.S. Average)
+1006669,CalPortland Company Rillito Plant,32.4108,-111.15055,GP-Maintenance/Garage Buildings,327310.0,42.6,Propane Gas
+1003643,PHOENIX CEMENT COMPANY\S CLARKDALE FACILITY,34.779716,-112.083801,CP-1,327310.0,957.9,Natural Gas (Weighted U.S. Average)
+1003008,Holcim (US) Inc. - Portland Plant,38.328631,-105.008989,GP-Non-Kiln Combustion Units,327310.0,804.5,Natural Gas (Weighted U.S. Average)
+1006642,NATIONAL CEMENT CO OF CALIFORNIA INC,34.819863,-118.748732,53HE01 and 53HE02,327310.0,739.0,Natural Gas (Weighted U.S. Average)
+1006642,NATIONAL CEMENT CO OF CALIFORNIA INC,34.819863,-118.748732,GP- Ancillary heaters,327310.0,405.4,Natural Gas (Weighted U.S. Average)
+1003067,GCC RIO GRANDE INC,38.129058,-104.606741,Finish Mill,327310.0,243.8,Natural Gas (Weighted U.S. Average)
+1003067,GCC RIO GRANDE INC,38.129058,-104.606741,Pueblo Mobile Crusher,327310.0,459.3,Distillate Fuel Oil No. 2
+1002527,ASH GROVE CEMENT COMPANY-DURKEE,44.542325,-117.42053,GP-other sources,327310.0,177.8,Natural Gas (Weighted U.S. Average)
+1004131,HOLCIM (US) INC. DEVIL\S SLIDE PLANT,41.0633,-111.5317,GP-Non Kiln Unit Building Heater,327310.0,0.0,Natural Gas (Weighted U.S. Average)
+1002530,Ash Grove Cement Company-LEAMINGTON,39.508327,-112.262246,GP-space heat,327310.0,228.6,Natural Gas (Weighted U.S. Average)
+1002566,Tehachapi Cement Plant,35.12279,-118.369304,Building Heating,327310.0,79.7,Natural Gas (Weighted U.S. Average)
+1004174,NEVADA CEMENT COMPANY,39.62,-119.2628,Raw Mill 1,327310.0,3025.4,Natural Gas (Weighted U.S. Average)
+1004174,NEVADA CEMENT COMPANY,39.62,-119.2628,Raw Mill 2,327310.0,1584.6,Natural Gas (Weighted U.S. Average)
+1002537,ASH GROVE CEMENT COMPANY-SEATTLE,47.56799,-122.34255,Shop Heater,327310.0,185.9,Natural Gas (Weighted U.S. Average)
+1004612,CalPortland Redding Cement Plant,40.7369,-122.3223,Coal Mill,327310.0,502.6,Natural Gas (Weighted U.S. Average)
+1002531,ASH GROVE CEMENT COMPANY-MONTANA CITY,46.54448,-111.92062,Clark Gulch Quarry Shop Propane,327310.0,13.8,Propane
+1002531,ASH GROVE CEMENT COMPANY-MONTANA CITY,46.54448,-111.92062,GP-Misc. Natural Gas Combustion,327310.0,1216.2,Natural Gas (Weighted U.S. Average)
+1002531,ASH GROVE CEMENT COMPANY-MONTANA CITY,46.54448,-111.92062,Kiln Aux Diesel Drive,327310.0,2.6,Distillate Fuel Oil No. 2
+1002531,ASH GROVE CEMENT COMPANY-MONTANA CITY,46.54448,-111.92062,Used Oil Burner,327310.0,15.3,Used Oil
+1006185,Trident,45.94942,-111.47501,GP-non kiln units,327310.0,525.9,Natural Gas (Weighted U.S. Average)
+1007877,CEMEX CONSTRUCTION MATERIALS SOUTH LLC,40.202236,-105.236697,GP-01,327310.0,4596.7,Natural Gas (Weighted U.S. Average)
+1002421,ASH GROVE CEMENT COMPANY,32.51993,-97.0068,GP-Diesel Engines,327310.0,13.5,Distillate Fuel Oil No. 2
+1002421,ASH GROVE CEMENT COMPANY,32.51993,-97.0068,GP-Natural Gas Heaters,327310.0,292.9,Natural Gas (Weighted U.S. Average)
+1007552,ASH GROVE CEMENT COMPANY-Louisville,41.005565,-96.154917,GP-1 Natural Gas,327310.0,24.8,Natural Gas (Weighted U.S. Average)
+1007552,ASH GROVE CEMENT COMPANY-Louisville,41.005565,-96.154917,GP-2 Diesel,327310.0,0.0,Distillate Fuel Oil No. 2
+1004270,CAPITOL CEMENT PLANT,29.545278,-98.421111,31,327310.0,759.6,Natural Gas (Weighted U.S. Average)
+1004270,CAPITOL CEMENT PLANT,29.545278,-98.421111,GP-All,327310.0,4599.4,Natural Gas (Weighted U.S. Average)
+1007663,"CEMEX Construction Materials South, LLC",29.672028,-98.175083,FM 3,327310.0,0.0,Natural Gas (Weighted U.S. Average)
+1006363,"GCC Permian, LLC",31.703691,-102.392214,EBM1,327310.0,0.0,Natural Gas (Weighted U.S. Average)
+1006363,"GCC Permian, LLC",31.703691,-102.392214,EBM4,327310.0,7026.8,Natural Gas (Weighted U.S. Average)
+1002055,HOLCIM (US) Inc,32.512975,-96.971099,GP-Kiln 1 Aggregation,327310.0,4.4,Natural Gas (Weighted U.S. Average)
+1002049,LEHIGH CEMENT CO LLC / WACO PLANT,31.481987,-97.240773,Air Preheater,327310.0,649.7,Natural Gas (Weighted U.S. Average)
+1006110,"Lone Star Industries, Inc. /dba/ BUZZI UNICEM USA",32.25,-100.458333,laboratiory propane furnace,327310.0,1.1,Propane
+1002102,TEXAS LEHIGH CEMENT COMPANY LP,30.071044,-97.856833,GP-ALL,327310.0,11.5,Natural Gas (Weighted U.S. Average)
+1002102,TEXAS LEHIGH CEMENT COMPANY LP,30.071044,-97.856833,LAB,327310.0,0.2,Propane
