@@ -1,9 +1,10 @@
-# ==========
-# Calculate H2 Demand By Facility (Spatial Disaggregation)
-# (by converting emissions for each fuel into an energy equivalent, then into a hydrogen equivalent that must be burned)
-# iterate through each file, calculate h2 demand at each facility, this to the output_dict before sorting by industry
-# calculate h2 demand by: grouping by facility, calculating the h2 demand for each unit in each facility
-# ===========
+"""
+This file contains a function that calculates hydrogen demand from industrial facilities. 2023 emissions data from 
+US facilities with NAICS codes that match the industries we are modeling was collected. These emissions are broken down
+by facility, unit, and fuel. Emissions for each unit across all facilities are converted directly to an input energy value, 
+then to an amount of hydrogen (in kg) needed to provide an equivalent fuel energy for each facility.
+"""
+
 import pandas as pd
 import os
 import shutil
@@ -33,13 +34,12 @@ BTU_IN_1LB_H2 = 61013
 LB_TO_KG = 0.453592
 
 
-
 def calc_industry_demand(sectors, pct_decarbonization, to_plot=True):
     decarb_factor = pct_decarbonization / 100
 
     naics_codes = [code for sector in sectors for code in sector_by_naics[sector]]
 
-    print('\n================\nINDUSTRY H2 DEMAND\n===============')
+    print('\n===================\nINDUSTRY H2 DEMAND\n==================')
     print(f"\nScenario: {pct_decarbonization}% fuel decarbonization")
 
     # Create a dictionary mapping the fuel type to the CO2 emissions factor

@@ -1,35 +1,60 @@
+"""
+Use this file to run the hydrogen demand model and adjust inputs. 
+
+This model estimates hydrogen demand from the transport and industry end-use sectors with high spatial and temporal resolution. 
+These sectors are further broken down by vehicle type (light-duty/heavy-duty) and industry. The percentage of fuel decarbonization 
+across LD transport, HD transport, and industry can be modified. The industries that are modeled can be changed as well. 
+
+Spatial resolution: by load zone in the WECC
+Temporal resolution: hourly over the course of an average week (for transport) or peak/off-peak week (for industry)
+"""
+
 from pathlib import Path
 import shutil
 from industry import industry_h2
 from transport import transport_h2, build_profile
 
-"""
-Choose what to model industry or transport or both
-Inputs:
-LD/HD vehicle penetration, 
-"""
-
+# Adjust these to choose what to model
 model_transport_h2 = True
 build_transport_demand_profiles = False
 
-model_industry_h2 = True
+model_industry_h2 = False
 
 # to be implemented soon:
 # build_industry_demand_profiles = False  
 
-
 def model_transport_sector():
 
-    # Adjust these according to the scenario (percentages from 0 to 100)
+    # Adjust these according to the scenario (from 0 to 1)
+    # The percent of FCEV penetration is assumed to be the same as percent of fuel decarbonization
     LD_FCEV_penetration = 0
-    HD_FCEV_penetration = 25
+    HD_FCEV_penetration = .2
 
-    # Adjust this for any vehicle efficiency assumptions (default = 115/26)
-    FCEV_TO_ICEV_EFFICIENCY = 115/26 
+    # ================================================================
+    # Assumptions for projected values (all EIA values are from the AEO2023 Reference case):
+    # ================================================================
+
+    # Average relative efficiency of FCEVs to ICEVs on the road in 2050 
+    LD_FCEV_TO_ICEV_efficiency = 101.5 / 35 # from E3-derived estimates, following methods from CEC H2 Roadmap Report
+    HD_FCEV_TO_ICEV_efficiency = 10.6 / 7.7 # also from E3 derived estimates 
+
+    # Change in fuel efficiency from 2023 to 2050
+    rel_change_LD_efficiency = (26.5 - 22.6) / 22.6 # linear projection of data from Bureau of Transportation Statistics
+    rel_change_HD_efficiency = (8.0 - 6.3) / 6.3 # from 2025 EIA Annual Energy Outlook 
+
+    # Change in LD/HD VMT from 2023 to 2050
+    rel_change_LD_VMT = (2524 - 2540) / 2540 # from 2025 EIA Annual Energy Outlook 
+    rel_change_HD_VMT = (205.1 - 186.8) / 186.8 # from 2025 EIA Annual Energy Outlook 
+
+    assumptions = [LD_FCEV_TO_ICEV_efficiency, HD_FCEV_TO_ICEV_efficiency, rel_change_LD_efficiency, rel_change_HD_efficiency, \
+                   rel_change_LD_VMT, rel_change_HD_VMT]
+
+    # ================================
 
     # Call the transport module
-    lz_summary = transport_h2.calc_state_demand(LD_FCEV_penetration, HD_FCEV_penetration, FCEV_TO_ICEV_EFFICIENCY)
+    lz_summary = transport_h2.calc_state_demand(LD_FCEV_penetration, HD_FCEV_penetration, assumptions)
 
+    
     # Temporally disaggregate into hourly profiles over the course of an average week
     if build_transport_demand_profiles:
         build_profile.build(lz_summary)
@@ -39,7 +64,7 @@ def model_industry_sector():
     # Adjust which sectors to include (among Iron & Steel, Aluminum, Cement, Chemicals, Glass, Fertilizer)
     sectors = ['Iron & Steel', 'Aluminum', 'Cement', 'Chemicals', 'Glass', 'Fertilizer']
 
-    # Adjust the percentage of fuel decarbonization (via hydrogen) across all sectors 
+    # Adjust the percentage of fuel decarbonization via hydrogen across all sectors (between 0 and 100)
     pct_decarbonize = 100
 
     # Call the industry module
@@ -56,18 +81,18 @@ def main():
 
     # Call the transport and industry hydrogen modules
     if model_transport_h2:
-
         # Create a transport folder in the outputs
         (output_path / 'transport').mkdir()
 
+        # Call the transport h2 function
         model_transport_sector()        
 
     if model_industry_h2:
         # Create a industry folder in the outputs
         (output_path / 'industry').mkdir()
 
+        # Call the industry h2 function
         model_industry_sector()
-
 
     
 

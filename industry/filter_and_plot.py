@@ -1,3 +1,11 @@
+"""
+This file contains two functions: filter and plot. Filter intersects the DataFrame containing hydrogen demand by facility
+with the WECC shp file to filter our facilities that do not fall within WECC boundaries. The plot function, which is called by
+default, plots the hydrogen demand by facility on the load zone map.
+"""
+
+
+
 import geopandas as gp
 import matplotlib.pyplot as plt
 import numpy as np

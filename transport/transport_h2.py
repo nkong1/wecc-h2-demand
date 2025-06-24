@@ -1,3 +1,9 @@
+"""
+This module estimates state-level hydrogen demand from the LD and HD transport sectors, then disaggregates each one
+across road segments using VMT data for LDVS and HDVs, respectively. The VMT data is derived from the HPMS 2023. 
+The hydrogen demand is then aggregated by load zone.
+"""
+
 import pandas as pd
 import os
 from pathlib import Path
@@ -22,17 +28,23 @@ h2_demand_by_state = logs_path / 'h2_demand_by_state.csv'
 h2_demand_by_load_zone = base_path.parent / 'outputs' / 'transport' / 'transport_demand_by_load_zone.csv'
 
 
-def calc_state_demand(LD_penetration_pct, HD_penetration_pct, FCEV_ICE_RELATIVE_EFFICIENCY):
-    print('\n================\nTRANSPORT H2 DEMAND\n===============')
-    print(f'\nScenario: {LD_penetration_pct}% LD and {HD_penetration_pct}% HD FCEV market penetration')
-
-    # FCEV penetration rates 
-    LD_penetration = LD_penetration_pct / 100
-    HD_penetration = HD_penetration_pct / 100
+def calc_state_demand(LD_penetration, HD_penetration, assumptions):
+    print('\n===================\nTRANSPORT H2 DEMAND\n==================')
+    print(f'\nScenario: {LD_penetration * 100}% LD and {HD_penetration * 100}% HD FCEV market penetration')
 
     # Conversion factors
     GASOLINE_TO_H2 = 1.0  # 1 kg H2 = 1 gallon gasoline (energy equivalence)
     DIESEL_TO_H2 = 1.0 / 0.9 # 1 kg H2 = 0.9 gallons diesel (energy equivalence)
+
+    # Process assumptions
+    LD_FCEV_TO_ICEV_efficiency = assumptions[0]
+    HD_FCEV_TO_ICEV_efficiency = assumptions[1]
+
+    rel_change_LD_efficiency = assumptions[2]
+    rel_change_HD_efficiency = assumptions[3]
+
+    rel_change_LD_VMT = assumptions[4]
+    rel_change_HD_VMT = assumptions[5]
 
     # Load fuel consumption data by state
     fuel_data = pd.read_excel(fuel_data_path)
@@ -47,9 +59,13 @@ def calc_state_demand(LD_penetration_pct, HD_penetration_pct, FCEV_ICE_RELATIVE_
         gas_consumption_k_barrels = row.iloc[2]    # Thousand barrels
         diesel_consumption_k_barrels = row.iloc[3]   # Thousand barrels
 
-        # Convert fuel consumption to gallons
-        gas_gallons = gas_consumption_k_barrels * 1000 * 42    # 42 gallons in a barrel
-        diesel_gallons = diesel_consumption_k_barrels * 1000 * 42
+        # Convert 2023 gas/diesel fuel consumption to gallons
+        ref_gas_gallons = gas_consumption_k_barrels * 1000 * 42    # 42 gallons in a barrel
+        ref_diesel_gallons = diesel_consumption_k_barrels * 1000 * 42
+
+        # Project the gas/diesel fuel consumption to 2050 using changes in fuel efficiency and VMT
+        gas_gallons = ref_gas_gallons * (1 + rel_change_LD_VMT) / (1 + rel_change_LD_efficiency) 
+        diesel_gallons = ref_diesel_gallons * (1 + rel_change_HD_VMT) / (1 + rel_change_HD_efficiency) 
 
         # Calculate fuel consumption offset using FCEV penetrations
         gas_offset_gallons = gas_gallons * LD_penetration
@@ -57,9 +73,9 @@ def calc_state_demand(LD_penetration_pct, HD_penetration_pct, FCEV_ICE_RELATIVE_
 
         # Convert fuel offset to hydrogen demand (accounting for FCEV efficiency)
         ld_h2_demand = gas_offset_gallons * \
-            GASOLINE_TO_H2 / FCEV_ICE_RELATIVE_EFFICIENCY
+            GASOLINE_TO_H2 / LD_FCEV_TO_ICEV_efficiency
         hd_h2_demand = diesel_offset_gallons * \
-            DIESEL_TO_H2 / FCEV_ICE_RELATIVE_EFFICIENCY
+            DIESEL_TO_H2 / HD_FCEV_TO_ICEV_efficiency
         total_h2 = ld_h2_demand + hd_h2_demand
 
         # Add results to the dictionary
@@ -81,7 +97,7 @@ def calc_state_demand(LD_penetration_pct, HD_penetration_pct, FCEV_ICE_RELATIVE_
     # demand from LD tranport, HD transport, and total transport, respectively
     return spatial_disaggregation(state_h2_demand)
 
-# Spatially disaggregate state-wide demand across load zone, county intersections, then aggregate by load zone
+
 def spatial_disaggregation(state_h2_demand):
     print('\nSpatially disaggregating hydrogen demand...')
 
@@ -101,7 +117,7 @@ def spatial_disaggregation(state_h2_demand):
 
     # Process each state in the WECC
     for file_name in os.listdir(vmt_folder):
-        if not '.csv' in file_name:
+        if not '.csv' in file_name or '~' in file_name:
             continue
 
         state_df = pd.read_csv(vmt_folder / file_name)

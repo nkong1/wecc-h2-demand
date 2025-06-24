@@ -1,3 +1,8 @@
+"""
+This file contains a plotting function that plots the hydrogen demand by load zone onto the WECC load zone map.
+It is called by the transport_h2.py file.
+"""
+
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from pathlib import Path
