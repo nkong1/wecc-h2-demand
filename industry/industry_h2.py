@@ -23,10 +23,7 @@ if logs_path.exists() and logs_path.is_dir():
     shutil.rmtree(logs_path)
 logs_path.mkdir()
 
-sector_results_path = logs_path / 'by_industry_and_facility'
-sector_results_path.mkdir()
-
-facilities_output_path = base_path.parent / 'outputs' / 'industry' / 'facility_results.csv'
+facilities_output_path = logs_path / 'demand_by_facility.csv'
 load_zone_output_path = base_path.parent / 'outputs' / 'industry' / 'load_zone_results.csv'
 
 
@@ -59,28 +56,28 @@ def calc_industry_demand(sectors, pct_decarbonization, to_plot=True):
     # Create a list for a more detailed breakdown by unit and fuel
     breakdown_by_fuel = []
     
-    # Process each sector
+    # Process each industry
     for file_name in os.listdir(units_and_fuel_folder):
         if file_name.endswith('.csv') and not file_name.startswith('~$'):
-            results_by_sector = []
+            results_by_industry = []
 
             sector_facilities_df = pd.read_csv(base_path / units_and_fuel_folder / file_name)
 
-            # Retrieve the sector's NAICS code
+            # Retrieve the industry's NAICS code
             naics = sector_facilities_df.iloc[0, 5]
 
             # Aluminum NAICS
             if str(naics).startswith(str('3313')):
                     naics = 3313
 
-            # If the sector is not in the sectors list, skip it
+            # If the industry is not in the input industry list, skip it
             if naics not in naics_codes:
                 continue
 
             # Group each unit and fuel by facility
             sector_facilities_grouped = sector_facilities_df.groupby('Facility Id')
 
-            # Process each facility in the sector
+            # Process each facility in the industry
             for facility_id, facility_df in sector_facilities_grouped:
 
                 facility_name = facility_df['Facility Name_x'].iloc[0]
@@ -139,13 +136,12 @@ def calc_industry_demand(sectors, pct_decarbonization, to_plot=True):
                     facility_fuel_demand_mmBtu += unit_fuel_demand_mmBtu    
                 
                 # Add the facility results to the final output result DataFrame
-                results_by_sector.append({'facility_id': facility_id, 'facility_name': facility_name, 'naics': naics, \
+                results_by_industry.append({'facility_id': facility_id, 'facility_name': facility_name, 'naics': naics, \
                                         'latitude': latitude, 'longitude': longitude, 'h2_demand_mmBtu': facility_fuel_demand_mmBtu})
             
-            # Save the results for hydrogen demand by facility for each sector
-            sector_results_df = pd.DataFrame(results_by_sector)
-            sector_results_df.to_csv(sector_results_path / f'{naics}_demand_by_facility.csv', index=False)
-            results_by_facility = pd.concat([results_by_facility, sector_results_df])
+            # Save the results for hydrogen demand by facility for each industry
+            industry_results_df = pd.DataFrame(results_by_industry)
+            results_by_facility = pd.concat([results_by_facility, industry_results_df])
 
     # Save the detailed results by unit and fuel
     pd.DataFrame(breakdown_by_fuel).to_csv(logs_path / 'demand_by_unit_fuel.csv', index=False)
