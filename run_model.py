@@ -6,29 +6,27 @@ These sectors are further broken down by vehicle type (light-duty/heavy-duty) an
 across LD transport, HD transport, and industry can be modified. The industries that are modeled can be changed as well. 
 
 Spatial resolution: by load zone in the WECC
-Temporal resolution: hourly over the course of an average week (for transport) or peak/off-peak week (for industry)
+Temporal resolution: hourly over the course of an average week (for transport) or every week (for industry)
 """
 
 from pathlib import Path
 import shutil
-from industry import industry_h2
-from transport import transport_h2, build_profile
+from industry import industry_h2, build_industry_profile
+from transport import transport_h2, build_transport_profile
 
 # Adjust these to choose what to model
 model_transport_h2 = True
-build_transport_demand_profiles = False
+build_transport_demand_profiles = True
 
 model_industry_h2 = True
-
-# to be implemented soon:
-# build_industry_demand_profiles = False  
+build_industry_demand_profiles = True  
 
 def model_transport_sector():
 
     # Adjust these according to the scenario (as percentage from 0 to 100)
     # The percent of FCEV penetration is assumed to be the same as percent of fuel decarbonization
-    LD_FCEV_penetration = 5
-    HD_FCEV_penetration = 15
+    LD_FCEV_penetration = 2
+    HD_FCEV_penetration = 20
 
     # ================================================================
     # Assumptions for projected values (all EIA values are from the AEO2023 Reference case):
@@ -52,12 +50,11 @@ def model_transport_sector():
     # ================================
 
     # Call the transport module
-    lz_summary = transport_h2.calc_state_demand(LD_FCEV_penetration, HD_FCEV_penetration, assumptions)
-
+    lz_summary_transport = transport_h2.calc_state_demand(LD_FCEV_penetration, HD_FCEV_penetration, assumptions)
     
     # Temporally disaggregate into hourly profiles over the course of an average week
     if build_transport_demand_profiles:
-        build_profile.build(lz_summary)
+        build_transport_profile.build(lz_summary_transport)
 
 def model_industry_sector():
 
@@ -68,7 +65,11 @@ def model_industry_sector():
     pct_decarbonization = [50, 50, 50, 50, 50, 0]
 
     # Call the industry module
-    industry_h2.calc_industry_demand(sectors, pct_decarbonization)
+    lz_summary_industry = industry_h2.calc_industry_demand(sectors, pct_decarbonization)
+
+    # Temporally disaggregate into hourly profiles over the course of an average week
+    if build_industry_demand_profiles:
+            build_industry_profile.build(lz_summary_industry)
 
 def main():
     # Create a new outputs folder

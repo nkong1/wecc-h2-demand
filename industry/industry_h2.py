@@ -132,7 +132,7 @@ def calc_industry_demand(sectors, pct_decarbonization, to_plot=True):
 
                     decarb_pct = naics_pct_decarbonize[naics]
                     decarb_factor = decarb_pct / 100
-                    
+
                     unit_fuel_demand_mmBtu = unit_CO2_emissions * 1000 / avg_emissions_factor * decarb_factor # multiplying by 1000 to convert from mt to kg
 
                     # Add detailed results to the breakdown in the logs
@@ -167,3 +167,5 @@ def calc_industry_demand(sectors, pct_decarbonization, to_plot=True):
     filtered_df, final_df = filter_and_plot.filter(results_by_facility_df, to_plot)
     filtered_df.to_csv(facilities_output_path, index = False)
     final_df.to_csv(load_zone_output_path, index = False)
+
+    return final_df

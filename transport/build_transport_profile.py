@@ -15,7 +15,7 @@ hd_profile_path =  base_path / 'input_files' / 'HD_fueling_hourly_normalized.csv
 
 def build(demand_df):
     output_profiles_path = base_path.parent / 'outputs' / 'transport' / 'demand_profiles'
-    output_profiles_path.mkdir(parents=True, exist_ok=True)
+    output_profiles_path.mkdir()
 
     print('\nBuilding transport demand profiles...')
 
@@ -43,11 +43,12 @@ def build(demand_df):
         merged[['hour', 'LD_h2_demand', 'HD_h2_demand']].to_csv(output_path, index = False)
 
         if load_zone == highest_demand_lz:
-            plot_demand_profile(merged, highest_demand_lz)
+            plot_output_path = base_path.parent / 'outputs' / 'transport' / f'{load_zone}_demand_profile.png'
+            plot_demand_profile(merged, highest_demand_lz, plot_output_path)
     
     print(f'Profiles (csv files) saved to {output_profiles_path}')
 
-def plot_demand_profile(profile_df, lz_name):
+def plot_demand_profile(profile_df, lz_name, plot_output_path):
 
     # Calculate total weekly demand
     total_demand = profile_df['LD_h2_demand'].sum() + profile_df['HD_h2_demand'].sum()
@@ -73,7 +74,6 @@ def plot_demand_profile(profile_df, lz_name):
     )
 
     # Save the plot
-    plot_output_path = base_path.parent / 'outputs' / 'transport' / f'{lz_name}_demand_profile.png'
     plt.savefig(plot_output_path, dpi=300, bbox_inches='tight')
     print(f"{lz_name} profile graph saved to: {plot_output_path}")
 
