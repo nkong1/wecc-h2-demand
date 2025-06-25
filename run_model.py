@@ -18,17 +18,17 @@ from transport import transport_h2, build_profile
 model_transport_h2 = True
 build_transport_demand_profiles = False
 
-model_industry_h2 = False
+model_industry_h2 = True
 
 # to be implemented soon:
 # build_industry_demand_profiles = False  
 
 def model_transport_sector():
 
-    # Adjust these according to the scenario (from 0 to 1)
+    # Adjust these according to the scenario (as percentage from 0 to 100)
     # The percent of FCEV penetration is assumed to be the same as percent of fuel decarbonization
-    LD_FCEV_penetration = 0
-    HD_FCEV_penetration = .2
+    LD_FCEV_penetration = 5
+    HD_FCEV_penetration = 15
 
     # ================================================================
     # Assumptions for projected values (all EIA values are from the AEO2023 Reference case):
@@ -61,14 +61,14 @@ def model_transport_sector():
 
 def model_industry_sector():
 
-    # Adjust which sectors to include (among Iron & Steel, Aluminum, Cement, Chemicals, Glass, Fertilizer)
     sectors = ['Iron & Steel', 'Aluminum', 'Cement', 'Chemicals', 'Glass', 'Fertilizer']
 
-    # Adjust the percentage of fuel decarbonization via hydrogen across all sectors (between 0 and 100)
-    pct_decarbonize = 100
+    # Adjust the percentage of fuel decarbonization via hydrogen across each sector (between 0 and 100)
+    # A value of 0 means that the corresponding sector is not represented in the outputs.
+    pct_decarbonization = [50, 50, 50, 50, 50, 0]
 
     # Call the industry module
-    industry_h2.calc_industry_demand(sectors, pct_decarbonize)
+    industry_h2.calc_industry_demand(sectors, pct_decarbonization)
 
 def main():
     # Create a new outputs folder

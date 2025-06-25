@@ -30,7 +30,11 @@ h2_demand_by_load_zone = base_path.parent / 'outputs' / 'transport' / 'transport
 
 def calc_state_demand(LD_penetration, HD_penetration, assumptions):
     print('\n===================\nTRANSPORT H2 DEMAND\n==================')
-    print(f'\nScenario: {LD_penetration * 100}% LD and {HD_penetration * 100}% HD FCEV market penetration')
+    print(f'\nScenario: {LD_penetration}% LD and {HD_penetration}% HD FCEV market penetration')
+
+    # Convert percentages to decimals
+    LD_penetration = LD_penetration / 100
+    HD_penetration = HD_penetration / 100
 
     # Conversion factors
     GASOLINE_TO_H2 = 1.0  # 1 kg H2 = 1 gallon gasoline (energy equivalence)

@@ -34,12 +34,17 @@ LB_TO_KG = 0.453592
 
 
 def calc_industry_demand(sectors, pct_decarbonization, to_plot=True):
-    decarb_factor = pct_decarbonization / 100
 
     naics_codes = [code for sector in sectors for code in sector_by_naics[sector]]
 
+    # Create a dictionary mapping NAICS codes to their sector's decarbonization percentage
+    naics_pct_decarbonize = {
+        code: pct
+        for sector, pct in zip(sectors, pct_decarbonization)
+        for code in sector_by_naics[sector]
+    }   
+
     print('\n===================\nINDUSTRY H2 DEMAND\n==================')
-    print(f"\nScenario: {pct_decarbonization}% fuel decarbonization")
 
     # Create a dictionary mapping the fuel type to the CO2 emissions factor
     fuel_emissions_df = pd.read_excel(fuel_emissions_factor_path)
@@ -124,6 +129,10 @@ def calc_industry_demand(sectors, pct_decarbonization, to_plot=True):
 
                     # Use the average emissions factor across all fuels to calculate the fuel demand for the unit
                     avg_emissions_factor = emissions_factor_total / len(unit_fuels) # emissions factor is in metric tons
+
+                    decarb_pct = naics_pct_decarbonize[naics]
+                    decarb_factor = decarb_pct / 100
+                    
                     unit_fuel_demand_mmBtu = unit_CO2_emissions * 1000 / avg_emissions_factor * decarb_factor # multiplying by 1000 to convert from mt to kg
 
                     # Add detailed results to the breakdown in the logs
