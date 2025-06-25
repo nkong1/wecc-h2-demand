@@ -4,8 +4,6 @@ with the WECC shp file to filter our facilities that do not fall within WECC bou
 default, plots the hydrogen demand by facility on the load zone map.
 """
 
-
-
 import geopandas as gp
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,7 +14,6 @@ from industry.sector_naics_info import *
 
 # File paths
 base_path  = Path(__file__).parent
-output_path_csv = base_path.parent / 'outputs' / 'industry' / 'demand_by_facility.csv'
 output_path_map = base_path.parent / 'outputs' / 'industry' / 'demand_by_facility.png'
 
 # Import load zones file
@@ -24,6 +21,7 @@ load_zones = gp.read_file(base_path / 'inputs' / 'load_zones' / 'load_zones.shp'
 
 def filter(facility_df, to_plot):
     print('\nFiltering out facilities outside WECC boundaries...')
+
     # Create a df mapping each sector name to a naics code
     rows = [(sector, code) for sector, codes in sector_by_naics.items() for code in codes]
     sectors_df = pd.DataFrame(rows, columns=['sector', 'naics'])
@@ -34,7 +32,7 @@ def filter(facility_df, to_plot):
     # Filter out any facilities with zero H2 demand 
     results_by_facility_df = results_by_facility_df[results_by_facility_df['h2_demand_kg'] > 0].copy()
 
-    # Convert the facilities DataFrame to a GeoDataFrame using lat/lon
+    # Convert to GeoDataFrame
     geometry = gp.points_from_xy(results_by_facility_df['longitude'], results_by_facility_df['latitude'])
     facilities_gdf = gp.GeoDataFrame(results_by_facility_df, geometry=geometry, crs='EPSG:4326')
 
@@ -43,18 +41,27 @@ def filter(facility_df, to_plot):
         load_zones.set_crs("EPSG:4326", inplace=True)
     facilities_gdf = facilities_gdf.to_crs(load_zones.crs)
 
-    # Filter only facilities within load zones via a spatial join
-    facilities_in_zones = gp.sjoin(facilities_gdf, load_zones, how='inner', predicate='within').copy()
-    facilities_in_zones = facilities_in_zones[results_by_facility_df.columns.tolist() + ['geometry']]
+    # Spatial join: to filter out facilities not in the WECC
+    facilities_in_zones = gp.sjoin(
+        facilities_gdf, 
+        load_zones[['LOAD_AREA', 'geometry']],  
+        how='inner',
+        predicate='within'
+    ).copy()
 
-    # Save filtered facilities to the outputs folder
-    facilities_in_zones.drop(columns='geometry').to_csv(output_path_csv, index=False)
-    print(f"Filtered facilities saved to: {output_path_csv}")
+    # Keep only desired columns
+    facilities_in_zones = facilities_in_zones[results_by_facility_df.columns.tolist() + ['LOAD_AREA', 'geometry']]
+
+    # Create summary grouped by LOAD_AREA
+    load_zone_summary = facilities_in_zones.groupby('LOAD_AREA', as_index=False)[
+        ['h2_demand_kg']
+    ].sum()
 
     if to_plot:
         plot(facilities_in_zones)
 
-    return facilities_in_zones
+    return facilities_in_zones, load_zone_summary
+
 
 def plot(filtered_df):
     print('\nPlotting industry hydrogen demand by sector and facility...')
@@ -68,7 +75,7 @@ def plot(filtered_df):
 
     # Normalize marker sizes
     max_h2_demand = filtered_df['h2_demand_kg'].max()
-    max_size = 500  # Adjust as needed
+    max_size = 900  # Adjust as needed
     filtered_df['marker_size'] = (
         (filtered_df['h2_demand_kg'] / max_h2_demand * max_size).clip(lower=1)
         if max_h2_demand > 0 else 10

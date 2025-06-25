@@ -60,7 +60,7 @@ def plot_lz_demand(demand_df):
     total_demand = merged['total_h2_demand'].sum()
     plt.text(
         x=0.05, y=1,
-        s=f"WECC Total Annual Demand: {total_demand:,.0f} kg",
+        s=f"WECC Total Annual Demand: {total_demand/1e6:,.0f} million kg",
         transform=plt.gca().transAxes,
         fontsize=12,
         verticalalignment='top',

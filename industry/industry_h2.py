@@ -25,7 +25,9 @@ logs_path.mkdir()
 
 sector_results_path = logs_path / 'by_industry_and_facility'
 sector_results_path.mkdir()
-final_output_path = base_path.parent / 'outputs' / 'industry' / 'results.csv'
+
+facilities_output_path = base_path.parent / 'outputs' / 'industry' / 'facility_results.csv'
+load_zone_output_path = base_path.parent / 'outputs' / 'industry' / 'load_zone_results.csv'
 
 
 # Constants
@@ -157,5 +159,6 @@ def calc_industry_demand(sectors, pct_decarbonization, to_plot=True):
     print('\nFinished calculating facility-level hydrogen demand')
 
     # Filter the facilities to only those within WECC bundaries and save this as the final result
-    filtered_df = filter_and_plot.filter(results_by_facility_df, to_plot)
-    filtered_df.to_csv(final_output_path, index = False)
+    filtered_df, final_df = filter_and_plot.filter(results_by_facility_df, to_plot)
+    filtered_df.to_csv(facilities_output_path, index = False)
+    final_df.to_csv(load_zone_output_path, index = False)

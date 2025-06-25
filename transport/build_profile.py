@@ -13,11 +13,10 @@ base_path  = Path(__file__).parent
 ld_profile_path = base_path / 'input_files' / 'LD_fueling_hourly_normalized.csv'
 hd_profile_path =  base_path / 'input_files' / 'HD_fueling_hourly_normalized.csv'
 
-output_profiles_path = base_path.parent / 'outputs' / 'transport' / 'demand_profiles'
-output_profiles_path.mkdir(parents=True, exist_ok=True)
-
-
 def build(demand_df):
+    output_profiles_path = base_path.parent / 'outputs' / 'transport' / 'demand_profiles'
+    output_profiles_path.mkdir(parents=True, exist_ok=True)
+
     print('\nBuilding transport demand profiles...')
 
     h2_demand_df = demand_df

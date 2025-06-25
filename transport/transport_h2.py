@@ -21,8 +21,8 @@ if logs_path.exists() and logs_path.is_dir():
 logs_path.mkdir()
 
 # Output file paths    
-detailed_state_breakdown = logs_path / 'h2_demand_breakdown'
-detailed_state_breakdown.mkdir()
+state_breakdown = logs_path / 'h2_demand_breakdown'
+state_breakdown.mkdir()
 
 h2_demand_by_state = logs_path / 'h2_demand_by_state.csv'
 h2_demand_by_load_zone = base_path.parent / 'outputs' / 'transport' / 'transport_demand_by_load_zone.csv'
@@ -113,7 +113,7 @@ def spatial_disaggregation(state_h2_demand):
     }
 
     # Create a load zone summary dictionary for hydrogen demand
-    load_zone_summary = {} # {load zone: [HD_demand, LD_demand, total_demand]}
+    load_zone_summary = {} # {load zone: [LD_demand, HD_demand, total_demand]}
 
     # Process each state in the WECC
     for file_name in os.listdir(vmt_folder):
@@ -121,35 +121,37 @@ def spatial_disaggregation(state_h2_demand):
             continue
 
         state_df = pd.read_csv(vmt_folder / file_name)
-        state_fips = state_df.iloc[0, 0] // 1000
+        state_fips = int(file_name[:2].removesuffix('_'))
 
-        hd_vmt_col = state_df.iloc[:, 7]
-        ld_vmt_col = state_df.iloc[:, 8]
+        # Get the state totals for HD and LD VMT
+        state_ld_vmt = state_vmts_totals_dict[state_fips][0]
+        state_hd_vmt = state_vmts_totals_dict[state_fips][1]
 
-        # Get the state totals for HD (truck and busses) and LD VMT
-        state_LD_vmt = state_vmts_totals_dict[state_fips][0]
-        state_HD_vmt = state_vmts_totals_dict[state_fips][1]
-
-        # Extract the values from the demand dictionary once
+        # Get the state totals for HD and LD hydrogen demand
         state_ld_h2_demand, state_hd_h2_demand, _ = state_h2_demand[state_fips]
 
+        hd_vmt_col = state_df.iloc[:, 2]
+        ld_vmt_col = state_df.iloc[:, 3]
+
         # Compute h2 demand
-        state_df['LD_h2_demand'] = ld_vmt_col / state_LD_vmt * state_ld_h2_demand
-        state_df['HD_h2_demand'] = hd_vmt_col / state_HD_vmt * state_hd_h2_demand
+        state_df['LD_h2_demand'] = ld_vmt_col / state_ld_vmt * state_ld_h2_demand
+        state_df['HD_h2_demand'] = hd_vmt_col / state_hd_vmt * state_hd_h2_demand
         state_df['total_h2_demand'] = state_df['LD_h2_demand'] + state_df['HD_h2_demand']
 
         # Save the state-level hydrogen demand summary
-        output_path = detailed_state_breakdown / file_name
+        output_path = state_breakdown / f'{file_name.removesuffix('.csv')}_summary.csv'
         state_df.to_csv(output_path, index = False)
 
         # Add the h2 demand data to the load zone dictionary
-        for load_zone, area_df in state_df.groupby('LOAD_AREA'):
+        for _, row in state_df.iterrows():
+            load_zone = row.iloc[0]
+
             if not load_zone in load_zone_summary:
                 load_zone_summary[load_zone] = [0, 0, 0]
 
-            load_zone_summary[load_zone][0] += area_df.iloc[:, 9].sum() # LD h2
-            load_zone_summary[load_zone][1] += area_df.iloc[:, 10].sum() # HD h2
-            load_zone_summary[load_zone][2] += area_df.iloc[:, 11].sum() # total h2
+            load_zone_summary[load_zone][0] += row.iloc[4] # LD h2
+            load_zone_summary[load_zone][1] += row.iloc[5] # HD h2
+            load_zone_summary[load_zone][2] += row.iloc[6] # total h2
 
     # Transform the load zone dictionary into a Data Frame 
     load_zone_summary_df = pd.DataFrame.from_dict(load_zone_summary, orient='index',
@@ -157,6 +159,9 @@ def spatial_disaggregation(state_h2_demand):
 
     load_zone_summary_df.reset_index(inplace=True)
     load_zone_summary_df.rename(columns={'index': 'load_zone'}, inplace=True)
+
+    # Remove Canadian/Mexican load zones that arise in the h2 demand df due to small errors in load zone shape boundaries
+    load_zone_summary_df = load_zone_summary_df[~load_zone_summary_df['load_zone'].str.contains('CAN|MEX', case=False, na=False)]
 
     # Save the results for hydrogen demand by load zone
     load_zone_summary_df.to_csv(h2_demand_by_load_zone, index=False)
