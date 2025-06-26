@@ -16,7 +16,7 @@ fuel_data_path = base_path / 'input_files' / 'transport_gas_and_diesel_usage_by_
 
 # Create a new logs folder
 logs_path = base_path / 'logs'
-if logs_path.exists() and logs_path.is_dir():
+if logs_path.exists():
     shutil.rmtree(logs_path)
 logs_path.mkdir()
 
@@ -25,7 +25,7 @@ state_breakdown = logs_path / 'h2_demand_breakdown'
 state_breakdown.mkdir()
 
 h2_demand_by_state = logs_path / 'h2_demand_by_state.csv'
-h2_demand_by_load_zone = base_path.parent / 'outputs' / 'transport' / 'transport_demand_by_load_zone.csv'
+h2_demand_by_load_zone = base_path.parent / 'outputs' / 'transport' / 'demand_by_load_zone.csv'
 
 
 def calc_state_demand(LD_penetration, HD_penetration, assumptions):
@@ -172,7 +172,8 @@ def spatial_disaggregation(state_h2_demand):
 
     print('Saved results for hydrogen demand by load zone')
 
-    plot_demand.plot_lz_demand(load_zone_summary_df)
+    plot_output_path = base_path.parent / 'outputs' / 'transport' / 'demand_by_load_zone.png'
+    plot_demand.plot_lz_demand(load_zone_summary_df, plot_output_path)
 
     return load_zone_summary_df
 

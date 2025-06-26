@@ -15,7 +15,7 @@ base_path  = Path(__file__).parent
 profile_path = base_path / 'inputs' / 'EPRI_Profile_WSCC_CNV_Offpeak.xlsx'
 
 def build(demand_by_lz):
-    output_profiles_path = base_path.parent / 'outputs' / 'industry' / 'industry_profiles'
+    output_profiles_path = base_path.parent / 'outputs' / 'industry' / 'demand_profiles'
     output_profiles_path.mkdir()
 
     print('\nBuilding transport demand profiles...')

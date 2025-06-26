@@ -10,9 +10,7 @@ from pathlib import Path
 base_path  = Path(__file__).parent
 load_zone_path = base_path / 'input_files' / 'load_zones' / 'load_zones.shp'
 
-plot_output_path = base_path.parent / 'outputs' / 'transport' / 'demand_by_load_zone.png'
-
-def plot_lz_demand(demand_df):
+def plot_lz_demand(demand_df, plot_output_path):
     lz_gdf = gpd.read_file(load_zone_path)
 
     # Step 1: Data Processing

@@ -13,6 +13,7 @@ from pathlib import Path
 import shutil
 from industry import industry_h2, build_industry_profile
 from transport import transport_h2, build_transport_profile
+from combine_results import combine
 
 # Adjust these to choose what to model
 model_transport_h2 = True
@@ -23,10 +24,10 @@ build_industry_demand_profiles = True
 
 def model_transport_sector():
 
-    # Adjust these according to the scenario (as percentage from 0 to 100)
+    # Adjust these according to the scenario (as a percentage from 0 to 100)
     # The percent of FCEV penetration is assumed to be the same as percent of fuel decarbonization
-    LD_FCEV_penetration = 2
-    HD_FCEV_penetration = 20
+    LD_FCEV_penetration = 5
+    HD_FCEV_penetration = 25
 
     # ================================================================
     # Assumptions for projected values (all EIA values are from the AEO2023 Reference case):
@@ -62,7 +63,7 @@ def model_industry_sector():
 
     # Adjust the percentage of fuel decarbonization via hydrogen across each sector (between 0 and 100)
     # A value of 0 means that the corresponding sector is not represented in the outputs.
-    pct_decarbonization = [50, 50, 50, 50, 50, 0]
+    pct_decarbonization = [70, 50, 50, 50, 50, 0]
 
     # Call the industry module
     lz_summary_industry = industry_h2.calc_industry_demand(sectors, pct_decarbonization)
@@ -75,7 +76,7 @@ def main():
     # Create a new outputs folder
     output_path = Path(__file__).parent / 'outputs'
 
-    if output_path.exists() and output_path.is_dir():
+    if output_path.exists():
         shutil.rmtree(output_path)
 
     output_path.mkdir()
@@ -95,7 +96,9 @@ def main():
         # Call the industry h2 function
         model_industry_sector()
 
-    
+    # Aggregate results from industry and transport
+    #if model_industry_h2 and model_industry_h2:
+        #combine()
 
 if __name__ == "__main__":
     main()

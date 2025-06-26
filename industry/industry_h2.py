@@ -19,12 +19,12 @@ fuel_emissions_factor_path = base_path / 'inputs' / 'fuel_ghg_emission_factors.x
 
 # Create a new logs folder
 logs_path = base_path / 'logs'
-if logs_path.exists() and logs_path.is_dir():
+if logs_path.exists():
     shutil.rmtree(logs_path)
 logs_path.mkdir()
 
 facilities_output_path = logs_path / 'demand_by_facility.csv'
-load_zone_output_path = base_path.parent / 'outputs' / 'industry' / 'load_zone_results.csv'
+load_zone_output_path = base_path.parent / 'outputs' / 'industry' / 'demand_by_load_zone.csv'
 
 
 # Constants
