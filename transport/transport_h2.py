@@ -7,8 +7,10 @@ The hydrogen demand is then aggregated by load zone.
 import pandas as pd
 import os
 from pathlib import Path
-from transport import plot_demand
 import shutil
+from transport import plot_demand
+from transport.param_projections import get_transport_projections
+
 
 # Input file paths
 base_path  = Path(__file__).parent
@@ -28,7 +30,7 @@ h2_demand_by_state = logs_path / 'h2_demand_by_state.csv'
 h2_demand_by_load_zone = base_path.parent / 'outputs' / 'transport' / 'demand_by_load_zone.csv'
 
 
-def calc_state_demand(LD_penetration, HD_penetration, assumptions):
+def calc_state_demand(LD_penetration, HD_penetration, year):
     print('\n===================\nTRANSPORT H2 DEMAND\n==================')
     print(f'\nScenario: {LD_penetration}% LD and {HD_penetration}% HD FCEV market penetration')
 
@@ -39,6 +41,8 @@ def calc_state_demand(LD_penetration, HD_penetration, assumptions):
     # Conversion factors
     GASOLINE_TO_H2 = 1.0  # 1 kg H2 = 1 gallon gasoline (energy equivalence)
     DIESEL_TO_H2 = 1.0 / 0.9 # 1 kg H2 = 0.9 gallons diesel (energy equivalence)
+
+    assumptions = get_transport_projections(year)
 
     # Process assumptions
     LD_FCEV_TO_ICEV_efficiency = assumptions[0]

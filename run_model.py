@@ -15,50 +15,31 @@ from industry import industry_h2, build_industry_profile
 from transport import transport_h2, build_transport_profile
 from combine_results import combine
 
-# Adjust these to choose what to model
+# Choose the model year
+year = 2050
+
+# Choose what sectors to model
 model_transport_h2 = True
 build_transport_demand_profiles = True
 
-model_industry_h2 = True
-build_industry_demand_profiles = True  
+model_industry_h2 = False
+build_industry_demand_profiles = False  
 
 def model_transport_sector():
 
-    # Adjust these according to the scenario (as a percentage from 0 to 100)
+    # Choose the percentage of FCEV mark penetration (as a percentage from 0 to 100)
     # The percent of FCEV penetration is assumed to be the same as percent of fuel decarbonization
-    LD_FCEV_penetration = 5
-    HD_FCEV_penetration = 25
-
-    # ================================================================
-    # Assumptions for projected values (all EIA values are from the AEO2023 Reference case):
-    # ================================================================
-
-    # Average relative efficiency of FCEVs to ICEVs on the road in 2050 
-    LD_FCEV_TO_ICEV_efficiency = 101.5 / 35 # from E3-derived estimates, following methods from CEC H2 Roadmap Report
-    HD_FCEV_TO_ICEV_efficiency = 10.6 / 7.7 # also from E3 derived estimates 
-
-    # Change in fuel efficiency from 2023 to 2050
-    rel_change_LD_efficiency = (26.5 - 22.6) / 22.6 # linear projection of data from Bureau of Transportation Statistics
-    rel_change_HD_efficiency = (8.0 - 6.3) / 6.3 # from 2025 EIA Annual Energy Outlook 
-
-    # Change in LD/HD VMT from 2023 to 2050
-    rel_change_LD_VMT = (2524 - 2540) / 2540 # from 2025 EIA Annual Energy Outlook 
-    rel_change_HD_VMT = (205.1 - 186.8) / 186.8 # from 2025 EIA Annual Energy Outlook 
-
-    assumptions = [LD_FCEV_TO_ICEV_efficiency, HD_FCEV_TO_ICEV_efficiency, rel_change_LD_efficiency, rel_change_HD_efficiency, \
-                   rel_change_LD_VMT, rel_change_HD_VMT]
-
-    # ================================
+    LD_FCEV_penetration = 50
+    HD_FCEV_penetration = 0
 
     # Call the transport module
-    lz_summary_transport = transport_h2.calc_state_demand(LD_FCEV_penetration, HD_FCEV_penetration, assumptions)
+    lz_summary_transport = transport_h2.calc_state_demand(LD_FCEV_penetration, HD_FCEV_penetration, year)
     
     # Temporally disaggregate into hourly profiles over the course of an average week
     if build_transport_demand_profiles:
         build_transport_profile.build(lz_summary_transport)
 
 def model_industry_sector():
-
     sectors = ['Iron & Steel', 'Aluminum', 'Cement', 'Chemicals', 'Glass', 'Fertilizer']
 
     # Adjust the percentage of fuel decarbonization via hydrogen across each sector (between 0 and 100)
