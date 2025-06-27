@@ -3,7 +3,7 @@ This module contain data and functions for generating projections of different v
 from the transport sector.
 """
 
-def get_transport_projections(year):
+def get_transport_parameters(year):
     """
     Returns a list of calculated assumptions for the given year, including relative efficiencies and fuel 
     economies, as well as changes in vehicle miles traveled (VMT). These outputs are used in the 

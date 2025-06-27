@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import shutil
 from transport import plot_demand
-from transport.param_projections import get_transport_projections
+from transport.param_projections import get_transport_parameters
 
 
 # Input file paths
@@ -42,7 +42,7 @@ def calc_state_demand(LD_penetration, HD_penetration, year):
     GASOLINE_TO_H2 = 1.0  # 1 kg H2 = 1 gallon gasoline (energy equivalence)
     DIESEL_TO_H2 = 1.0 / 0.9 # 1 kg H2 = 0.9 gallons diesel (energy equivalence)
 
-    assumptions = get_transport_projections(year)
+    assumptions = get_transport_parameters(year)
 
     # Process assumptions
     LD_FCEV_TO_ICEV_efficiency = assumptions[0]

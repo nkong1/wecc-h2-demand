@@ -151,6 +151,25 @@ def plot(filtered_df):
         fontsize=11, bbox=dict(facecolor='white', alpha=0.8, edgecolor='gray')
     )
 
+     # Total hydrogen demand label for each sector
+    sector_totals = (
+        filtered_df.groupby('sector')['h2_demand_kg']
+        .sum()
+        .sort_values(ascending=False)
+    )
+    
+    sector_label = "Sector H₂ Demand (million kg):\n"
+    for sector, total_kg in sector_totals.items():
+        sector_label += f"{sector}: {total_kg / 1e6:,.1f}\n"
+
+    ax.text(
+        1.01, 0.5,
+        sector_label.strip(),
+        transform=ax.transAxes,
+        ha='left', va='center',
+        fontsize=10, bbox=dict(facecolor='white', alpha=0.8, edgecolor='gray')
+    )
+    
     # Final formatting 
     plt.title("Industry Hydrogen Demand by Sector and Facility", fontsize=16, pad=20)
     plt.xlabel("Longitude", fontsize=12)

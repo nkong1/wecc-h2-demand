@@ -15,8 +15,8 @@ from industry import industry_h2, build_industry_profile
 from transport import transport_h2, build_transport_profile
 from combine_results import combine
 
-# Choose the model year
-year = 2050
+# Choose a model year between 2023 and 2050 (inclusive)
+year = 2030
 
 # Choose what sectors to model
 model_transport_h2 = True
@@ -30,14 +30,14 @@ def model_transport_sector():
     # Choose the percentage of FCEV mark penetration (as a percentage from 0 to 100)
     # The percent of FCEV penetration is assumed to be the same as percent of fuel decarbonization
     LD_FCEV_penetration = 50
-    HD_FCEV_penetration = 0
+    HD_FCEV_penetration = 10
 
     # Call the transport module
     lz_summary_transport = transport_h2.calc_state_demand(LD_FCEV_penetration, HD_FCEV_penetration, year)
     
     # Temporally disaggregate into hourly profiles over the course of an average week
     if build_transport_demand_profiles:
-        build_transport_profile.build(lz_summary_transport)
+        build_transport_profile.build_profile(lz_summary_transport, year)
 
 def model_industry_sector():
     sectors = ['Iron & Steel', 'Aluminum', 'Cement', 'Chemicals', 'Glass', 'Fertilizer']

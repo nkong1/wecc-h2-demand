@@ -1,5 +1,5 @@
 """
-This file contains a plotting function that plots the hydrogen demand by load zone onto the WECC load zone map.
+This file contains a plotting function that plots the hydrogen demand by WECC load zone.
 It is called by the transport_h2.py file.
 """
 
