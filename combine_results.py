@@ -15,27 +15,49 @@ import os
 import shutil
 from pathlib import Path
 
-outputs_path = Path(__file__).parent / 'outputs' 
-combined_outputs_path = outputs_path / 'combined'
+# Define paths
+outputs_path = Path(__file__).parent / 'outputs'
+combined_outputs_path = outputs_path / 'combined_profiles'
 
-if combined_outputs_path.exists():
-    shutil.rmtree(combined_outputs_path)
-combined_outputs_path.mkdir()
 
 def combine():
+    print('\n===================\nCombining Results...\n==================')
+
+    # Create new combined results folder
+    if combined_outputs_path.exists():
+        shutil.rmtree(combined_outputs_path)
+    combined_outputs_path.mkdir()
+
+    # Input folders
     industry_profiles_path = outputs_path / 'industry' / 'demand_profiles'
-    transport_profiles_path = outputs_path / 'transport' / 'demand_profile'
+    transport_profiles_path = outputs_path / 'transport' / 'demand_profiles'
 
-    industry_profiles = sorted(os.listdir(industry_profiles_path))
-    transport_profiles = sorted(os.listdir(transport_profiles_path))
+    # Get cleaned file sets
+    industry_files = {f for f in os.listdir(industry_profiles_path) if f.endswith('.csv') and '~' not in f}
+    transport_files = {f for f in os.listdir(transport_profiles_path) if f.endswith('.csv') and '~' not in f}
 
-    transport_idx = 0
-    industry_idx = 0
+    # Every load zone should have demand from transport, so we iterate by transport file
+    for file in transport_files:
+        # Initialize empty DataFrame
+        combined_df = pd.DataFrame()
 
-'''    while transport_idx < len(transport_profiles):
-        transport
-        if '.csv' in transport_lz_profile and '~' not in transport_lz_profile:
-            lz_profile_path = transport_profiles_path / transport_lz_profile
-'''
+        # Load available datasets
+        transport_df = pd.read_csv(transport_profiles_path / file) 
+        industry_df = pd.read_csv(industry_profiles_path / file) if file in industry_files else None
+
+        # If both exist, sum them
+        if transport_df is not None and industry_df is not None:
+            combined_df['datetime'] = transport_df['datetime']
+            combined_df['h2_demand'] = transport_df['total_h2_demand'] + industry_df['h2_demand']
+        elif transport_df is not None:
+            combined_df = transport_df
+        else:
+            combined_df = industry_df
+
+        # Save result
+        combined_df.to_csv(combined_outputs_path / file, index=False)
+
+    print("Combined profiles saved. Model successfully run.")
+
 
 

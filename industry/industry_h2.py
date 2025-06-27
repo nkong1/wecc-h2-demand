@@ -17,23 +17,20 @@ base_path  = Path(__file__).parent
 units_and_fuel_folder = base_path / 'inputs' / 'sector_unit_fuel'
 fuel_emissions_factor_path = base_path / 'inputs' / 'fuel_ghg_emission_factors.xlsx'
 
-# Create a new logs folder
+# Output paths
 logs_path = base_path / 'logs'
-if logs_path.exists():
-    shutil.rmtree(logs_path)
-logs_path.mkdir()
-
 facilities_output_path = logs_path / 'demand_by_facility.csv'
 load_zone_output_path = base_path.parent / 'outputs' / 'industry' / 'demand_by_load_zone.csv'
-
 
 # Constants
 ONE_MILLION = 10 ** 6
 BTU_IN_1LB_H2 = 61013
 LB_TO_KG = 0.453592
 
+def calc_industry_demand(sectors, pct_decarbonization, scale_demand, to_plot=True):
 
-def calc_industry_demand(sectors, pct_decarbonization, to_plot=True):
+    # Make a logs folder in case it doesn't exist
+    logs_path.mkdir(exist_ok=True)
 
     naics_codes = [code for sector in sectors for code in sector_by_naics[sector]]
 
@@ -141,8 +138,8 @@ def calc_industry_demand(sectors, pct_decarbonization, to_plot=True):
                                     'naics': naics, 'latitude': latitude, 'longitude': longitude, \
                                     'h2_demand_mmBtu': unit_fuel_demand_mmBtu / len(unit_fuels) if unit_fuel_demand_mmBtu != 0 else 0})
                         
-                    # Add the unit's fuel demand to the facility's running total for fuel demand
-                    facility_fuel_demand_mmBtu += unit_fuel_demand_mmBtu    
+                    # Add the unit's fuel demand to the facility's running total for fuel demand, scaled by scale_demand
+                    facility_fuel_demand_mmBtu += unit_fuel_demand_mmBtu * scale_demand
                 
                 # Add the facility results to the final output result DataFrame
                 results_by_industry.append({'facility_id': facility_id, 'facility_name': facility_name, 'naics': naics, \

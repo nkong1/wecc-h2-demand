@@ -22,8 +22,8 @@ year = 2030
 model_transport_h2 = True
 build_transport_demand_profiles = True
 
-model_industry_h2 = False
-build_industry_demand_profiles = False  
+model_industry_h2 = True
+build_industry_demand_profiles = True  
 
 def model_transport_sector():
 
@@ -46,12 +46,15 @@ def model_industry_sector():
     # A value of 0 means that the corresponding sector is not represented in the outputs.
     pct_decarbonization = [70, 50, 50, 50, 50, 0]
 
+    # Scale the hydrogen demand at every facility by a factor
+    scale_demand = 2
+
     # Call the industry module
-    lz_summary_industry = industry_h2.calc_industry_demand(sectors, pct_decarbonization)
+    lz_summary_industry = industry_h2.calc_industry_demand(sectors, pct_decarbonization, scale_demand)
 
     # Temporally disaggregate into hourly profiles over the course of an average week
     if build_industry_demand_profiles:
-            build_industry_profile.build(lz_summary_industry)
+            build_industry_profile.build(lz_summary_industry, year)
 
 def main():
     # Create a new outputs folder
@@ -78,8 +81,8 @@ def main():
         model_industry_sector()
 
     # Aggregate results from industry and transport
-    #if model_industry_h2 and model_industry_h2:
-        #combine()
+    if model_industry_h2 and model_industry_h2:
+        combine()
 
 if __name__ == "__main__":
     main()

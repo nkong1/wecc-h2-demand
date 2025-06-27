@@ -18,8 +18,6 @@ def get_transport_parameters(year):
         rel_change_HD_VMT(year)
     ]
 
-    print(projections)
-
     return projections
 
 

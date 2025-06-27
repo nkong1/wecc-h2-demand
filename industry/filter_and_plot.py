@@ -57,6 +57,8 @@ def filter(facility_df, to_plot):
         ['h2_demand_kg']
     ].sum()
 
+    load_zone_summary.rename(columns={'LOAD_AREA': 'load_zone'}, inplace=True)
+
     if to_plot:
         plot(facilities_in_zones)
 
@@ -169,7 +171,7 @@ def plot(filtered_df):
         ha='left', va='center',
         fontsize=10, bbox=dict(facecolor='white', alpha=0.8, edgecolor='gray')
     )
-    
+
     # Final formatting 
     plt.title("Industry Hydrogen Demand by Sector and Facility", fontsize=16, pad=20)
     plt.xlabel("Longitude", fontsize=12)

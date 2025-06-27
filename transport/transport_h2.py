@@ -16,15 +16,9 @@ from transport.param_projections import get_transport_parameters
 base_path  = Path(__file__).parent
 fuel_data_path = base_path / 'input_files' / 'transport_gas_and_diesel_usage_by_state.xlsx'
 
-# Create a new logs folder
-logs_path = base_path / 'logs'
-if logs_path.exists():
-    shutil.rmtree(logs_path)
-logs_path.mkdir()
-
-# Output file paths    
+# Create intermediate output paths
+logs_path = base_path / 'logs'   
 state_breakdown = logs_path / 'h2_demand_breakdown'
-state_breakdown.mkdir()
 
 h2_demand_by_state = logs_path / 'h2_demand_by_state.csv'
 h2_demand_by_load_zone = base_path.parent / 'outputs' / 'transport' / 'demand_by_load_zone.csv'
@@ -33,6 +27,10 @@ h2_demand_by_load_zone = base_path.parent / 'outputs' / 'transport' / 'demand_by
 def calc_state_demand(LD_penetration, HD_penetration, year):
     print('\n===================\nTRANSPORT H2 DEMAND\n==================')
     print(f'\nScenario: {LD_penetration}% LD and {HD_penetration}% HD FCEV market penetration')
+
+    # Create these intermediate output folders in case they don't exist:
+    logs_path.mkdir(exist_ok=True)
+    state_breakdown.mkdir(exist_ok=True)
 
     # Convert percentages to decimals
     LD_penetration = LD_penetration / 100
