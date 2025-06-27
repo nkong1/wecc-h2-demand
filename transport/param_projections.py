@@ -1,7 +1,18 @@
 """
 This module contain data and functions for generating projections of different variables used in estimating hydrogen demand 
-from the transport sector.
+from the transport sector. It also contains some assumptions, stored here to keep data derived from online resources in one place.
 """
+
+
+
+"""
+The following are estimated values for the ratio of diesel and gaosline use that are from on-road transport  
+the transport sector totals in 2023. They are derived from the AE02025 Reference Case Tables 39 and 36. 
+The ratios were derived for 2024 and are assumed to be the same for 2023, given a lack of 2023 data.
+"""
+DIESEL_FROM_ONROAD_TRANSPORT = .8658
+GASOLINE_FROM_ONROAD_TRANSPORT = .9899 
+
 
 def get_transport_parameters(year):
     """
@@ -12,10 +23,10 @@ def get_transport_parameters(year):
     projections = [
         LD_FCEV_to_ICEV_efficiency(year),
         HD_FCEV_to_ICEV_efficiency(year),
-        rel_change_LDV_mpg(year),
-        rel_change_HDV_mpg(year),
-        rel_change_LD_VMT(year),
-        rel_change_HD_VMT(year)
+        rel_change_LD_fuel_consumption(year), 
+        rel_change_HD_fuel_consumption(year), 
+        DIESEL_FROM_ONROAD_TRANSPORT, 
+        GASOLINE_FROM_ONROAD_TRANSPORT
     ]
 
     return projections
@@ -75,7 +86,39 @@ def HD_FCEV_to_ICEV_efficiency(year):
     
     return lin_projection(year)
 
+def rel_change_LD_fuel_consumption(year):
+    """
+    Returns the relative change in gasoline fuel consumption from on-road transport from 2023 to the 
+    input year. Refer to Gasoline_Use_EIA_Ref_Case.csv in the input file for more details and data
+    derivation. Table 39 in the AEO2025 was used (Reference Case).
+    """
+    return [0, 0.044296462, 0.045407622, 0.03879188, 0.026124817, 0.009437798,
+    -0.011174183, -0.036683746, -0.06214544, -0.092381316, -0.123083584,
+    -0.152594123, -0.182237921, -0.213101243, -0.243269246, -0.270902176,
+    -0.297043504, -0.320372834, -0.341785382, -0.362760544, -0.379842021,
+    -0.396697179, -0.410141974, -0.423007724, -0.433134651, -0.444919444,
+    -0.452629225, -0.458355589][year - 2023]
 
+def rel_change_HD_fuel_consumption(year):
+    """
+    Returns the relative change in diesel fuel consumption from on-road transport from 2023 to the 
+    input year. Refer to Diesel_Use_EIA_Ref_Case.csv in the input file for more details and data
+    derivation. Table 36 in the AEO2025 was used (Reference Case).
+    """
+    return [0, 0.0682, 0.0726, 0.0682, 0.0586,
+    0.0449, 0.0292, 0.0108, -0.0146, -0.0493,
+    -0.0851, -0.1160, -0.1447, -0.1703, -0.1930,
+    -0.2135, -0.2323, -0.2492, -0.2654, -0.2793,
+    -0.2919, -0.3032, -0.3124, -0.3203, -0.3265,
+    -0.3311, -0.3341, -0.3368][year - 2023]
+
+
+
+"""
+===========================================
+The following methods are no longer currently used
+===========================================
+"""
 
 def rel_change_LDV_mpg(year):
     """
@@ -98,7 +141,7 @@ def rel_change_HDV_mpg(year):
     Returns the relative change in HDV mpg from 2023 to the input year (in decimal format).
     Data for Diesel HDV fuel efficiency is taken directly from Table 49 of the EIA Annual Energy Outlook 2025.
     The list contains the projected fuel efficiency for every year from 2023 to 2050, in order by index. The 
-    AEO2023 Reference Case was used.
+    Reference Case was used.
 
     https://www.eia.gov/outlooks/aeo/data/browser/#/?id=58-AEO2025&region=0-0&cases=aeo2023ref&start=2023&end=2050&f=A&linechart=aeo2023ref-d020623a.6-58-AEO2025~&map=&ctype=linechart&sourcekey=0
 
@@ -119,7 +162,7 @@ def rel_change_LD_VMT(year):
     """
     Returns the relative change in LD VMT from 2023 to the input year (in decimal format).
     Data for projected LD VMT from 2023 to 2050 was taken directly from Table 41 of the EIA Annual 
-    Energy Outlook 2025. The AEO2023 Reference Case was used.
+    Energy Outlook 2025 (Reference Case).
     """
 
     ld_vmt_by_year = [
@@ -139,7 +182,7 @@ def rel_change_HD_VMT(year):
     """
     Returns the relative change in HD VMT from 2023 to the input year (in decimal format).
     Data for projected HD VMT from 2023 to 2050 was taken directly from Table 49 of the EIA Annual 
-    Energy Outlook 2025. The AEO2023 Reference Case was used.
+    Energy Outlook 2025 (Reference Case).
     """
 
     hd_vmt_by_year = [

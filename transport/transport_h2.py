@@ -32,25 +32,26 @@ def calc_state_demand(LD_penetration, HD_penetration, year):
     logs_path.mkdir(exist_ok=True)
     state_breakdown.mkdir(exist_ok=True)
 
-    # Convert percentages to decimals
-    LD_penetration = LD_penetration / 100
-    HD_penetration = HD_penetration / 100
-
     # Conversion factors
     GASOLINE_TO_H2 = 1.0  # 1 kg H2 = 1 gallon gasoline (energy equivalence)
     DIESEL_TO_H2 = 1.0 / 0.9 # 1 kg H2 = 0.9 gallons diesel (energy equivalence)
 
     assumptions = get_transport_parameters(year)
 
+    # Convert percentages to decimals
+    LD_penetration = LD_penetration / 100
+    HD_penetration = HD_penetration / 100
+
     # Process assumptions
     LD_FCEV_TO_ICEV_efficiency = assumptions[0]
     HD_FCEV_TO_ICEV_efficiency = assumptions[1]
 
-    rel_change_LD_efficiency = assumptions[2]
-    rel_change_HD_efficiency = assumptions[3]
+    rel_change_LD_fuel_consumption = assumptions[2]
+    rel_change_HD_fuel_consumption = assumptions[3]
 
-    rel_change_LD_VMT = assumptions[4]
-    rel_change_HD_VMT = assumptions[5]
+    DIESEL_FROM_ONROAD_TRANSPORT = assumptions[4]
+    DIESEL_FROM_ONROAD_TRANSPORT = assumptions[5]
+
 
     # Load fuel consumption data by state
     fuel_data = pd.read_excel(fuel_data_path)
@@ -70,8 +71,8 @@ def calc_state_demand(LD_penetration, HD_penetration, year):
         ref_diesel_gallons = diesel_consumption_k_barrels * 1000 * 42
 
         # Project the gas/diesel fuel consumption to 2050 using changes in fuel efficiency and VMT
-        gas_gallons = ref_gas_gallons * (1 + rel_change_LD_VMT) / (1 + rel_change_LD_efficiency) 
-        diesel_gallons = ref_diesel_gallons * (1 + rel_change_HD_VMT) / (1 + rel_change_HD_efficiency) 
+        gas_gallons = ref_gas_gallons * (1 + rel_change_LD_fuel_consumption)
+        diesel_gallons = ref_diesel_gallons * (1 + rel_change_LD_fuel_consumption)
 
         # Calculate fuel consumption offset using FCEV penetrations
         gas_offset_gallons = gas_gallons * LD_penetration
