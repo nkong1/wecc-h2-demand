@@ -5,7 +5,6 @@ For each load zone, this module combines the hydrogen demand results from indust
 into a single csv file showing total hourly demand over each model year. 
 """
 
-from transport.plot_demand import plot_lz_demand
 import pandas as pd
 import os
 import shutil
