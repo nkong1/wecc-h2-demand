@@ -1,8 +1,7 @@
 """
-This module contain data and functions for generating projections of different variables used in estimating hydrogen demand 
+This module contains data and functions for generating projections of different variables used in estimating hydrogen demand 
 from the transport sector. It also contains some assumptions, stored here to keep data derived from online resources in one place.
 """
-
 
 
 """
@@ -13,11 +12,10 @@ The ratios were derived for 2024 and are assumed to be the same for 2023, given 
 DIESEL_FROM_ONROAD_TRANSPORT = .8658
 GASOLINE_FROM_ONROAD_TRANSPORT = .9899 
 
-
 def get_transport_parameters(year):
     """
     Returns a list of calculated assumptions for the given year, including relative efficiencies and fuel 
-    economies, as well as changes in vehicle miles traveled (VMT). These outputs are used in the 
+    economies, as well as changes in vehicle miles traveled (VMT). These assumptions are used in the 
     transport_h2 module.
     """
     projections = [
@@ -28,14 +26,12 @@ def get_transport_parameters(year):
         DIESEL_FROM_ONROAD_TRANSPORT, 
         GASOLINE_FROM_ONROAD_TRANSPORT
     ]
-
     return projections
-
 
 def LD_FCEV_to_ICEV_efficiency(year):
     """
-    This function returns the relative efficiency of LD FCEVs to ICEVs in a given input year and uses
-    data from E3's Deep Decarbonization in a High Renewables Future paper 
+    Returns the relative efficiency of LD FCEVs to ICEVs in a given input year, using
+    data derived from E3's Deep Decarbonization in a High Renewables Future paper.
 
     https://www.ethree.com/wp-content/uploads/2018/06/Deep_Decarbonization_in_a_High_Renewables_Future_CEC-500-2018-012-1.pdf
 
@@ -64,7 +60,7 @@ def LD_FCEV_to_ICEV_efficiency(year):
 
 def HD_FCEV_to_ICEV_efficiency(year):
     """
-    This function returns the relative efficiency of HD FCEVs to ICEVs in a given input year.
+    Returns the relative efficiency of HD FCEVs to ICEVs in a given input year.
 
     A similar methodology is used in this function as the previous. Data from the 'HDV Costs and 
     Efficiencies' table on Page B-10 is directly taken to get the fuel efficiency of Reference HD 

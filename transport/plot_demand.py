@@ -1,8 +1,3 @@
-"""
-This file contains a plotting function that plots the hydrogen demand by WECC load zone.
-It is called by the transport_h2.py file.
-"""
-
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from pathlib import Path
@@ -11,6 +6,15 @@ base_path  = Path(__file__).parent
 load_zone_path = base_path / 'input_files' / 'load_zones' / 'load_zones.shp'
 
 def plot_lz_demand(demand_df, plot_output_path):
+    """
+    Plots the hydrogen demand for each WECC load zone in a single year.
+
+    Parameters:
+    - demand_df: a DataFrame with columns 'load_zone' and 'total_h2_demand'
+    - plot_output_path: the path to which the plot should be saved
+
+    Returns: None
+    """
     lz_gdf = gpd.read_file(load_zone_path)
 
     # Step 1: Data Processing
@@ -20,7 +24,6 @@ def plot_lz_demand(demand_df, plot_output_path):
     merged = lz_gdf.merge(demand_df, on='load_zone', how='left')
 
     # Step 2: Visualize the data
-    print('\nPlotting hydrogen demand by load zone...')
 
     # Create the plot
     fig, ax = plt.subplots(1, 1, figsize=(15, 12))
@@ -69,4 +72,3 @@ def plot_lz_demand(demand_df, plot_output_path):
 
     # Save the plot
     plt.savefig(plot_output_path, dpi=300, bbox_inches='tight')
-    print(f"Map saved to: {plot_output_path}")

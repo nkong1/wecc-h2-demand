@@ -1,12 +1,8 @@
 """
 This module is only called when both the industry and transport parts of the model are run.
 
-For each load zone, this module combines the results for hydrogen demand from industry and from 
-transport into a csv file showing combined hourly demand over a week. This resulting profile is 
-graphed for the load zone with the highest total demand over the week.
-
-This module also combines the annual hydrogen demand values by load zone, outputs this data in csv, 
-and displays it on a map (of the entire WECC). 
+For each load zone, this module combines the hydrogen demand results from industry and transport 
+into a single csv file showing total hourly demand over each model year. 
 """
 
 from transport.plot_demand import plot_lz_demand
@@ -21,6 +17,11 @@ combined_outputs_path = outputs_path / 'combined_profiles'
 
 
 def combine():
+    """
+    Combines the hydrogen demand profiles from industry and transport into a single, total profile
+    for each load zone, saving the result to the combined_profiles folder in the outputs.
+    """
+
     print('\n===================\nCombining Results...\n==================')
 
     # Create new combined results folder
@@ -48,16 +49,16 @@ def combine():
         # If both exist, sum them
         if transport_df is not None and industry_df is not None:
             combined_df['datetime'] = transport_df['datetime']
-            combined_df['h2_demand'] = transport_df['total_h2_demand'] + industry_df['h2_demand']
+            combined_df['h2_demand'] = transport_df['total_h2_demand'] + industry_df['total_h2_demand']
         elif transport_df is not None:
-            combined_df = transport_df
+            combined_df = transport_df[['datetime', 'total_h2_demand']]
         else:
-            combined_df = industry_df
+            combined_df = industry_df[['datetime', 'total_h2_demand']]
 
         # Save result
         combined_df.to_csv(combined_outputs_path / file, index=False)
 
-    print("Combined profiles saved. Model successfully run.")
+    print("\nCombined profiles saved. Model successfully run.\n")
 
 
 

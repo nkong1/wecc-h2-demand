@@ -1,7 +1,7 @@
 """
-This module estimates state-level hydrogen demand from the LD and HD transport sectors, then disaggregates each one
-across road segments using VMT data for LDVS and HDVs, respectively. The VMT data is derived from the HPMS 2023. 
-The hydrogen demand is then aggregated by load zone.
+For each model year, this module estimates state-level hydrogen demand from the LD and HD transport sectors, then 
+disaggregates each one across load zones using VMT data for LDVs and HDVs, respectively. The VMT data is derived from 
+the HPMS 2023. 
 """
 
 import pandas as pd
@@ -11,102 +11,142 @@ import shutil
 from transport import plot_demand
 from transport.param_projections import get_transport_parameters
 
-
 # Input file paths
 base_path  = Path(__file__).parent
 fuel_data_path = base_path / 'input_files' / 'transport_gas_and_diesel_usage_by_state.xlsx'
 
-# Create intermediate output paths
-logs_path = base_path / 'logs'   
-state_breakdown = logs_path / 'h2_demand_breakdown'
+# Create a new logs path
+logs_path = base_path / 'logs'
+if logs_path.exists():
+    shutil.rmtree(logs_path)
+logs_path.mkdir()
 
-h2_demand_by_state = logs_path / 'h2_demand_by_state.csv'
+# Create output paths
+logs_path = base_path / 'logs'  
+state_breakdown = logs_path / 'h2_demand_breakdown'
+state_breakdown.mkdir()
 h2_demand_by_load_zone = base_path.parent / 'outputs' / 'transport' / 'demand_by_load_zone.csv'
 
 
-def calc_state_demand(LD_penetration, HD_penetration, year):
-    print('\n===================\nTRANSPORT H2 DEMAND\n==================')
-    print(f'\nScenario: {LD_penetration}% LD and {HD_penetration}% HD FCEV market penetration')
+def model_transport_demand(LD_penetration_by_year, HD_penetration_by_year, years):
+    """
+    Estimates hydrogen demand from LD and HD transport by state, and then calls the disaggregate_by_load_zone
+    function to disaggregate it by load zone.
 
-    # Create these intermediate output folders in case they don't exist:
-    logs_path.mkdir(exist_ok=True)
-    state_breakdown.mkdir(exist_ok=True)
+    Parameters:
+    - LD_penetration_by_year: list of FCEV penetration percentages for LD transport for each model year
+    - HD_penetration_by_year: list of FCEV penetration percentages for HD transport for each model year
+    - years: list of model years corresponding to the above market penetration rates
+
+    Returns:
+    - a DataFrame with hydrogen demand for each load zone by year (ordered alphabetically by load zone and by 
+        descending year). This DataFrame is saved to outputs from the run_model file.
+    """
+
+    print('\n===================\nTRANSPORT H2 DEMAND\n==================')
 
     # Conversion factors
     GASOLINE_TO_H2 = 1.0  # 1 kg H2 = 1 gallon gasoline (energy equivalence)
     DIESEL_TO_H2 = 1.0 / 0.9 # 1 kg H2 = 0.9 gallons diesel (energy equivalence)
 
-    assumptions = get_transport_parameters(year)
-
-    # Convert percentages to decimals
-    LD_penetration = LD_penetration / 100
-    HD_penetration = HD_penetration / 100
-
-    # Process assumptions
-    LD_FCEV_TO_ICEV_efficiency = assumptions[0]
-    HD_FCEV_TO_ICEV_efficiency = assumptions[1]
-
-    rel_change_LD_fuel_consumption = assumptions[2]
-    rel_change_HD_fuel_consumption = assumptions[3]
-
-    DIESEL_FROM_ONROAD_TRANSPORT = assumptions[4]
-    DIESEL_FROM_ONROAD_TRANSPORT = assumptions[5]
-
-
-    # Load fuel consumption data by state
+    # Load fuel consumption data by state (2023 data from the EIA)
     fuel_data = pd.read_excel(fuel_data_path)
 
-    # Create a dictionary to store the hydrogen demand for each state
-    # Structure: {StateFips: [LD_demand, HD_demand, total_demand]}
-    state_h2_demand = {}
+    # Create an output DataFrame that will contain the results for hydrogen demand across each load zone
+    # for every model year
+    output_load_zone_summary = pd.DataFrame()
+    index = 0
 
-    # Calculate state-level H2 demand
-    for _, row in fuel_data.iterrows():
-        state_fips = int(row.iloc[1])
-        gas_consumption_k_barrels = row.iloc[2]    # Thousand barrels
-        diesel_consumption_k_barrels = row.iloc[3]   # Thousand barrels
+    for year in years:
+        print(f'\nProcessing year {year}...')
+        assumptions = get_transport_parameters(year)
 
-        # Convert 2023 gas/diesel fuel consumption to gallons
-        ref_gas_gallons = gas_consumption_k_barrels * 1000 * 42    # 42 gallons in a barrel
-        ref_diesel_gallons = diesel_consumption_k_barrels * 1000 * 42
+        # Convert percentages to decimals
+        LD_penetration = LD_penetration_by_year[index] / 100
+        HD_penetration = HD_penetration_by_year[index] / 100
 
-        # Project the gas/diesel fuel consumption to 2050 using changes in fuel efficiency and VMT
-        gas_gallons = ref_gas_gallons * (1 + rel_change_LD_fuel_consumption)
-        diesel_gallons = ref_diesel_gallons * (1 + rel_change_LD_fuel_consumption)
+        # Increment the index for the next model year
+        index += 1
 
-        # Calculate fuel consumption offset using FCEV penetrations
-        gas_offset_gallons = gas_gallons * LD_penetration
-        diesel_offset_gallons = diesel_gallons * HD_penetration
+        # Process assumptions
+        LD_FCEV_TO_ICEV_efficiency = assumptions[0]
+        HD_FCEV_TO_ICEV_efficiency = assumptions[1]
 
-        # Convert fuel offset to hydrogen demand (accounting for FCEV efficiency)
-        ld_h2_demand = gas_offset_gallons * \
-            GASOLINE_TO_H2 / LD_FCEV_TO_ICEV_efficiency
-        hd_h2_demand = diesel_offset_gallons * \
-            DIESEL_TO_H2 / HD_FCEV_TO_ICEV_efficiency
-        total_h2 = ld_h2_demand + hd_h2_demand
+        rel_change_LD_fuel_consumption = assumptions[2]
+        rel_change_HD_fuel_consumption = assumptions[3]
 
-        # Add results to the dictionary
-        state_h2_demand[state_fips] = [ld_h2_demand, hd_h2_demand, total_h2]
+        # Create a dictionary to store the hydrogen demand for each state
+        # Structure: {StateFips: [LD_demand, HD_demand, total_demand]}
+        state_h2_demand = {}
 
-    # Save the hydrogen demand by state to a DataFrame
-    state_h2_df = pd.DataFrame.from_dict(state_h2_demand, orient='index',
-                                        columns=['h2_from_gas', 'h2_from_diesel', 'total_h2'])
+        # Calculate state-level H2 demand
+        for _, row in fuel_data.iterrows():
+            state_fips = int(row.iloc[1])
+            gas_consumption_k_barrels = row.iloc[2]    # Thousand barrels
+            diesel_consumption_k_barrels = row.iloc[3]   # Thousand barrels
 
-    state_h2_df.reset_index(inplace=True)
-    state_h2_df.rename(columns={'index': 'fips'}, inplace=True)
+            # Convert 2023 gas/diesel fuel consumption to gallons
+            ref_gas_gallons = gas_consumption_k_barrels * 1000 * 42    # 42 gallons in a barrel
+            ref_diesel_gallons = diesel_consumption_k_barrels * 1000 * 42
 
-    # Save results in the logs
-    state_h2_df.to_csv(h2_demand_by_state, index=False)
+            # Project the gas/diesel fuel consumption from on-road transport into the model year
+            gas_gallons = ref_gas_gallons * (1 + rel_change_LD_fuel_consumption)
+            diesel_gallons = ref_diesel_gallons * (1 + rel_change_HD_fuel_consumption)
 
-    print('\nSaved results for hydrogen demand by state')
+            # Calculate fuel consumption offset using FCEV penetrations
+            gas_offset_gallons = gas_gallons * LD_penetration
+            diesel_offset_gallons = diesel_gallons * HD_penetration
 
-    # Call the spatial disaggregation function, passing in a dictionary mapping the state FIPS to a list with the hydrogen  
-    # demand from LD tranport, HD transport, and total transport, respectively
-    return spatial_disaggregation(state_h2_demand)
+            # Convert fuel offset to hydrogen demand (accounting for FCEV efficiency)
+            ld_h2_demand = gas_offset_gallons * \
+                GASOLINE_TO_H2 / LD_FCEV_TO_ICEV_efficiency
+            hd_h2_demand = diesel_offset_gallons * \
+                DIESEL_TO_H2 / HD_FCEV_TO_ICEV_efficiency
+            total_h2 = ld_h2_demand + hd_h2_demand
+
+            # Add results to the dictionary
+            state_h2_demand[state_fips] = [ld_h2_demand, hd_h2_demand, total_h2]
+
+        # Save the hydrogen demand by state to a DataFrame
+        state_h2_df = pd.DataFrame.from_dict(state_h2_demand, orient='index',
+                                            columns=['h2_from_gas', 'h2_from_diesel', 'total_h2'])
+
+        state_h2_df.reset_index(inplace=True)
+        state_h2_df.rename(columns={'index': 'fips'}, inplace=True)
+
+        # Add a year column to the DataFrame
+        state_h2_df['year'] = year
+
+        # Save results in the logs
+        h2_demand_by_state = logs_path / f'h2_demand_by_state_{year}.csv'
+        state_h2_df.to_csv(h2_demand_by_state, index=False)
+
+        # Call the spatial disaggregation function, passing in a dictionary mapping the state FIPS to a list with the hydrogen  
+        # demand from LD tranport, HD transport, and total transport, respectively
+        disaggregated_by_lz = disaggregate_by_load_zone(state_h2_demand, year)
+
+        output_load_zone_summary = pd.concat([output_load_zone_summary, disaggregated_by_lz], ignore_index=True)
+
+    output_load_zone_summary = output_load_zone_summary.sort_values(by=['load_zone', 'year']).reset_index(drop=True)
+
+    # Save the results for hydrogen demand by load zone
+    output_load_zone_summary.to_csv(h2_demand_by_load_zone, index=False)
+
+    return output_load_zone_summary
 
 
-def spatial_disaggregation(state_h2_demand):
-    print('\nSpatially disaggregating hydrogen demand...')
+def disaggregate_by_load_zone(state_h2_demand, year):
+    """
+    Disaggregates state-level hydrogen demand to load zones using VMT data.
+
+    Parameters:
+    - state_h2_demand: dictionary mapping state FIPS codes to [LD_demand, HD_demand, total_demand] in kg
+    - year: model year for which the disaggregation is occurring 
+
+    Returns:
+    - DataFrame with hydrogen demand broken down by load zone (with columns 'LD_h2_demand', 
+        'HD_h2_demand', 'total_h2_demand', and 'year')
+    """
 
     vmt_folder = base_path / 'input_files' / 'VMT_data'
     state_vmt_totals_path = base_path / 'input_files' / 'state_VMT_summary.csv'
@@ -163,6 +203,9 @@ def spatial_disaggregation(state_h2_demand):
     # Transform the load zone dictionary into a Data Frame 
     load_zone_summary_df = pd.DataFrame.from_dict(load_zone_summary, orient='index',
                                         columns=['LD_h2_demand', 'HD_h2_demand', 'total_h2_demand'])
+    
+    # Add a year column
+    load_zone_summary_df['year'] = year
 
     load_zone_summary_df.reset_index(inplace=True)
     load_zone_summary_df.rename(columns={'index': 'load_zone'}, inplace=True)
@@ -170,12 +213,7 @@ def spatial_disaggregation(state_h2_demand):
     # Remove Canadian/Mexican load zones that arise in the h2 demand df due to small errors in load zone shape boundaries
     load_zone_summary_df = load_zone_summary_df[~load_zone_summary_df['load_zone'].str.contains('CAN|MEX', case=False, na=False)]
 
-    # Save the results for hydrogen demand by load zone
-    load_zone_summary_df.to_csv(h2_demand_by_load_zone, index=False)
-
-    print('Saved results for hydrogen demand by load zone')
-
-    plot_output_path = base_path.parent / 'outputs' / 'transport' / 'demand_by_load_zone.png'
+    plot_output_path = base_path.parent / 'outputs' / 'transport' / f'{year}_demand_by_load_zone.png'
     plot_demand.plot_lz_demand(load_zone_summary_df, plot_output_path)
 
     return load_zone_summary_df

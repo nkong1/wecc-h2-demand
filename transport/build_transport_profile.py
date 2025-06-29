@@ -37,40 +37,46 @@ def disaggregate_annual_to_hourly(annual_total, weekly_profile, monthly_profile,
     
     Inputs:
     - annual_total: a value for an annual sum that will be disaggregated into hourly values
-    - weekly_profile: a numpy array with hourly values for normalized demand (length 168)
-    - monthly_profile: an numpy array with monthly values for demand (length 12)
+    - weekly_profile: a numpy array with hourly values for normalized demand (length 168). 
+        the weekly profile begins on Sunday at 12:00 am and ends on Saturaday at 11:00 pm
+    - monthly_profile: a numpy array with monthly values for demand (length 12), starting January
     - year: the model year 
     
     Returns:
-    - A DataFrame with 'datetime' and 'hourly_value' columns, showing the annual total disaggreagated
-    into hourly values based on the given weekly and monthly profiles
+    - A DataFrame with 'datetime' and 'hourly_value' columns, showing the annual total disaggregated
+      into hourly values based on the given weekly and monthly profiles
     """
-    # Create a data frame with all of the hours in the model year
+    # Create a date range covering every hour in the year
     hours = pd.date_range(start=f'{year}-01-01 00:00', end=f'{year}-12-31 23:00', freq='h')
     df = pd.DataFrame({'datetime': hours})
-    
-    # Extract time components efficiently
-    df['month'] = df['datetime'].dt.month
-    df['weekday'] = df['datetime'].dt.weekday 
-    df['hour'] = df['datetime'].dt.hour
-    df['day_of_week'] = df['datetime'].dt.day_name()  
 
-    # Normalize the monthly profile (the hourly one over a week is already normalized)
+    # Extract time components
+    df['month'] = df['datetime'].dt.month
+    df['weekday'] = df['datetime'].dt.weekday  # Monday = 0, Sunday = 6
+    df['hour'] = df['datetime'].dt.hour
+    df['day_of_week'] = df['datetime'].dt.day_name()
+
+    # Normalize the monthly profile
     monthly_profile_norm = monthly_profile / monthly_profile.sum()
-    
+
+    # Align weekly profile to start from the actual weekday of Jan 1st
+    jan1_weekday = pd.Timestamp(f'{year}-01-01').weekday()  # Monday=0, Sunday=6
+    shift = (jan1_weekday + 1) % 7  # Convert Monday=0 to Sunday=0 system
+    weekly_profile_aligned = np.roll(weekly_profile, -shift * 24)
+
+    # Assign profile shapes
     weekly_indices = df['weekday'] * 24 + df['hour']
-    df['weekly_shape'] = weekly_profile[weekly_indices]
+    df['weekly_shape'] = weekly_profile_aligned[weekly_indices]
     df['monthly_shape'] = monthly_profile_norm[df['month'] - 1]
-    
-    # Disaggregate the annual total
+
+    # Disaggregate
     df['combined_shape'] = df['weekly_shape'] * df['monthly_shape']
     df['hourly_value'] = df['combined_shape'] * (annual_total / df['combined_shape'].sum())
-    
-    # Return a DataFrame with the final result
+
     return df[['datetime', 'day_of_week', 'hourly_value']]
 
 
-def build_profile(lz_summary_df, year):
+def build_profile(lz_summary_df):
     """
     For each load zone, disaggregates LD and HD annual hydrogen demand into hourly profiles,
     saves them to CSVs, and plots the profile for the highest demand zone. 
@@ -80,23 +86,32 @@ def build_profile(lz_summary_df, year):
 
     print('\nBuilding transport demand profiles...')
 
-    # Read all input files once at the beginning
+    # Read all input files 
     ld_fueling_df = pd.read_csv(ld_weekly_profile_path)
     hd_fueling_df = pd.read_csv(hd_weekly_profile_path)
     monthly_fueling_df = pd.read_excel(seasonal_profile_path, header=1)
     
-    # Extract numpy arrays once
+    # Extract numpy arrays 
     ld_fueling_hourly = ld_fueling_df['normalized_h2_demand'].values
     hd_fueling_hourly = hd_fueling_df['normalized_h2_demand'].values
     ld_fueling_monthly = monthly_fueling_df['Gasoline'].values
     hd_fueling_monthly = monthly_fueling_df['Diesel'].values
 
-    # Find load zone with highest demand
-    highest_demand_lz = lz_summary_df.loc[lz_summary_df['total_h2_demand'].idxmax(), 'load_zone']
+    # Find load zone and year combination with highest demand
+    row = lz_summary_df.loc[lz_summary_df['total_h2_demand'].idxmax()]
+    highest_demand_lz = str(row['load_zone'])
+    highest_demand_year = int(row['year'])
 
-    # Process each load zone
+    # Get the first load_zone in the DataFrame
+    previous_load_zone = lz_summary_df.iloc[0].loc['load_zone']
+    
+    profile_across_years = pd.DataFrame()
+
+    # Process each load zone/year combination
     for _, lz_row in lz_summary_df.iterrows():
         load_zone = lz_row['load_zone']
+        year = lz_row['year']
+
         ld_h2_demand = lz_row['LD_h2_demand']
         hd_h2_demand = lz_row['HD_h2_demand']
 
@@ -104,7 +119,7 @@ def build_profile(lz_summary_df, year):
         ld_profile = disaggregate_annual_to_hourly(ld_h2_demand, ld_fueling_hourly, ld_fueling_monthly, year)
         hd_profile = disaggregate_annual_to_hourly(hd_h2_demand, hd_fueling_hourly, hd_fueling_monthly, year)
 
-        # Combine profiles efficiently
+        # Combine profiles 
         merged = pd.DataFrame({
             'datetime': ld_profile['datetime'],
             'day_of_week': ld_profile['day_of_week'],
@@ -112,15 +127,29 @@ def build_profile(lz_summary_df, year):
             'hd_h2_demand': hd_profile['hourly_value']
         })
         merged['total_h2_demand'] = merged['ld_h2_demand'] + merged['hd_h2_demand']
+        merged['year'] = year
 
-        # Save profile
-        output_path = output_profiles_path / f'{load_zone}_profile.csv'
-        merged.to_csv(output_path, index=False)
+        profile_across_years = pd.concat([profile_across_years, merged], ignore_index=True)
 
-        # Plot for highest demand zone
-        if load_zone == highest_demand_lz:
+        # Save results when moving on to a new load zone
+        if load_zone != previous_load_zone:
+            output_path = output_profiles_path / f'{previous_load_zone}_profile.csv'
+            profile_across_years = profile_across_years.sort_values(by='datetime').reset_index(drop=True)
+            profile_across_years.to_csv(output_path, index=False)
+
+            # Update for next iteration
+            profile_across_years = pd.DataFrame()
+            previous_load_zone = load_zone
+
+        # Plot for highest demand zone/year combination
+        if load_zone == highest_demand_lz and year == highest_demand_year:
             plot_output_path = base_path.parent / 'outputs' / 'transport' / f'{load_zone}_demand_profile.png'
             plot_demand_profile(merged, load_zone, plot_output_path)
+
+    # Save the profile from the last load zone
+    output_path = output_profiles_path / f'{load_zone}_profile.csv'
+    profile_across_years = profile_across_years.sort_values(by='datetime').reset_index(drop=True)
+    profile_across_years.to_csv(output_path, index=False)
 
     print(f'\nProfiles saved to: {output_profiles_path}')
 
@@ -156,4 +185,4 @@ def plot_demand_profile(profile_df, lz_name, plot_output_path):
     plt.tight_layout()
     plt.savefig(plot_output_path, dpi=300)
     plt.close(fig)  # Close figure to free memory
-    print(f"{lz_name} profile graph saved to: {plot_output_path}")
+    print(f"\n{lz_name} profile graph saved to: {plot_output_path}")

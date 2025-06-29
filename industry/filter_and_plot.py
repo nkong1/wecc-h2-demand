@@ -12,15 +12,24 @@ import pandas as pd
 from pathlib import Path
 from industry.sector_naics_info import * 
 
-# File paths
 base_path  = Path(__file__).parent
-output_path_map = base_path.parent / 'outputs' / 'industry' / 'demand_by_facility.png'
 
 # Import load zones file
 load_zones = gp.read_file(base_path / 'inputs' / 'load_zones' / 'load_zones.shp')
 
-def filter(facility_df, to_plot):
-    print('\nFiltering out facilities outside WECC boundaries...')
+def filter(facility_df):
+    """
+    Filter out any facilities that are not located within WECC boundaries. 
+
+    Parameters:
+    - facility_df: a DataFrame containing latitute and longitude values for each facility, among 
+        other data, including total hydrogen demand
+
+    Returns:
+    - A tuple containing:
+    1) A DataFrame with facility-level data for facilities located in the WECC
+    2) A DataFrame displaying the total hydrogen demand across all facilities in each WECC load zone
+    """
 
     # Create a df mapping each sector name to a naics code
     rows = [(sector, code) for sector, codes in sector_by_naics.items() for code in codes]
@@ -30,7 +39,7 @@ def filter(facility_df, to_plot):
     results_by_facility_df = facility_df.merge(sectors_df, on='naics', how='left')
 
     # Filter out any facilities with zero H2 demand 
-    results_by_facility_df = results_by_facility_df[results_by_facility_df['h2_demand_kg'] > 0].copy()
+    results_by_facility_df = results_by_facility_df[results_by_facility_df['total_h2_demand'] > 0].copy()
 
     # Convert to GeoDataFrame
     geometry = gp.points_from_xy(results_by_facility_df['longitude'], results_by_facility_df['latitude'])
@@ -54,20 +63,25 @@ def filter(facility_df, to_plot):
 
     # Create summary grouped by LOAD_AREA
     load_zone_summary = facilities_in_zones.groupby('LOAD_AREA', as_index=False)[
-        ['h2_demand_kg']
+        ['total_h2_demand']
     ].sum()
 
     load_zone_summary.rename(columns={'LOAD_AREA': 'load_zone'}, inplace=True)
 
-    if to_plot:
-        plot(facilities_in_zones)
-
     return facilities_in_zones, load_zone_summary
 
 
-def plot(filtered_df):
-    print('\nPlotting industry hydrogen demand by sector and facility...')
+def plot(filtered_df, year):
+    """
+    Plots the hydrogen demand from each facility onto a map of the WECC and saves the plot
+    to the industry outputs folder.
+    
+    Parameters:
+    - filtered_df: A DataFrame with facility-level data for facilities located in the WECC
+    - year: the model year (for purposes of labeling)
 
+    Returns: None
+    """
     #  Plotting setup 
     sectors = filtered_df['sector'].unique()
 
@@ -76,10 +90,10 @@ def plot(filtered_df):
     filtered_df['color'] = filtered_df['sector'].map(color_map)
 
     # Normalize marker sizes
-    max_h2_demand = filtered_df['h2_demand_kg'].max()
+    max_h2_demand = filtered_df['total_h2_demand'].max()
     max_size = 900  # Adjust as needed
     filtered_df['marker_size'] = (
-        (filtered_df['h2_demand_kg'] / max_h2_demand * max_size).clip(lower=1)
+        (filtered_df['total_h2_demand'] / max_h2_demand * max_size).clip(lower=1)
         if max_h2_demand > 0 else 10
     )
 
@@ -125,7 +139,7 @@ def plot(filtered_df):
 
     # Size legend
     h2_legend_vals = [1e6, 1e7, 5e7]
-    actual_max = (filtered_df['h2_demand_kg']).max()
+    actual_max = (filtered_df['total_h2_demand']).max()
     size_handles = []
 
     for val in h2_legend_vals:
@@ -142,7 +156,7 @@ def plot(filtered_df):
                             fontsize='small', title_fontsize='medium', framealpha=0.9)
             
     # Total hydrogen demand label
-    total_h2_kg = filtered_df['h2_demand_kg'].sum()
+    total_h2_kg = filtered_df['total_h2_demand'].sum()
     total_h2_million_kg = total_h2_kg / 1e6
 
     ax.text(
@@ -155,7 +169,7 @@ def plot(filtered_df):
 
      # Total hydrogen demand label for each sector
     sector_totals = (
-        filtered_df.groupby('sector')['h2_demand_kg']
+        filtered_df.groupby('sector')['total_h2_demand']
         .sum()
         .sort_values(ascending=False)
     )
@@ -180,5 +194,5 @@ def plot(filtered_df):
     ax.set_aspect('equal', adjustable='box')
     plt.tight_layout()
 
+    output_path_map = base_path.parent / 'outputs' / 'industry' / f'{year}_demand_by_facility.png'
     plt.savefig(output_path_map, dpi=300, bbox_inches='tight')
-    print(f"Map saved to: {output_path_map}")
