@@ -38,7 +38,8 @@ fuel_emissions_dict = fuel_emissions_df.set_index('Fuel Type')['kg CO2 per mmBtu
 # Create a dictionary mapping each fuel type to a broader fuel category for which we have fuel consumption projections
 fuel_category_dict = fuel_emissions_df.set_index('Fuel Type')['Category'].to_dict()
 
-# Load a DataFrame containing projected fuel consumption from 2023 to 2050 for each fuel category
+# Load a DataFrame containing industrial projected fuel consumption from 2023 to 2050 for each fuel category
+# This data is taken from the EIA Energy Outlook 2050 Reference Case Table 2
 fuel_use_by_category_df = pd.read_csv('industry/inputs/Industry_Fuel_Consumption_Projections.csv', header=4)
 
 # Map other names of fuels to names that can be found in the fuel_emissions_dict

@@ -75,7 +75,7 @@ def build_profile(lz_summary_df):
         h2_demand = lz_row['total_h2_demand']
 
         # Generate the profile for one year
-        one_year_profile = disaggregate_annual_to_hourly(h2_demand, weekly_profile_array, np.full(12, 1), year)
+        one_year_profile = disaggregate_annual_to_hourly(h2_demand, weekly_profile_array, np.full(53, 1), year)
         one_year_profile = one_year_profile.rename(columns={'hourly_value': 'total_h2_demand'})
 
         # Join to make a combined DataFrame with the profiles across all years within a load zone

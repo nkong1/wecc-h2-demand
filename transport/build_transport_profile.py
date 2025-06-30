@@ -18,60 +18,61 @@ https://www1.eere.energy.gov/hydrogenandfuelcells/pdfs/nexant_h2a.pdf
 
 The same profile is currently being used for heavy-duty transport.
 
-The seasonal profiles, which contain values for monthly US demand of gasoline and diesel, are derived
-from EIA data. 2023 values for weekly US demand of gasoline and diesel are averaged across all weeks that
-begin in each month to obtain the monthly profile values.
+The weekly profiles, which contain values for 4-Week Avg U.S. Product Supplied of each fuel type, are taken
+directly from EIA data. Values every week from 1/5/24 to 1/3/25 are used for weekly profile, spanning a total of 53 weeks.
 
-https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=pet&s=wgfupus2&f=4
-https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=WDIUPUS2&f=4
+https://www.eia.gov/dnav/pet/hist/leafhandler.ashx?n=pet&s=wgfupus2&f=4
+https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=pet&s=wdiupus2&f=4
 """
 
-ld_weekly_profile_path = base_path / 'input_files' / 'LD_fueling_hourly_normalized.csv'
-hd_weekly_profile_path = base_path / 'input_files' / 'HD_fueling_hourly_normalized.csv'
-seasonal_profile_path = base_path / 'input_files' / 'monthly_profiles.xlsx'
+ld_hourly_profile_path = base_path / 'input_files' / 'LD_fueling_hourly_normalized.csv'
+hd_hourly_profile_path = base_path / 'input_files' / 'HD_fueling_hourly_normalized.csv'
+
+ld_weekly_profile_path = base_path / 'input_files' / '4-Week_Avg_Gasoline_Profiles.csv'
+hd_weekly_profile_path = base_path / 'input_files' / '4-Week_Avg_Diesel_Profiles.csv'
 
 
-def disaggregate_annual_to_hourly(annual_total, weekly_profile, monthly_profile, year):
+def disaggregate_annual_to_hourly(annual_total, hourly_week_profile, weekly_year_profile, year):
     """
-    Disaggregates an annual total into hourly values based on a weekly and monthly profile.
-    
+    Disaggregates an annual total into hourly values using an hourly week profile spanning a week
+    (starting Sunday) and a weekly profile spanning a year (53 values)
+
     Inputs:
-    - annual_total: a value for an annual sum that will be disaggregated into hourly values
-    - weekly_profile: a numpy array with hourly values for demand (length 168). 
-        the weekly profile begins on Sunday at 12:00 am and ends on Saturaday at 11:00 pm
-    - monthly_profile: a numpy array with monthly values for demand (length 12), starting January
-    - year: the model year 
-    
+    - annual_total: total annual value to be disaggregated
+    - hourly_week_profile: numpy array of length 168, starting with Sunday 00:00
+    - weekly_year_profile: numpy array of length 53, one value per week of the year
+    - year: the calendar year to generate hourly data for
+
     Returns:
-    - A DataFrame with 'datetime' and 'hourly_value' columns, showing the annual total disaggregated
-      into hourly values based on the given weekly and monthly profiles
+    - a DataFrame with 'datetime', 'day_of_week', and 'hourly_value' columns
     """
-    # Create a date range covering every hour in the year
+    # Create hourly timestamps for the year
     hours = pd.date_range(start=f'{year}-01-01 00:00', end=f'{year}-12-31 23:00', freq='h')
     df = pd.DataFrame({'datetime': hours})
 
-    # Extract time components
-    df['month'] = df['datetime'].dt.month
-    df['weekday'] = df['datetime'].dt.weekday  # Monday = 0, Sunday = 6
-    df['hour'] = df['datetime'].dt.hour
+    # Compute week index (week 0 = Jan 1–7, etc.)
+    days_since_start = (df['datetime'] - pd.Timestamp(f'{year}-01-01')).dt.days
+    df['week_index'] = np.clip(days_since_start // 7, 0, 52)
+
+    # Compute hour of week index (Sunday 00:00 = 0, ..., Saturday 23:00 = 167)
+    weekday = df['datetime'].dt.weekday  # Monday=0, Sunday=6
+    sunday_start_weekday = (weekday + 1) % 7  # Sunday=0, Monday=1, ..., Saturday=6
+    hour = df['datetime'].dt.hour
+    df['hour_of_week'] = sunday_start_weekday * 24 + hour
+
+    # Add day_of_week string column
     df['day_of_week'] = df['datetime'].dt.day_name()
 
-    # Normalize the profiles
-    monthly_profile_norm = monthly_profile / monthly_profile.sum()
-    weekly_profile_norm = weekly_profile / weekly_profile.sum()
+    # Normalize profiles
+    hourly_week_profile_norm = hourly_week_profile / hourly_week_profile.sum()
+    weekly_year_profile_norm = weekly_year_profile / weekly_year_profile.sum()
 
-    # Align weekly profile to start from the actual weekday of Jan 1st
-    jan1_weekday = pd.Timestamp(f'{year}-01-01').weekday()  # Monday=0, Sunday=6
-    shift = (jan1_weekday + 1) % 7  # Convert Monday=0 to Sunday=0 system
-    weekly_profile_aligned = np.roll(weekly_profile_norm, -shift * 24)
+    # Vectorized lookup
+    df['hourly_shape'] = hourly_week_profile_norm[df['hour_of_week'].values]
+    df['weekly_shape'] = weekly_year_profile_norm[df['week_index'].values]
 
-    # Assign profile shapes
-    weekly_indices = df['weekday'] * 24 + df['hour']
-    df['weekly_shape'] = weekly_profile_aligned[weekly_indices]
-    df['monthly_shape'] = monthly_profile_norm[df['month'] - 1]
-
-    # Disaggregate
-    df['combined_shape'] = df['weekly_shape'] * df['monthly_shape']
+    # Combine shapes and scale
+    df['combined_shape'] = df['hourly_shape'] * df['weekly_shape']
     df['hourly_value'] = df['combined_shape'] * (annual_total / df['combined_shape'].sum())
 
     return df[['datetime', 'day_of_week', 'hourly_value']]
@@ -88,15 +89,17 @@ def build_profile(lz_summary_df):
     print('\nBuilding transport demand profiles...')
 
     # Read all input files 
-    ld_fueling_df = pd.read_csv(ld_weekly_profile_path)
-    hd_fueling_df = pd.read_csv(hd_weekly_profile_path)
-    monthly_fueling_df = pd.read_excel(seasonal_profile_path, header=1)
-    
+    ld_hourly_fueling_df = pd.read_csv(ld_hourly_profile_path)
+    hd_hourly_fueling_df = pd.read_csv(hd_hourly_profile_path)
+
+    ld_weekly_fueling_df = pd.read_csv(ld_weekly_profile_path, header=4)
+    hd_weekly_fueling_df = pd.read_csv(hd_weekly_profile_path, header=4)
+
     # Extract numpy arrays 
-    ld_fueling_hourly = ld_fueling_df['normalized_h2_demand'].values
-    hd_fueling_hourly = hd_fueling_df['normalized_h2_demand'].values
-    ld_fueling_monthly = monthly_fueling_df['Gasoline'].values
-    hd_fueling_monthly = monthly_fueling_df['Diesel'].values
+    ld_fueling_hourly = ld_hourly_fueling_df['normalized_h2_demand'].values
+    hd_fueling_hourly = hd_hourly_fueling_df['normalized_h2_demand'].values
+    ld_fueling_weekly = ld_weekly_fueling_df['4-Week Avg U.S. Product Supplied of Finished Motor Gasoline Thousand Barrels per Day'].values
+    hd_fueling_weekly = hd_weekly_fueling_df['4-Week Avg U.S. Product Supplied of Distillate Fuel Oil Thousand Barrels per Day'].values
 
     # Find load zone and year combination with highest demand
     row = lz_summary_df.loc[lz_summary_df['total_h2_demand'].idxmax()]
@@ -127,8 +130,8 @@ def build_profile(lz_summary_df):
         hd_h2_demand = lz_row['HD_h2_demand']
 
         # Generate profiles for both LD and HD
-        ld_profile = disaggregate_annual_to_hourly(ld_h2_demand, ld_fueling_hourly, ld_fueling_monthly, year)
-        hd_profile = disaggregate_annual_to_hourly(hd_h2_demand, hd_fueling_hourly, hd_fueling_monthly, year)
+        ld_profile = disaggregate_annual_to_hourly(ld_h2_demand, ld_fueling_hourly, ld_fueling_weekly, year)
+        hd_profile = disaggregate_annual_to_hourly(hd_h2_demand, hd_fueling_hourly, hd_fueling_weekly, year)
 
         # Combine profiles 
         merged = pd.DataFrame({

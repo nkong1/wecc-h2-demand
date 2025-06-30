@@ -30,7 +30,7 @@ def model_transport_sector():
     """
 
     # ============================================
-    # Choose the percentage of FCEV mark penetration (as a percentage from 0 to 100)
+    # Choose the LD and HD FCEV penetration among projected gasoline and diesel vehicle stock (as a percentage from 0 to 100)
     # The percentage of FCEV penetration is assumed to be the same as percentage of fuel decarbonization
     LD_FCEV_penetration = [5, 10, 15]
     HD_FCEV_penetration = [10, 20, 30]
