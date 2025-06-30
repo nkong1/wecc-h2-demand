@@ -79,7 +79,6 @@ def model_industry_demand(sectors, pct_decarbonization, years, scale_demand, to_
         for sector, pct in zip(sectors, pct_decarbonization[index])
         for code in sector_by_naics[sector] }   
 
-
         year_result = model_one_year(naics_pct_decarbonize, year, scale_demand, to_plot)
         load_zone_summary = pd.concat([load_zone_summary, year_result])
 

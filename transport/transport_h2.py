@@ -186,7 +186,7 @@ def disaggregate_by_load_zone(state_h2_demand, year):
         state_df['total_h2_demand'] = state_df['LD_h2_demand'] + state_df['HD_h2_demand']
 
         # Save the state-level hydrogen demand summary
-        output_path = state_breakdown / f'{file_name.removesuffix('.csv')}_summary.csv'
+        output_path = state_breakdown / f'{year}_{file_name.removesuffix('.csv')}_summary.csv'
         state_df.to_csv(output_path, index = False)
 
         # Add the h2 demand data to the load zone dictionary

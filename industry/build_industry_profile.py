@@ -62,15 +62,6 @@ def build_profile(lz_summary_df):
         load_zone = lz_row['load_zone']
         year = lz_row['year']
 
-        h2_demand = lz_row['total_h2_demand']
-
-        # Generate the profile for one year
-        one_year_profile = disaggregate_annual_to_hourly(h2_demand, weekly_profile_array, np.full(12, 1), year)
-        one_year_profile = one_year_profile.rename(columns={'hourly_value': 'total_h2_demand'})
-
-        # Join to make a combined DataFrame with the profiles across all years within a load zone
-        profile_across_years = pd.concat([profile_across_years, one_year_profile], ignore_index=True)
-
         # Save results when moving on to a new load zone
         if load_zone != previous_load_zone:
             output_path = output_profiles_path / f'{previous_load_zone}_profile.csv'
@@ -80,6 +71,15 @@ def build_profile(lz_summary_df):
             # Update for next iteration
             profile_across_years = pd.DataFrame()
             previous_load_zone = load_zone
+
+        h2_demand = lz_row['total_h2_demand']
+
+        # Generate the profile for one year
+        one_year_profile = disaggregate_annual_to_hourly(h2_demand, weekly_profile_array, np.full(12, 1), year)
+        one_year_profile = one_year_profile.rename(columns={'hourly_value': 'total_h2_demand'})
+
+        # Join to make a combined DataFrame with the profiles across all years within a load zone
+        profile_across_years = pd.concat([profile_across_years, one_year_profile], ignore_index=True)
 
         # Plot for highest demand zone/year combination
         if load_zone == highest_demand_lz and year == highest_demand_year:

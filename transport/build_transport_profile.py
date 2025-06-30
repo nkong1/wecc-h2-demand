@@ -37,7 +37,7 @@ def disaggregate_annual_to_hourly(annual_total, weekly_profile, monthly_profile,
     
     Inputs:
     - annual_total: a value for an annual sum that will be disaggregated into hourly values
-    - weekly_profile: a numpy array with hourly values for normalized demand (length 168). 
+    - weekly_profile: a numpy array with hourly values for demand (length 168). 
         the weekly profile begins on Sunday at 12:00 am and ends on Saturaday at 11:00 pm
     - monthly_profile: a numpy array with monthly values for demand (length 12), starting January
     - year: the model year 
@@ -56,13 +56,14 @@ def disaggregate_annual_to_hourly(annual_total, weekly_profile, monthly_profile,
     df['hour'] = df['datetime'].dt.hour
     df['day_of_week'] = df['datetime'].dt.day_name()
 
-    # Normalize the monthly profile
+    # Normalize the profiles
     monthly_profile_norm = monthly_profile / monthly_profile.sum()
+    weekly_profile_norm = weekly_profile / weekly_profile.sum()
 
     # Align weekly profile to start from the actual weekday of Jan 1st
     jan1_weekday = pd.Timestamp(f'{year}-01-01').weekday()  # Monday=0, Sunday=6
     shift = (jan1_weekday + 1) % 7  # Convert Monday=0 to Sunday=0 system
-    weekly_profile_aligned = np.roll(weekly_profile, -shift * 24)
+    weekly_profile_aligned = np.roll(weekly_profile_norm, -shift * 24)
 
     # Assign profile shapes
     weekly_indices = df['weekday'] * 24 + df['hour']
@@ -112,6 +113,16 @@ def build_profile(lz_summary_df):
         load_zone = lz_row['load_zone']
         year = lz_row['year']
 
+        # Save results when moving on to a new load zone
+        if load_zone != previous_load_zone:
+            output_path = output_profiles_path / f'{previous_load_zone}_profile.csv'
+            profile_across_years = profile_across_years.sort_values(by='datetime').reset_index(drop=True)
+            profile_across_years.to_csv(output_path, index=False)
+
+            # Update for next iteration
+            profile_across_years = pd.DataFrame()
+            previous_load_zone = load_zone
+
         ld_h2_demand = lz_row['LD_h2_demand']
         hd_h2_demand = lz_row['HD_h2_demand']
 
@@ -130,16 +141,6 @@ def build_profile(lz_summary_df):
         merged['year'] = year
 
         profile_across_years = pd.concat([profile_across_years, merged], ignore_index=True)
-
-        # Save results when moving on to a new load zone
-        if load_zone != previous_load_zone:
-            output_path = output_profiles_path / f'{previous_load_zone}_profile.csv'
-            profile_across_years = profile_across_years.sort_values(by='datetime').reset_index(drop=True)
-            profile_across_years.to_csv(output_path, index=False)
-
-            # Update for next iteration
-            profile_across_years = pd.DataFrame()
-            previous_load_zone = load_zone
 
         # Plot for highest demand zone/year combination
         if load_zone == highest_demand_lz and year == highest_demand_year:
