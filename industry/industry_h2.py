@@ -80,7 +80,12 @@ def model_industry_demand(sectors, pct_decarbonization, years, scale_demand, to_
         for sector, pct in zip(sectors, pct_decarbonization[index])
         for code in sector_by_naics[sector] }   
 
-        year_result = model_one_year(naics_pct_decarbonize, year, scale_demand, to_plot)
+        naics_scale_demand = {
+        code: pct
+        for sector, pct in zip(sectors, scale_demand)
+        for code in sector_by_naics[sector] }   
+
+        year_result = model_one_year(naics_pct_decarbonize, naics_scale_demand, year, to_plot)
         load_zone_summary = pd.concat([load_zone_summary, year_result])
 
         index += 1
@@ -91,14 +96,14 @@ def model_industry_demand(sectors, pct_decarbonization, years, scale_demand, to_
     return load_zone_summary
 
 
-def model_one_year(decarb_by_sector, year, scale_demand, to_plot):
+def model_one_year(decarb_by_sector, naics_scale_demand, year, to_plot):
     """
     Calculates hydrogen demand for a single model year.
 
     Parameters:
     - decarb_by_sector: Dictionary mapping from NAICS code to percent decarbonization via hydrogen (e.g., {32411: 75}).
+    - naics_scale_demand: dictionary mapping from NAICS code to an industry-wide scaling factor for fuel consumption 
     - year: The model year for which hydrogen demand is being modeled.
-    - scale_demand: Factor used to scale projected fuel demand 
     - to_plot: If True, generates a map of facilities in the WECC and their hydrogen demand.
 
     Returns:
@@ -193,7 +198,7 @@ def model_one_year(decarb_by_sector, year, scale_demand, to_plot):
                         unit_fuel_demand = unit_demand_mmBtu / len(unit_fuels) if unit_demand_mmBtu != 0 else 0
                         fuel_category = fuel_category_dict[fuel]
                         projected_fuel_growth =  fuel_growth_by_category_dict[fuel_category]
-                        projected_fuel_demand = (1 + projected_fuel_growth) * unit_fuel_demand * scale_demand
+                        projected_fuel_demand = (1 + projected_fuel_growth) * unit_fuel_demand * naics_scale_demand[naics]
 
                         breakdown_by_fuel.append({'facility_id': facility_id, 'facility_name': facility_name, 'unit_name': unit_name, 'fuel': fuel, \
                                     'naics': naics, 'latitude': latitude, 'longitude': longitude, \

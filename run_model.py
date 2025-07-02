@@ -56,12 +56,12 @@ def model_industry_sector():
     # ============================================
     # Adjust the percentage of fuel decarbonization across each sector (between 0 and 100) for each model year
     # A value of 0 means that the corresponding sector will not be modeled
-    pct_decarbonization = [[10] * 6, 
-                           [30] * 6, 
-                           [50] * 6]
+    pct_decarbonization = [[10, 15, 15, 15, 20, 20], 
+                           [20, 30, 30, 30, 40, 40], 
+                           [40, 60, 60, 60, 80, 80]]
     
-    # Scale the hydrogen demand across all facilities by a factor
-    scale_demand = 1
+    # Scale the hydrogen demand across all facilities witin each industry by a factor
+    scale_demand = [5, 5, 5, 5, 5, 5]
     # ============================================
 
     # Call the industry module
