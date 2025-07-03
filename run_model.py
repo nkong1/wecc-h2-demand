@@ -1,10 +1,11 @@
 """
 Use this file to run the WECC hydrogen demand model and adjust inputs. 
 
-This model generates hydrogen demand profiles from the transport and industry end-use sectors at an hourly resolution over
-the course of one or more model years. These profiles are generated for 47 load zones in the SWITCH-WECC model (excluding 2 
-load zones in Canada and one in Mexico). The sectors are broken down by vehicle type (light-duty/heavy-duty) and industry.
-The percentage of fuel decarbonization across LD transport, HD transport, and industry can be modified for each model year.
+This model generates hydrogen demand profiles from the on-road transport and industry end-use sectors at an hourly resolution 
+over one or more model years. These profiles are generated for 47 load zones in the SWITCH-WECC model (excluding 2 load zones 
+in Canada and one in Mexico). The sectors are broken down by vehicle type (light-duty/heavy-duty) and industry. The percentage 
+of fuel decarbonization across LD on-road transport, HD on-road transport, and industry can be modified for each model year.
+LD on-road transport is defined as gasoline vehicles, and HD on-road transport is defined as diesel-powered vehicles.
 """
 
 from pathlib import Path
@@ -60,8 +61,8 @@ def model_industry_sector():
                            [20, 30, 30, 30, 40, 40], 
                            [40, 60, 60, 60, 80, 80]]
     
-    # Scale the hydrogen demand across all facilities witin each industry by a factor
-    scale_demand = [5, 5, 5, 5, 5, 5]
+    # Scale the hydrogen demand across all facilities within each industry by a factor
+    scale_demand = [5, 3, 5, 5, 1, 5]
     # ============================================
 
     # Call the industry module
