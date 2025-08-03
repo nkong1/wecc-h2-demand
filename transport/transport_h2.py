@@ -10,10 +10,12 @@ from pathlib import Path
 import shutil
 from transport import plot_demand
 from transport.param_projections import get_transport_parameters
+import geopandas as gpd
 
 # Input file paths
 base_path  = Path(__file__).parent
 fuel_data_path = base_path / 'input_files' / 'transport_gas_and_diesel_usage_by_state.xlsx'
+wecc_vmt_grid_path = base_path / 'input_files' / 'vmt_grid_wecc.gpkg'
 
 # Create a new logs path
 logs_path = base_path / 'logs'
@@ -28,14 +30,14 @@ state_breakdown.mkdir()
 h2_demand_by_load_zone = base_path.parent / 'outputs' / 'transport' / 'demand_by_load_zone.csv'
 
 
-def model_transport_demand(LD_penetration_by_year, HD_penetration_by_year, years):
+def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years):
     """
     Estimates hydrogen demand from LD and HD transport by state, and then calls the disaggregate_by_load_zone
     function to disaggregate it by load zone.
 
     Parameters:
-    - LD_penetration_by_year: list of FCEV penetration percentages for LD transport for each model year
-    - HD_penetration_by_year: list of FCEV penetration percentages for HD transport for each model year
+    - ld_penetration_by_year: list of FCEV penetration percentages for LD transport for each model year
+    - hd_penetration_by_year: list of FCEV penetration percentages for HD transport for each model year
     - years: list of model years corresponding to the above market penetration rates
 
     Returns:
@@ -62,8 +64,8 @@ def model_transport_demand(LD_penetration_by_year, HD_penetration_by_year, years
         assumptions = get_transport_parameters(year)
 
         # Convert percentages to decimals
-        LD_penetration = LD_penetration_by_year[index] / 100
-        HD_penetration = HD_penetration_by_year[index] / 100
+        ld_penetration = ld_penetration_by_year[index] / 100
+        hd_penetration = hd_penetration_by_year[index] / 100
 
         # Increment the index for the next model year
         index += 1
@@ -94,8 +96,8 @@ def model_transport_demand(LD_penetration_by_year, HD_penetration_by_year, years
             diesel_gallons = ref_diesel_gallons * (1 + rel_change_HD_fuel_consumption)
 
             # Calculate fuel consumption offset using FCEV penetrations
-            gas_offset_gallons = gas_gallons * LD_penetration
-            diesel_offset_gallons = diesel_gallons * HD_penetration
+            gas_offset_gallons = gas_gallons * ld_penetration
+            diesel_offset_gallons = diesel_gallons * hd_penetration
 
             # Convert fuel offset to hydrogen demand (accounting for FCEV efficiency)
             ld_h2_demand = gas_offset_gallons * \
@@ -124,6 +126,13 @@ def model_transport_demand(LD_penetration_by_year, HD_penetration_by_year, years
         # Call the spatial disaggregation function, passing in a dictionary mapping the state FIPS to a list with the hydrogen  
         # demand from LD tranport, HD transport, and total transport, respectively
         disaggregated_by_lz = disaggregate_by_load_zone(state_h2_demand, year)
+
+        # Calculate total LD and HD hydrogen demand in the WECC and call build_hydrogen_demand_grid() to 
+        # create outputs for the spatial distrubtion of hydrogen demand at a high 5x5km spatial resolution
+        total_ld_h2_demand = disaggregated_by_lz['LD_h2_demand'].sum()
+        total_hd_h2_demand = disaggregated_by_lz['HD_h2_demand'].sum()
+
+        build_hydrogen_demand_grid(total_ld_h2_demand, total_hd_h2_demand, year)
 
         output_load_zone_summary = pd.concat([output_load_zone_summary, disaggregated_by_lz], ignore_index=True)
 
@@ -219,3 +228,26 @@ def disaggregate_by_load_zone(state_h2_demand, year):
     return load_zone_summary_df
 
 
+def build_hydrogen_demand_grid(wecc_ld_h2_demand, wecc_hd_h2_demand, year):
+    """
+    Estimates hydrogen demand in the WECC at a high 5x5km spatial resolution. 
+
+    Inputs:
+    - wecc_ld_h2_demand: the total LD hydrogen demand in the WECC, calculated from the previous functions
+    - wecc_hd_h2_demand: the total HD hydrogen demand in the WECC, calculated from the previous functions
+    - year: the model year
+
+    Outputs:
+    - Saves a GeoPackage containing the estimated hydrogen demand from LD and HD on-road transport in 5x5km-
+    sized square geometries. These squares constitute the entire WECC. 
+    """
+    wecc_vmt_grid = gpd.read_file(wecc_vmt_grid_path).copy()
+
+    wecc_ld_vmt_total = wecc_vmt_grid['LD_VMT'].sum()
+    wecc_hd_vmt_total = wecc_vmt_grid['HD_VMT'].sum()
+
+    wecc_vmt_grid['ld_h2_demand'] = wecc_ld_h2_demand * wecc_vmt_grid['LD_VMT'] / wecc_ld_vmt_total
+    wecc_vmt_grid['hd_h2_demand'] = wecc_hd_h2_demand * wecc_vmt_grid['HD_VMT'] / wecc_hd_vmt_total
+
+    vmt_grid_output_path = base_path.parent / 'outputs' / 'transport' / f'{year}_wecc_h2_demand_5km_resolution.gpkg'
+    wecc_vmt_grid.to_file(vmt_grid_output_path, driver='GPKG')
