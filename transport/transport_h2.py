@@ -14,7 +14,9 @@ import geopandas as gpd
 
 # Input file paths
 base_path  = Path(__file__).parent
-fuel_data_path = base_path / 'input_files' / 'transport_gas_and_diesel_usage_by_state.xlsx'
+
+# the fuel data below is taken from https://www.eia.gov/state/seds/data.php?incfile=/state/seds/sep_fuel/html/fuel_mg.html
+fuel_data_path = base_path / 'input_files' / 'eia_transport_gas_and_diesel_usage_by_state_2023.xlsx'
 wecc_vmt_grid_path = base_path / 'input_files' / 'vmt_grid_wecc.gpkg'
 
 # Create a new logs path
@@ -77,6 +79,9 @@ def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years
         rel_change_LD_fuel_consumption = assumptions[2]
         rel_change_HD_fuel_consumption = assumptions[3]
 
+        DIESEL_FROM_ONROAD_TRANSPORT = assumptions[4]
+        GASOLINE_FROM_ONROAD_TRANSPORT = assumptions[5]
+
         # Create a dictionary to store the hydrogen demand for each state
         # Structure: {StateFips: [LD_demand, HD_demand, total_demand]}
         state_h2_demand = {}
@@ -87,9 +92,13 @@ def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years
             gas_consumption_k_barrels = row.iloc[2]    # Thousand barrels
             diesel_consumption_k_barrels = row.iloc[3]   # Thousand barrels
 
-            # Convert 2023 gas/diesel fuel consumption to gallons
+            # Convert 2023 gas/diesel fuel consumption to gallons 
             ref_gas_gallons = gas_consumption_k_barrels * 1000 * 42    # 42 gallons in a barrel
             ref_diesel_gallons = diesel_consumption_k_barrels * 1000 * 42
+
+            # Narrow down from transport fuel consumption to on-road transport fuel consumption
+            ref_gas_gallons *= GASOLINE_FROM_ONROAD_TRANSPORT
+            ref_diesel_gallons *= GASOLINE_FROM_ONROAD_TRANSPORT
 
             # Project the gas/diesel fuel consumption from on-road transport into the model year
             gas_gallons = ref_gas_gallons * (1 + rel_change_LD_fuel_consumption)
@@ -248,6 +257,7 @@ def build_hydrogen_demand_grid(wecc_ld_h2_demand, wecc_hd_h2_demand, year):
 
     wecc_vmt_grid['ld_h2_demand'] = wecc_ld_h2_demand * wecc_vmt_grid['LD_VMT'] / wecc_ld_vmt_total
     wecc_vmt_grid['hd_h2_demand'] = wecc_hd_h2_demand * wecc_vmt_grid['HD_VMT'] / wecc_hd_vmt_total
+    wecc_vmt_grid['total_h2_demand'] = wecc_vmt_grid['ld_h2_demand'] + wecc_vmt_grid['hd_h2_demand']
 
     vmt_grid_output_path = base_path.parent / 'outputs' / 'transport' / f'{year}_wecc_h2_demand_5km_resolution.gpkg'
     wecc_vmt_grid.to_file(vmt_grid_output_path, driver='GPKG')
