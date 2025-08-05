@@ -6,10 +6,10 @@ from the transport sector. It also contains some assumptions, stored here to kee
 
 """
 The following are estimated values for the ratio of diesel and gaosline use that are from on-road transport  
-the transport sector totals in 2023. They are derived from the AE02025 Reference Case Tables 39 and 36. 
+the transport sector totals in 2023. They are derived from the AE02025 Reference Case Table 36. 
 The ratios were derived for 2024 and are assumed to be the same for 2023, given a lack of 2023 data.
 """
-DIESEL_FROM_ONROAD_TRANSPORT = .8658
+DIESEL_FROM_ONROAD_TRANSPORT = .8801
 GASOLINE_FROM_ONROAD_TRANSPORT = .9899 
 
 def get_transport_parameters(year):
