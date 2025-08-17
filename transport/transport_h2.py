@@ -16,7 +16,7 @@ import geopandas as gpd
 base_path  = Path(__file__).parent
 
 # the fuel data below is taken from https://www.eia.gov/state/seds/data.php?incfile=/state/seds/sep_fuel/html/fuel_mg.html
-fuel_data_path = base_path / 'input_files' / 'eia_transport_gas_and_diesel_usage_by_state_2023.xlsx'
+fuel_data_path = base_path / 'input_files' / 'eia_transport_gas_and_diesel_usage_by_state.xlsx'
 wecc_vmt_grid_path = base_path / 'input_files' / 'vmt_grid_wecc.gpkg'
 
 # Create a new logs path
