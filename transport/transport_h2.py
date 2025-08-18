@@ -163,7 +163,7 @@ def disaggregate_by_load_zone(state_h2_demand, year):
 
     Returns:
     - DataFrame with hydrogen demand broken down by load zone (with columns 'LD_h2_demand', 
-        'HD_h2_demand', 'total_h2_demand', and 'year')
+        'HD_h2_demand', 'total_h2_demand_kg', and 'year')
     """
 
     vmt_folder = base_path / 'input_files' / 'VMT_data'
@@ -201,7 +201,7 @@ def disaggregate_by_load_zone(state_h2_demand, year):
         # Compute h2 demand
         state_df['LD_h2_demand'] = ld_vmt_col / state_ld_vmt * state_ld_h2_demand
         state_df['HD_h2_demand'] = hd_vmt_col / state_hd_vmt * state_hd_h2_demand
-        state_df['total_h2_demand'] = state_df['LD_h2_demand'] + state_df['HD_h2_demand']
+        state_df['total_h2_demand_kg'] = state_df['LD_h2_demand'] + state_df['HD_h2_demand']
 
         # Save the state-level hydrogen demand summary
         output_path = state_breakdown / f'{year}_{file_name.removesuffix('.csv')}_summary.csv'
@@ -220,7 +220,7 @@ def disaggregate_by_load_zone(state_h2_demand, year):
 
     # Transform the load zone dictionary into a Data Frame 
     load_zone_summary_df = pd.DataFrame.from_dict(load_zone_summary, orient='index',
-                                        columns=['LD_h2_demand', 'HD_h2_demand', 'total_h2_demand'])
+                                        columns=['LD_h2_demand', 'HD_h2_demand', 'total_h2_demand_kg'])
     
     # Add a year column
     load_zone_summary_df['year'] = year
@@ -257,7 +257,7 @@ def build_hydrogen_demand_grid(wecc_ld_h2_demand, wecc_hd_h2_demand, year):
 
     wecc_vmt_grid['ld_h2_demand'] = wecc_ld_h2_demand * wecc_vmt_grid['LD_VMT'] / wecc_ld_vmt_total
     wecc_vmt_grid['hd_h2_demand'] = wecc_hd_h2_demand * wecc_vmt_grid['HD_VMT'] / wecc_hd_vmt_total
-    wecc_vmt_grid['total_h2_demand'] = wecc_vmt_grid['ld_h2_demand'] + wecc_vmt_grid['hd_h2_demand']
+    wecc_vmt_grid['total_h2_demand_kg'] = wecc_vmt_grid['ld_h2_demand'] + wecc_vmt_grid['hd_h2_demand']
 
     vmt_grid_output_path = base_path.parent / 'outputs' / 'transport' / f'{year}_wecc_h2_demand_5km_resolution.gpkg'
     wecc_vmt_grid.to_file(vmt_grid_output_path, driver='GPKG')

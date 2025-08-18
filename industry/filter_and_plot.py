@@ -39,7 +39,7 @@ def filter(facility_df):
     results_by_facility_df = facility_df.merge(sectors_df, on='naics', how='left')
 
     # Filter out any facilities with zero H2 demand 
-    results_by_facility_df = results_by_facility_df[results_by_facility_df['total_h2_demand'] > 0].copy()
+    results_by_facility_df = results_by_facility_df[results_by_facility_df['total_h2_demand_kg'] > 0].copy()
 
     # Convert to GeoDataFrame
     geometry = gp.points_from_xy(results_by_facility_df['longitude'], results_by_facility_df['latitude'])
@@ -63,7 +63,7 @@ def filter(facility_df):
 
     # Create summary grouped by LOAD_AREA
     load_zone_summary = facilities_in_zones.groupby('LOAD_AREA', as_index=False)[
-        ['total_h2_demand']
+        ['total_h2_demand_kg']
     ].sum()
 
     load_zone_summary.rename(columns={'LOAD_AREA': 'load_zone'}, inplace=True)
@@ -90,10 +90,10 @@ def plot(filtered_df, year):
     filtered_df['color'] = filtered_df['sector'].map(color_map)
 
     # Normalize marker sizes
-    max_h2_demand = filtered_df['total_h2_demand'].max()
+    max_h2_demand = filtered_df['total_h2_demand_kg'].max()
     max_size = 900  # Adjust as needed
     filtered_df['marker_size'] = (
-        (filtered_df['total_h2_demand'] / max_h2_demand * max_size).clip(lower=1)
+        (filtered_df['total_h2_demand_kg'] / max_h2_demand * max_size).clip(lower=1)
         if max_h2_demand > 0 else 10
     )
 
@@ -139,7 +139,7 @@ def plot(filtered_df, year):
 
     # Size legend
     h2_legend_vals = [1e6, 1e7, 5e7]
-    actual_max = (filtered_df['total_h2_demand']).max()
+    actual_max = (filtered_df['total_h2_demand_kg']).max()
     size_handles = []
 
     for val in h2_legend_vals:
@@ -156,7 +156,7 @@ def plot(filtered_df, year):
                             fontsize='small', title_fontsize='medium', framealpha=0.9)
             
     # Total hydrogen demand label
-    total_h2_kg = filtered_df['total_h2_demand'].sum()
+    total_h2_kg = filtered_df['total_h2_demand_kg'].sum()
     total_h2_million_kg = total_h2_kg / 1e6
 
     ax.text(
@@ -169,7 +169,7 @@ def plot(filtered_df, year):
 
      # Total hydrogen demand label for each sector
     sector_totals = (
-        filtered_df.groupby('sector')['total_h2_demand']
+        filtered_df.groupby('sector')['total_h2_demand_kg']
         .sum()
         .sort_values(ascending=False)
     )

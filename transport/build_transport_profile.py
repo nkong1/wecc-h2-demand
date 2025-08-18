@@ -102,7 +102,7 @@ def build_profile(lz_summary_df):
     hd_fueling_weekly = hd_weekly_fueling_df['4-Week Avg U.S. Product Supplied of Distillate Fuel Oil Thousand Barrels per Day'].values
 
     # Find load zone and year combination with highest demand
-    row = lz_summary_df.loc[lz_summary_df['total_h2_demand'].idxmax()]
+    row = lz_summary_df.loc[lz_summary_df['total_h2_demand_kg'].idxmax()]
     highest_demand_lz = str(row['load_zone'])
     highest_demand_year = int(row['year'])
 
@@ -140,7 +140,7 @@ def build_profile(lz_summary_df):
             'ld_h2_demand': ld_profile['hourly_value'],
             'hd_h2_demand': hd_profile['hourly_value']
         })
-        merged['total_h2_demand'] = merged['ld_h2_demand'] + merged['hd_h2_demand']
+        merged['total_h2_demand_kg'] = merged['ld_h2_demand'] + merged['hd_h2_demand']
         merged['year'] = year
 
         profile_across_years = pd.concat([profile_across_years, merged], ignore_index=True)

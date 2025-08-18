@@ -1,0 +1,17 @@
+﻿EIA Sector:,Sector Category,NAICS Code,Total,Net Electricity,Residual Fuel Oil,Distillate Fuel Oil,Natural Gas,HGL (excluding natural gasoline),Coal,Coke and Breeze,Other (f),Fossil Fuels Total
+Iron and Steel Mills and Ferroalloys,Iron & Steel,331110,17,7,0,*,9,*,*,0,*,9
+Iron Foundries,Iron & Steel,331511,2,*,0,*,1,*,0,*,*,1
+Steel Products from Purchased Steel,Iron & Steel,3312,7,2,0,*,5,*,0,0,*,5
+Alumina and Aluminum Production and Processing,Aluminum,3313,10,3,0,*,7,*,0,0,*,7
+Cements,Cement,327310,84,11,0,*,12,*,49,2,10,63
+Chemicals,Chemicals,325,157,38,0,*,73,*,24,0,21,97
+Petroleum Refineries,Refineries,324110,805,19,*,*,282,10,0,0,494,292
+Glass - Flat Glass,Glass,327211,5,1,0,0,4,*,0,0,0,4
+Glass - Other Pressed and Blown Glass and Glassware,Glass,327212,1,*,0,*,1,*,0,0,0,1
+Glass - Glass Containers,Glass,327213,12,3,0,*,9,*,0,0,*,9
+Glass - Glass Products from Purchased Glass,Glass,327215,2,1,0,0,1,*,0,0,*,1
+,,,,,,,,,,,,
+Units: trillion BTU,,,,,,,,,,,,
+,,,,,,,,,,,,
+"(e) Hydrocarbon Gas Liquids (HGL) include ethane ethylene propane propylene normal butane butylene ethane‐propane mixtures propane‐butane mixtures and isobutane produced at refineries or (e) Hydrocarbon Gas Liquids (HGL) include ethane, ethylene, propane, propylene, normal but",,,,,,,,,,,,
+"(f) Other includes net steam (the sum of purchases, generation from renewables, and net transfers), and other energy that respondents indicated was used to produce heat and power.",,,,,,,,,,,,

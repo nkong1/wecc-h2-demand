@@ -1,0 +1,8 @@
+Facility Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type
+1001665,"McWane Ductile - Utah, A Division of McWane Inc.",40.199753,-111.631752,CP-NG,331511.0,24867.7,Natural Gas (Weighted U.S. Average)
+1001665,"McWane Ductile - Utah, A Division of McWane Inc.",40.199753,-111.631752,Cupola,331511.0,38550.0,Coal Coke
+1001662,TYLER PIPE COMPANY,32.43442,-95.36285,ACI,331511.0,0.0,Wood and Wood Residuals (dry basis)
+1001662,TYLER PIPE COMPANY,32.43442,-95.36285,GP-COKE,331511.0,24114.4,Coal Coke
+1001662,TYLER PIPE COMPANY,32.43442,-95.36285,GP-NATGAS,331511.0,11594.6,Natural Gas (Weighted U.S. Average)
+1004965,UNITED STATES PIPE & FOUNDRY CO LLC,37.60599,-122.04237,GP-Combustion and Annealing,331511.0,41509.5,Coal Coke
+1004965,UNITED STATES PIPE & FOUNDRY CO LLC,37.60599,-122.04237,GP-Combustion and Annealing,331511.0,41509.5,Natural Gas (Weighted U.S. Average)

@@ -47,7 +47,7 @@ def build_profile(lz_summary_df):
     weekly_profile_array = weekly_profile['demand'].values
 
     # Find load zone and year combination with highest demand (for plotting purposes)
-    row = lz_summary_df.loc[lz_summary_df['total_h2_demand'].idxmax()]
+    row = lz_summary_df.loc[lz_summary_df['total_h2_demand_kg'].idxmax()]
     highest_demand_lz = str(row['load_zone'])
     highest_demand_year = int(row['year'])
 
@@ -72,11 +72,11 @@ def build_profile(lz_summary_df):
             profile_across_years = pd.DataFrame()
             previous_load_zone = load_zone
 
-        h2_demand = lz_row['total_h2_demand']
+        h2_demand = lz_row['total_h2_demand_kg']
 
         # Generate the profile for one year
         one_year_profile = disaggregate_annual_to_hourly(h2_demand, weekly_profile_array, np.full(53, 1), year)
-        one_year_profile = one_year_profile.rename(columns={'hourly_value': 'total_h2_demand'})
+        one_year_profile = one_year_profile.rename(columns={'hourly_value': 'total_h2_demand_kg'})
 
         # Join to make a combined DataFrame with the profiles across all years within a load zone
         profile_across_years = pd.concat([profile_across_years, one_year_profile], ignore_index=True)
@@ -140,16 +140,16 @@ def plot_demand_profile(profile_df, lz_name, plot_output_path):
     Generates a line plot showing the hourly hydrogen demand for the given load zone.
 
     Parameters: 
-    - profile_df: A DataFrame containing columns 'datetime' and 'total_h2_demand'
+    - profile_df: A DataFrame containing columns 'datetime' and 'total_h2_demand_kg'
     - lz_name: The name of the load zone for which the profile is being plotted
     - plot_output_path: the path to which the plot should be saved
 
     Returns: None
     """
-    total_demand = profile_df['total_h2_demand'].sum()
+    total_demand = profile_df['total_h2_demand_kg'].sum()
 
     plt.figure(figsize=(12, 5))
-    plt.plot(profile_df['datetime'], profile_df['total_h2_demand'], label='Hydrogen Demand', color='blue', linewidth=0.8)
+    plt.plot(profile_df['datetime'], profile_df['total_h2_demand_kg'], label='Hydrogen Demand', color='blue', linewidth=0.8)
     plt.title(f"Hourly Hydrogen Demand Profile for {lz_name}")
     plt.xlabel("Date")
     plt.ylabel("Hydrogen Demand (kg)")

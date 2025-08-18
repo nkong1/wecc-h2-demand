@@ -10,7 +10,7 @@ def plot_lz_demand(demand_df, plot_output_path):
     Plots the hydrogen demand for each WECC load zone in a single year.
 
     Parameters:
-    - demand_df: a DataFrame with columns 'load_zone' and 'total_h2_demand'
+    - demand_df: a DataFrame with columns 'load_zone' and 'total_h2_demand_kg'
     - plot_output_path: the path to which the plot should be saved
 
     Returns: None
@@ -29,7 +29,7 @@ def plot_lz_demand(demand_df, plot_output_path):
     fig, ax = plt.subplots(1, 1, figsize=(15, 12))
 
     # Create choropleth map
-    merged.plot(column='total_h2_demand',
+    merged.plot(column='total_h2_demand_kg',
                 cmap='viridis',
                 edgecolor='black',
                 legend=True,
@@ -43,13 +43,13 @@ def plot_lz_demand(demand_df, plot_output_path):
     ax.axis('off')
 
     # Get top 5 zones by demand
-    top_zones = merged.nlargest(5, 'total_h2_demand')
+    top_zones = merged.nlargest(5, 'total_h2_demand_kg')
 
     for idx, row in top_zones.iterrows():
-        if row['total_h2_demand'] > 0:
+        if row['total_h2_demand_kg'] > 0:
             # Get centroid for label placement
             centroid = row.geometry.centroid
-            ax.annotate(f"{row['load_zone']}\n{row['total_h2_demand']:,.0f} kg",
+            ax.annotate(f"{row['load_zone']}\n{row['total_h2_demand_kg']:,.0f} kg",
                         xy=(centroid.x, centroid.y),
                         xytext=(5, 5),
                         textcoords='offset points',
@@ -58,7 +58,7 @@ def plot_lz_demand(demand_df, plot_output_path):
                                 facecolor='white', alpha=0.7),
                         ha='left')
             
-    total_demand = merged['total_h2_demand'].sum()
+    total_demand = merged['total_h2_demand_kg'].sum()
     plt.text(
         x=0.05, y=1,
         s=f"WECC Total Annual Demand: {total_demand/1e6:,.0f} million kg",

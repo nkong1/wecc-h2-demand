@@ -1,0 +1,8 @@
+Facility Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type
+1003562,ALCOA INTALCO WORKS,48.8455,-122.7055,CP-Main_Metered_Line_Into_Intalco,331313.0,1385.4,Natural Gas (Weighted U.S. Average)
+1013359,Golden Aluminum Inc.,40.09581,-104.80277,GP-Facility Wide,331315.0,25136.0,Natural Gas (Weighted U.S. Average)
+1010619,"Hydro Extrusion USA, LLC.",42.88713,-97.35207,GP-Combustion Sources,331318.0,32399.7,Natural Gas (Weighted U.S. Average)
+1002056,Kaiser Aluminum Washington,47.687074,-117.212673,CP-Plant Gas Supply Line,331315.0,124312.8,Natural Gas (Weighted U.S. Average)
+1002056,Kaiser Aluminum Washington,47.687074,-117.212673,CP-Plant Gas Supply Line,331315.0,124312.8,Propane
+1012374,"TCI Texarkana, Inc",33.450707,-94.134356,CP-NG01,331314.0,74771.2,Natural Gas (Weighted U.S. Average)
+1005588,VISTA METALS CORPORATION,34.0946,-117.51326,GP- Combustion Units,331314.0,34186.2,Natural Gas (Weighted U.S. Average)

@@ -53,26 +53,25 @@ def combine():
 
             combined_df = pd.DataFrame({
                 'datetime': transport_df['datetime'],
-                'h2_demand': transport_df['total_h2_demand'] + industry_df['total_h2_demand']
+                'h2_demand_kg': transport_df['total_h2_demand_kg'] + industry_df['total_h2_demand_kg']
             })
         elif transport_df is not None:
-            combined_df = transport_df[['datetime', 'total_h2_demand']].copy()
-            combined_df = combined_df.rename(columns={'total_h2_demand': 'h2_demand'})
+            combined_df = transport_df[['datetime', 'total_h2_demand_kg']].copy()
+            combined_df = combined_df.rename(columns={'total_h2_demand_kg': 'h2_demand_kg'})
         else:
-            combined_df = industry_df[['datetime', 'total_h2_demand']].copy()
-            combined_df = combined_df.rename(columns={'total_h2_demand': 'h2_demand'})
+            combined_df = industry_df[['datetime', 'total_h2_demand_kg']].copy()
+            combined_df = combined_df.rename(columns={'total_h2_demand_kg': 'h2_demand_kg'})
 
         # Add SWITCH timescale formatting
         combined_df['datetime'] = pd.to_datetime(combined_df['datetime'])
         combined_df['timepoint_id'] = range(len(combined_df))
         combined_df['timeseries'] = combined_df['datetime'].dt.year.astype(str) + '_all'
 
-        combined_df = combined_df.rename(columns={'datetime': 'timestamp', 'total_h2_demand': 'h2_demand'})
+        combined_df = combined_df.rename(columns={'datetime': 'timestamp', 'total_h2_demand_kg': 'h2_demand_kg'})
         combined_df['timestamp'] = pd.to_datetime(combined_df['timestamp']).dt.strftime('%Y-%m-%d-%H')
         
         # Organize the columns
-        combined_df = combined_df[['timepoint_id', 'timeseries', 'timestamp', 'h2_demand']]
-
+        combined_df = combined_df[['timepoint_id', 'timeseries', 'timestamp', 'h2_demand_kg']]
 
         # Save result
         combined_df.to_csv(combined_outputs_path / file, index=False)
