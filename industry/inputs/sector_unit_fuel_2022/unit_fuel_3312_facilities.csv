@@ -1,10 +1,5 @@
-Facility Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type
-1006761,CALIFORNIA STEEL INDUSTRIES INC,34.07737,-117.499688,CP-1,331221.0,137135.1,Natural Gas (Weighted U.S. Average)
-1006761,CALIFORNIA STEEL INDUSTRIES INC,34.07737,-117.499688,GP-1,331221.0,139.3,Natural Gas (Weighted U.S. Average)
-1013497,"Tenaris Bay City, Inc.",29.006275,-95.888058,Austenitizing Furnace,331210.0,18792.5,Natural Gas (Weighted U.S. Average)
-1013497,"Tenaris Bay City, Inc.",29.006275,-95.888058,Rotary Hearth Furnace,331210.0,59348.1,Natural Gas (Weighted U.S. Average)
-1013497,"Tenaris Bay City, Inc.",29.006275,-95.888058,RTO CAS1,331210.0,525.8,Natural Gas (Weighted U.S. Average)
-1013497,"Tenaris Bay City, Inc.",29.006275,-95.888058,Tempering Furnace,331210.0,12969.0,Natural Gas (Weighted U.S. Average)
-1004478,"USS-UPI, LLC",38.02305,-121.85565,GP- Natural Gas,331221.0,30863.5,Natural Gas (Weighted U.S. Average)
-1004478,"USS-UPI, LLC",38.02305,-121.85565,Propane Space Heater,331221.0,1.5,Propane
-1004972,WYMAN GORDON FORGINGS,29.93301,-95.64954,GP- Furnaces,331210.0,57619.9,Natural Gas (Weighted U.S. Average)
+Facility Id,FRS Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type,inWECC,inWestCensus
+1006761,110063857376.0,CALIFORNIA STEEL INDUSTRIES INC,34.07737,-117.499688,CP-1,331221.0,137135.1,Natural Gas (Weighted U.S. Average),True,True
+1006761,110063857376.0,CALIFORNIA STEEL INDUSTRIES INC,34.07737,-117.499688,GP-1,331221.0,139.3,Natural Gas (Weighted U.S. Average),True,True
+1004478,110000483450.0,"USS-UPI, LLC",38.02305,-121.85565,GP- Natural Gas,331221.0,30863.5,Natural Gas (Weighted U.S. Average),True,True
+1004478,110000483450.0,"USS-UPI, LLC",38.02305,-121.85565,Propane Space Heater,331221.0,1.5,Propane,True,True

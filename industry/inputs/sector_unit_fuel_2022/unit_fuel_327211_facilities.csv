@@ -1,15 +1,6 @@
-Facility Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type
-1004225,Cardinal FG Company,46.5439,-122.9259,GP-misc. NG fired small space heaters,327211.0,1109.5,Natural Gas (Weighted U.S. Average)
-1004225,Cardinal FG Company,46.5439,-122.9259,natural gas fired glass Melting Furnace,327211.0,70062.7,Natural Gas (Weighted U.S. Average)
-1002770,GUARDIAN INDUSTRIES - Corsicana,32.064167,-96.426939,Generator,327211.0,161.1,Distillate Fuel Oil No. 2
-1002770,GUARDIAN INDUSTRIES - Corsicana,32.064167,-96.426939,GP-FacilityCombustion,327211.0,3622.9,Natural Gas (Weighted U.S. Average)
-1002770,GUARDIAN INDUSTRIES - Corsicana,32.064167,-96.426939,GP-Glass Furnace,327211.0,81596.6,Natural Gas (Weighted U.S. Average)
-1002770,GUARDIAN INDUSTRIES - Corsicana,32.064167,-96.426939,GP-Glass Furnace,327211.0,81596.6,Propane
-1007904,GUARDIAN INDUSTRIES LLC - KINGSBURG,36.49031,-119.533971,GP-Space Heaters,327211.0,90.1,Natural Gas (Weighted U.S. Average)
-1007904,GUARDIAN INDUSTRIES LLC - KINGSBURG,36.49031,-119.533971,Guardian Industries Corp Kingsburg F1,327211.0,83936.9,Natural Gas (Weighted U.S. Average)
-1007904,GUARDIAN INDUSTRIES LLC - KINGSBURG,36.49031,-119.533971,Guardian Industries Corp Kingsburg F1,327211.0,83936.9,Liquefied petroleum gases (LPG)
-1006397,Vitro Flat Glass LLC,33.996428,-98.553358,"FIN STA 22, EPN 22",327211.0,67642.6,Natural Gas (Weighted U.S. Average)
-1006397,Vitro Flat Glass LLC,33.996428,-98.553358,"FIN STA 22, EPN 22",327211.0,67642.6,Distillate Fuel Oil No. 2
-1006397,Vitro Flat Glass LLC,33.996428,-98.553358,"FIN STA 23, EPN 23",327211.0,81002.9,Natural Gas (Weighted U.S. Average)
-1006397,Vitro Flat Glass LLC,33.996428,-98.553358,"FIN STA 23, EPN 23",327211.0,81002.9,Distillate Fuel Oil No. 2
-1006397,Vitro Flat Glass LLC,33.996428,-98.553358,GP-AuxGas,327211.0,5609.6,Natural Gas (Weighted U.S. Average)
+Facility Id,FRS Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type,inWECC,inWestCensus
+1004225,110025339621.0,Cardinal FG Company,46.5439,-122.9259,GP-misc. NG fired small space heaters,327211.0,1109.5,Natural Gas (Weighted U.S. Average),True,True
+1004225,110025339621.0,Cardinal FG Company,46.5439,-122.9259,natural gas fired glass Melting Furnace,327211.0,70062.7,Natural Gas (Weighted U.S. Average),True,True
+1007904,110071161729.0,GUARDIAN INDUSTRIES LLC - KINGSBURG,36.49031,-119.533971,GP-Space Heaters,327211.0,90.1,Natural Gas (Weighted U.S. Average),True,True
+1007904,110071161729.0,GUARDIAN INDUSTRIES LLC - KINGSBURG,36.49031,-119.533971,Guardian Industries Corp Kingsburg F1,327211.0,83936.9,Natural Gas (Weighted U.S. Average),True,True
+1007904,110071161729.0,GUARDIAN INDUSTRIES LLC - KINGSBURG,36.49031,-119.533971,Guardian Industries Corp Kingsburg F1,327211.0,83936.9,Liquefied petroleum gases (LPG),True,True
