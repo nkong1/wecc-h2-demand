@@ -61,12 +61,10 @@ def model_industry_sector():
                            [20, 30, 30, 30, 40, 40], 
                            [40, 60, 60, 60, 80, 80]]
     
-    # Scale the hydrogen demand across all facilities within each industry by a factor
-    scale_demand = [5, 3, 5, 5, 1, 5]
     # ============================================
 
     # Call the industry module
-    lz_summary_industry = industry_h2.model_industry_demand(sectors, pct_decarbonization, years, scale_demand)
+    lz_summary_industry = industry_h2.model_industry_demand(pct_decarbonization, years)
 
     # Temporally disaggregate into hourly profiles over the course of an average week
     build_industry_profile.build_profile(lz_summary_industry)

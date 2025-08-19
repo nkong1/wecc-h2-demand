@@ -11,7 +11,6 @@ import os
 import shutil
 from pathlib import Path
 from industry import aggregate_and_plot 
-from industry.sector_naics_info import * 
 
 # File paths
 base_path  = Path(__file__).parent
@@ -34,6 +33,10 @@ ONE_MILLION = 10 ** 6
 BTU_IN_1LB_H2 = 61013
 LB_TO_KG = 0.453592
 
+sector_by_naics = {'Iron_and_Steel': [331110, 331511, 3312], 'Aluminum': [3313], 'Cement': [327310],
+                   'Chemicals': [325], 'Refineries': [324110], 'Glass': [ 327211, 
+                    327212, 327213, 327215]}
+
 # Create a dictionary mapping the fuel type to the CO2 emissions factor
 fuel_emissions_df = pd.read_excel(fuel_emissions_factor_path)
 fuel_emissions_dict = fuel_emissions_df.set_index('Fuel Type')['kg CO2 per mmBtu'].to_dict()
@@ -49,16 +52,14 @@ mecs_fuel_category_dict = fuel_emissions_df.set_index('Fuel Type')['EIA MECS Cat
 fuel_use_by_category_df = pd.read_csv(fuel_use_projection_path, header=4)
 
 
-def model_industry_demand(sectors, pct_decarbonization, years, scale_demand):
+def model_industry_demand(pct_decarbonization, years):
     """
     Estimates hydrogen demand from each industrial sector over several model years, aggregated by load zone.
 
     Parameters:
-    - sectors: List of names of industrial sectors to model (must match keys in 'sector_by_naics').
     - pct_decarbonization: List of list of percentages of each sector's non-feedstock fuel consumption to 
         decarbonize with hydrogen. (each outer list contains paramters for one model year)
     - years: List of model years 
-    - scale_demand: Factor to scale hydrogen demand across all facilities
 
     Returns:
     - A DataFrame containing hydrogen demand by load zone and year in kilograms.
@@ -73,17 +74,9 @@ def model_industry_demand(sectors, pct_decarbonization, years, scale_demand):
     for year in years:
         print(f'\nProcessing year {year}...')
 
-        naics_pct_decarbonize = {
-        code: pct
-        for sector, pct in zip(sectors, pct_decarbonization[index])
-        for code in sector_by_naics[sector] }   
+        pct_decarbonize_by_sector = pct_decarbonization[index]
 
-        naics_scale_demand = {
-        code: pct
-        for sector, pct in zip(sectors, scale_demand)
-        for code in sector_by_naics[sector] }   
-
-        year_result = model_one_year(naics_pct_decarbonize, naics_scale_demand, year)
+        year_result = model_one_year(pct_decarbonize_by_sector, year)
         load_zone_summary = pd.concat([load_zone_summary, year_result])
 
         index += 1
@@ -173,13 +166,12 @@ def calc_discrepancies(breakdown_by_fuel_df):
     return sector_discrepancy_df
 
 
-def model_one_year(decarb_by_sector, naics_scale_demand, year):
+def model_one_year(decarb_by_sector, year):
     """
     Calculates hydrogen demand for a single model year.
 
     Parameters:
-    - decarb_by_sector: Dictionary mapping from NAICS code to percent decarbonization via hydrogen (e.g., {32411: 75}).
-    - naics_scale_demand: dictionary mapping from NAICS code to an industry-wide scaling factor for fuel consumption 
+    - decarb_by_sector: Dictionary mapping from sector code to percent decarbonization via hydrogen (e.g., {'Iron_and_Steel': 75}).
     - year: The model year for which hydrogen demand is being modeled.
 
     Returns:
@@ -198,7 +190,7 @@ def model_one_year(decarb_by_sector, naics_scale_demand, year):
         for col in fuel_use_by_category_filtered.columns if col != 'Year'
     }
 
-    results_by_facility, breakdown_by_fuel = calc_epa_ghgrp_fuel_consumption(decarb_by_sector, naics_scale_demand, fuel_growth_by_category_dict)
+    results_by_facility, breakdown_by_fuel = calc_epa_ghgrp_fuel_consumption(decarb_by_sector, fuel_growth_by_category_dict)
 
     results_by_facility_df = pd.DataFrame(results_by_facility)
     breakdown_by_fuel_df = pd.DataFrame(breakdown_by_fuel)
@@ -257,13 +249,13 @@ def model_one_year(decarb_by_sector, naics_scale_demand, year):
 
     return aggregated_by_lz
 
-def calc_epa_ghgrp_fuel_consumption(naics_pct_decarbonize, naics_scale_demand, fuel_growth_by_category_dict):
+def calc_epa_ghgrp_fuel_consumption(pct_decarbonize_by_sector, fuel_growth_by_category_dict):
     """
     Returns
     """
 
     # Create a DataFrame for the results for hydrogen demand from each facility
-    results_by_facility = pd.DataFrame()
+    all_results_by_facility = pd.DataFrame()
 
     # Create a list for a more detailed breakdown by facility unit and fuel type
     breakdown_by_fuel = []
@@ -272,17 +264,15 @@ def calc_epa_ghgrp_fuel_consumption(naics_pct_decarbonize, naics_scale_demand, f
     for file_name in os.listdir(units_and_fuel_folder):
         if not file_name.endswith('.csv') or file_name.startswith('~$'):
             continue
+        
+        sector_name = file_name.replace('_facilities_breakdown.csv', '')
 
-        results_by_industry = []
-
+        results_by_sector = []
         industry_facilities_df = pd.read_csv(base_path / units_and_fuel_folder / file_name)
 
         if industry_facilities_df.empty:
             continue
 
-        # Retrieve the industry's NAICS code
-        naics = get_naics_code(int(industry_facilities_df.iloc[0]['Primary NAICS Code_y']))
-        
         # Group each unit and fuel by facility
         sector_facilities_grouped = industry_facilities_df.groupby('Facility Id')
 
@@ -292,6 +282,9 @@ def calc_epa_ghgrp_fuel_consumption(naics_pct_decarbonize, naics_scale_demand, f
             facility_name = facility_df['Facility Name_x'].iloc[0]
             latitude = facility_df['Latitude'].iloc[0]
             longitude = facility_df['Longitude'].iloc[0]
+
+            # Retrieve the industry's NAICS code
+            naics = get_naics_code(int(industry_facilities_df.iloc[0]['Primary NAICS Code_y']))
 
             inWECC = facility_df['inWECC'].iloc[0]
             inWestCensus = facility_df['inWestCensus'].iloc[0]
@@ -341,8 +334,7 @@ def calc_epa_ghgrp_fuel_consumption(naics_pct_decarbonize, naics_scale_demand, f
                 
                 avg_emissions_factor = emissions_factor_total / len(unit_fuels) # emissions factor is in metric tons
 
-                decarb_pct = naics_pct_decarbonize[naics]
-                demand_scalar = naics_scale_demand[naics]
+                decarb_pct = pct_decarbonize_by_sector[list(sector_by_naics.keys()).index(sector_name)]
 
                 decarb_factor = decarb_pct / 100
 
@@ -368,7 +360,7 @@ def calc_epa_ghgrp_fuel_consumption(naics_pct_decarbonize, naics_scale_demand, f
                     else:
                         projected_fuel_growth =  fuel_growth_by_category_dict[aeo_fuel_category]
 
-                    projected_fuel_demand = (1 + projected_fuel_growth) * unit_fuel_demand * demand_scalar * decarb_factor
+                    projected_fuel_demand = (1 + projected_fuel_growth) * unit_fuel_demand * decarb_factor
 
                     breakdown_by_fuel.append({'facility_id': facility_id, 'facility_name': facility_name, 'unit_name': unit_name, 'fuel': fuel, \
                                 'naics': naics, 'latitude': latitude, 'longitude': longitude, 'co2_emissions': unit_fuel_CO2_emissions, \
@@ -379,12 +371,14 @@ def calc_epa_ghgrp_fuel_consumption(naics_pct_decarbonize, naics_scale_demand, f
                     proj_facility_fuel_demand_mmBtu += projected_fuel_demand
             
             # Add the facility results to the final output result DataFrame
-            results_by_industry.append({'facility_id': facility_id, 'facility_name': facility_name, 'naics': naics, \
+            results_by_sector.append({'facility_id': facility_id, 'facility_name': facility_name, 'naics': naics, \
                                     'latitude': latitude, 'longitude': longitude, 'proj_fuel_demand_mmBtu': proj_facility_fuel_demand_mmBtu, \
                                     'inWestCensus': inWestCensus,'inWECC': inWECC})
         
         # Save the results for hydrogen demand by facility for each industry
-        industry_results_df = pd.DataFrame(results_by_industry)
-        results_by_facility = pd.concat([results_by_facility, industry_results_df])
+        industry_results_df = pd.DataFrame(results_by_sector)
+
+        all_results_by_facility = pd.concat([all_results_by_facility, industry_results_df])
+
     
-    return results_by_facility, breakdown_by_fuel
+    return all_results_by_facility, breakdown_by_fuel

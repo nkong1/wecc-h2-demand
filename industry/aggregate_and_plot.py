@@ -10,7 +10,6 @@ import numpy as np
 import matplotlib.patches as mpatches
 import pandas as pd
 from pathlib import Path
-from industry.sector_naics_info import * 
 
 base_path  = Path(__file__).parent
 
@@ -73,6 +72,7 @@ def plot(filtered_df, year):
     Returns: None
     """
     #  Plotting setup 
+    filtered_df['sector'] = filtered_df['sector'].replace('Iron_and_Steel', 'Iron & Steel')
     sectors = filtered_df['sector'].unique()
 
     colors = plt.cm.Set1(np.linspace(0, 1, len(sectors)))
