@@ -1,5 +1,0 @@
-Facility Id,FRS Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type,inWECC,inWestCensus
-1006761,110063857376.0,CALIFORNIA STEEL INDUSTRIES INC,34.07737,-117.499688,CP-1,331221.0,137135.1,Natural Gas (Weighted U.S. Average),True,True
-1006761,110063857376.0,CALIFORNIA STEEL INDUSTRIES INC,34.07737,-117.499688,GP-1,331221.0,139.3,Natural Gas (Weighted U.S. Average),True,True
-1004478,110000483450.0,"USS-UPI, LLC",38.02305,-121.85565,GP- Natural Gas,331221.0,30863.5,Natural Gas (Weighted U.S. Average),True,True
-1004478,110000483450.0,"USS-UPI, LLC",38.02305,-121.85565,Propane Space Heater,331221.0,1.5,Propane,True,True

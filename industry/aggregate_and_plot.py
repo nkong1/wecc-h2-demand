@@ -18,13 +18,14 @@ load_zones = gp.read_file(base_path / 'inputs' / 'load_zones' / 'load_zones.shp'
 
 def aggregate_by_lz(facility_df):
     """
+    Calculates the total hydrogen demand from industry by load zone.
 
     Parameters:
     - facility_df: a DataFrame containing latitute and longitude values for each facility, among 
         other data, including total hydrogen demand
 
     Returns:
-    1) A DataFrame displaying the total hydrogen demand across all facilities in each WECC load zone
+    A DataFrame displaying the total hydrogen demand across all facilities in each WECC load zone
     """
 
     # Filter out any facilities with zero H2 demand 

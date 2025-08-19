@@ -1,5 +1,0 @@
-Facility Id,FRS Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type,inWECC,inWestCensus
-1001665,110000470026.0,"McWane Ductile - Utah, A Division of McWane Inc.",40.199753,-111.631752,CP-NG,331511.0,24867.7,Natural Gas (Weighted U.S. Average),True,True
-1001665,110000470026.0,"McWane Ductile - Utah, A Division of McWane Inc.",40.199753,-111.631752,Cupola,331511.0,38550.0,Coal Coke,True,True
-1004965,110000483619.0,UNITED STATES PIPE & FOUNDRY CO LLC,37.60599,-122.04237,GP-Combustion and Annealing,331511.0,41509.5,Coal Coke,True,True
-1004965,110000483619.0,UNITED STATES PIPE & FOUNDRY CO LLC,37.60599,-122.04237,GP-Combustion and Annealing,331511.0,41509.5,Natural Gas (Weighted U.S. Average),True,True
