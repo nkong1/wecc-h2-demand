@@ -135,7 +135,6 @@ def calc_discrepancies(breakdown_by_fuel_df):
             ghgrp_fuel_total_mmbtu = 0
         
         mecs_fuel_total_mmbtu = mecs_data.loc[naics]['Fossil Fuels Total'] * 1e6
-        print(f'naics: {naics} mecs total: {mecs_fuel_total_mmbtu // 1e6}, ghgrp total: {ghgrp_fuel_total_mmbtu // 1e6}')
 
         discrepancy_mmbtu = int(mecs_fuel_total_mmbtu) - ghgrp_fuel_total_mmbtu
         if ghgrp_fuel_total_mmbtu != 0:
@@ -271,8 +270,7 @@ def model_one_year(decarb_by_sector, year):
             results_by_facility_df.loc[results_by_facility_df['Sector'] == sector, 'fuel_demand_mmBtu'] *= mecs_to_ghgrp_ratio
             results_by_facility_df.loc[results_by_facility_df['Sector'] == sector, 'proj_fuel_demand_mmBtu'] *= mecs_to_ghgrp_ratio
 
-        # If our estimates are lower, we adjust by disaggregating "unaccounted for demand" across non-GHGRP facilities, 
-        # then filtering for facilities in the WECC before adding to the results_by_facility_df
+        # If our estimates are low, we adjust by disaggregating "unaccounted-for demand" across non-GHGRP facilities in the West Census
         elif discrepancy_mmbtu > 0:
             extra_facities_path = base_path / 'inputs' / 'extra_epa_frs_facilities_west' / f'{sector}_facilities.csv'
             extra_facilities_df = pd.read_csv(extra_facities_path)
@@ -282,7 +280,6 @@ def model_one_year(decarb_by_sector, year):
             extra_facilities_df['fuel_demand_mmBtu'] = discrepancy_mmbtu / len(extra_facilities_df)
             extra_facilities_df['proj_fuel_demand_mmBtu'] = extra_facilities_df['fuel_demand_mmBtu'] * decarb_pct / 100
 
-            extra_facilities_df = extra_facilities_df[extra_facilities_df['inWECC'] == True]
             extra_facilities_df['inWestCensus'] = True
 
             extra_facilities_df = extra_facilities_df[['registry_id', 'primary_name', 'naics_code', 'latitude83', 
@@ -293,7 +290,7 @@ def model_one_year(decarb_by_sector, year):
             results_by_facility_df = pd.concat([results_by_facility_df, extra_facilities_df])
 
     #========================
-    # Step 4: Convert hydrogen demand to kg, plot results, and create demand profiles
+    # Step 4: Filter for facilities in the WECC, convert hydrogen demand to kg, plot results, and create demand profiles
     #========================
 
     # Convert H2 demand from mmBtu to kg
@@ -307,6 +304,9 @@ def model_one_year(decarb_by_sector, year):
 
     # Plot the filtered facilities and their corresponding hydrogen demand
     aggregate_and_plot.plot(filtered_df, year)
+
+    # Create the raster output for the 5x5km resolution of industry demand
+    aggregate_and_plot.create_demand_grid(filtered_df, year)
 
     filtered_df.to_csv(logs_path / f'{year}_final_demand_by_facility.csv', index = False)
     aggregated_by_lz['year'] = year

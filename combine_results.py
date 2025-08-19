@@ -6,27 +6,72 @@ into a single csv file showing total hourly demand over each model year.
 """
 
 import pandas as pd
+import geopandas as gpd
 import os
 import shutil
 from pathlib import Path
 
 # Define paths
 outputs_path = Path(__file__).parent / 'outputs'
-combined_outputs_path = outputs_path / 'combined_profiles'
-
+combined_profiles_path = outputs_path / 'combined_profile'
+combined_grids_path = outputs_path / 'combined_grid'
 
 def combine():
+    print('\n===================\nCombining Results...\n==================')
+
+    print('\nCombining demand profiles...')
+    combine_profiles()
+
+    print('\nCombining demand grids...')
+    combine_demand_grids()
+
+def combine_demand_grids():
+    """
+    Combines the 5x5km resolution demand grids from industry and transport into a single grid
+    for each model year, saving the result to the combined_grids folder in the outputs
+    """
+    # Create new combined results folder
+    if combined_grids_path.exists():
+        shutil.rmtree(combined_grids_path)
+    combined_grids_path.mkdir()
+
+    # Input folders
+    industry_profiles_path = outputs_path / 'industry' 
+    transport_profiles_path = outputs_path / 'transport'
+
+    # Combine the profiles for each year
+    for industry_grid_path in industry_profiles_path.glob('*gpkg'):
+        year = industry_grid_path.stem.split('_')[0] 
+
+        industry_grid = gpd.read_file(industry_grid_path)
+        transport_grid = gpd.read_file(transport_profiles_path / industry_grid_path.name)
+
+        # Merge by geometry
+        combined = industry_grid.merge(
+            transport_grid[['geometry', 'total_h2_demand_kg']],
+            on='geometry',
+            how='outer',
+            suffixes=('_industry', '_transport'))
+
+        # Compute total demand
+        combined['total_h2_demand_kg'] = combined['total_h2_demand_kg_industry'] + combined['total_h2_demand_kg_transport']
+
+        # Save to combined grids folder
+        combined_output_path = combined_grids_path / f"{year}_wecc_h2_demand_5km_combined.gpkg"
+        combined.to_file(combined_output_path, driver='GPKG')
+
+        print('\nCombined 5x5km demand grids saved. Model successfully run')
+
+def combine_profiles():
     """
     Combines the hydrogen demand profiles from industry and transport into a single, total profile
     for each load zone, saving the result to the combined_profiles folder in the outputs.
     """
 
-    print('\n===================\nCombining Results...\n==================')
-
     # Create new combined results folder
-    if combined_outputs_path.exists():
-        shutil.rmtree(combined_outputs_path)
-    combined_outputs_path.mkdir()
+    if combined_profiles_path.exists():
+        shutil.rmtree(combined_profiles_path)
+    combined_profiles_path.mkdir()
 
     # Input folders
     industry_profiles_path = outputs_path / 'industry' / 'demand_profiles'
@@ -74,9 +119,9 @@ def combine():
         combined_df = combined_df[['timepoint_id', 'timeseries', 'timestamp', 'h2_demand_kg']]
 
         # Save result
-        combined_df.to_csv(combined_outputs_path / file, index=False)
+        combined_df.to_csv(combined_profiles_path / file, index=False)
 
-    print("\nCombined profiles saved. Model successfully run.\n")
+    print("\nCombined profiles saved.")
 
 
 

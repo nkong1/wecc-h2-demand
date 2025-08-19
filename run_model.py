@@ -16,7 +16,7 @@ from combine_results import combine
 
 # ============================================
 # Choose what sectors to model
-model_transport_h2 = False
+model_transport_h2 = True
 model_industry_h2 = True
 
 # Choose model years between 2023 and 2050 (inclusive)

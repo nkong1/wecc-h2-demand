@@ -186,3 +186,44 @@ def plot(filtered_df, year):
 
     output_path_map = base_path.parent / 'outputs' / 'industry' / f'{year}_demand_by_facility.png'
     plt.savefig(output_path_map, dpi=300, bbox_inches='tight')
+
+
+def create_demand_grid(filtered_df, year):
+    """
+    Geographically aggregates hydrogen demand from industrial facilities in the WECC, producing
+    a raster file with 5x5km resolution.
+    
+    Inputs:
+    - filtered_df: a DataFrame containing hydrogen demand projections from industrial facilities
+    - year: the model year
+
+    Outputs:
+    - Saves a GeoPackage containing the estimated hydrogen demand from industry in 5x5km-sized 
+        square geometries. These squares constitute the entire WECC. 
+    """
+    wecc_grid_path = base_path.parent / 'transport' / 'input_files' / 'vmt_grid_wecc.gpkg'
+    wecc_grid = gp.read_file(wecc_grid_path).copy()
+
+    # Convert to GeoDataFrame
+    geometry = gp.points_from_xy(filtered_df['Longitude'], filtered_df['Latitude'])
+    facilities_gdf = gp.GeoDataFrame(filtered_df, geometry=geometry, crs='EPSG:4326')
+
+    # Ensure CRS match
+    if wecc_grid.crs != facilities_gdf.crs:
+        facilities_gdf = facilities_gdf.to_crs(wecc_grid.crs)
+
+    # Spatial join: assign each facility to a grid cell
+    joined = gp.sjoin(facilities_gdf, wecc_grid, how='left', predicate='intersects')
+    
+    # Aggregate demand per grid cell
+    demand_by_cell = joined.groupby('index_right')['total_h2_demand_kg'].sum().reset_index()
+
+    # Merge demand back onto the grid
+    result_grid = wecc_grid.merge(demand_by_cell, left_index=True, right_on='index_right', how='left')
+    result_grid['total_h2_demand_kg'] = result_grid['total_h2_demand_kg'].fillna(0)
+
+    # Drop unwanted columns
+    result_grid = result_grid.drop(columns=['LD_VMT', 'HD_VMT'])
+
+    grid_output_path = base_path.parent / 'outputs' / 'industry' / f'{year}_wecc_h2_demand_5km_resolution.gpkg'
+    result_grid.to_file(grid_output_path, driver='GPKG')

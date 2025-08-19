@@ -250,7 +250,7 @@ def build_hydrogen_demand_grid(wecc_ld_h2_demand, wecc_hd_h2_demand, year):
     - Saves a GeoPackage containing the estimated hydrogen demand from LD and HD on-road transport in 5x5km-
     sized square geometries. These squares constitute the entire WECC. 
     """
-    wecc_vmt_grid = gpd.read_file(wecc_vmt_grid_path).copy()
+    wecc_vmt_grid = gpd.read_file(wecc_vmt_grid_path).copy().to_crs('EPSG:5070')
 
     wecc_ld_vmt_total = wecc_vmt_grid['LD_VMT'].sum()
     wecc_hd_vmt_total = wecc_vmt_grid['HD_VMT'].sum()
