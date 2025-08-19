@@ -173,7 +173,7 @@ def model_one_year(decarb_by_sector, year):
     Calculates hydrogen demand for a single model year.
 
     Parameters:
-    - decarb_by_sector: Dictionary mapping from sector code to percent decarbonization via hydrogen (e.g., {'Iron_and_Steel': 75}).
+    - decarb_by_sector: List containing the percent decarbonization via hydrogen for each industry sector
     - year: The model year for which hydrogen demand is being modeled.
 
     Returns:
@@ -198,7 +198,9 @@ def model_one_year(decarb_by_sector, year):
     breakdown_by_fuel_df = pd.DataFrame(breakdown_by_fuel)
 
     # Save the detailed results by unit and fuel
-    breakdown_by_fuel_df.to_csv(logs_path / f'{year}_demand_by_unit_fuel.csv', index=False)
+    breakdown_by_fuel_df.to_csv(logs_path / f'{year}_unadjusted_demand_by_unit_fuel.csv', index=False)
+    results_by_facility_df.to_csv(logs_path / f'{year}_unadjusted_demand_by_facility.csv', index = False)
+
 
     """
     # Save an output of the total fuel consumption by sector and fuel
@@ -252,16 +254,47 @@ def model_one_year(decarb_by_sector, year):
         results_by_facility_df = pd.concat([results_by_facility_df, missing_facilities_df])
 
 
-
     #========================
-    # Step 3: Call the calc_discrepancies function to calculate the discrepancy in fuel consumption between that 
-    # found in Step 1 using the EPA GHGRP data and the fuel consumption totals from the EIA MECS Survey in the 
-    # West Census Region. 
+    # Step 3: Adjust fuel consumption estimates and projections using fuel consumption totals from the EIA MECS
     #========================
     
     discrepancies_by_sector = calc_discrepancies(breakdown_by_fuel_df)
 
-    # Next: get a list of all facilities in the EPA FRS not in the EPA GHGRP (that we used) and disaggregate across those
+    for sector in sector_by_naics.keys():
+        sector_row = discrepancies_by_sector[discrepancies_by_sector['Sector'] == sector].iloc[0]
+        discrepancy_mmbtu = sector_row['discrepancy_mmbtu']
+
+        # If we overestimate fuel consumption, we adjust by scaling down our estimates uniformly across all facilities in that sector
+        if discrepancy_mmbtu < 0:
+            mecs_to_ghgrp_ratio = sector_row['mecs_to_ghgrp_ratio']
+
+            results_by_facility_df.loc[results_by_facility_df['Sector'] == sector, 'fuel_demand_mmBtu'] *= mecs_to_ghgrp_ratio
+            results_by_facility_df.loc[results_by_facility_df['Sector'] == sector, 'proj_fuel_demand_mmBtu'] *= mecs_to_ghgrp_ratio
+
+        # If our estimates are lower, we adjust by disaggregating "unaccounted for demand" across non-GHGRP facilities, 
+        # then filtering for facilities in the WECC before adding to the results_by_facility_df
+        elif discrepancy_mmbtu > 0:
+            extra_facities_path = base_path / 'inputs' / 'extra_epa_frs_facilities_west' / f'{sector}_facilities.csv'
+            extra_facilities_df = pd.read_csv(extra_facities_path)
+
+            decarb_pct = decarb_by_sector[list(sector_by_naics.keys()).index(sector)]
+
+            extra_facilities_df['fuel_demand_mmBtu'] = discrepancy_mmbtu / len(extra_facilities_df)
+            extra_facilities_df['proj_fuel_demand_mmBtu'] = extra_facilities_df['fuel_demand_mmBtu'] * decarb_pct / 100
+
+            extra_facilities_df = extra_facilities_df[extra_facilities_df['inWECC'] == True]
+            extra_facilities_df['inWestCensus'] = True
+
+            extra_facilities_df = extra_facilities_df[['registry_id', 'primary_name', 'naics_code', 'latitude83', 
+                  'longitude83', 'fuel_demand_mmBtu', 'proj_fuel_demand_mmBtu', 'inWestCensus', 'inWECC']].rename(
+                      columns={'primary_name': 'Facility Name', 'naics_code': 'Primary NAICS Code', 'latitude83': 'Latitude', 
+                               'longitude83': 'Longitude'})
+
+            results_by_facility_df = pd.concat([results_by_facility_df, extra_facilities_df])
+
+    #========================
+    # Step 4: Convert hydrogen demand to kg, plot results, and create demand profiles
+    #========================
 
     # Convert H2 demand from mmBtu to kg
     results_by_facility_df['total_h2_demand_kg'] = results_by_facility_df['proj_fuel_demand_mmBtu'] * ONE_MILLION / BTU_IN_1LB_H2 * LB_TO_KG
@@ -275,7 +308,7 @@ def model_one_year(decarb_by_sector, year):
     # Plot the filtered facilities and their corresponding hydrogen demand
     aggregate_and_plot.plot(filtered_df, year)
 
-    filtered_df.to_csv(logs_path / f'{year}_demand_by_facility.csv', index = False)
+    filtered_df.to_csv(logs_path / f'{year}_final_demand_by_facility.csv', index = False)
     aggregated_by_lz['year'] = year
 
     return aggregated_by_lz
