@@ -31,7 +31,7 @@ def aggregate_by_lz(facility_df):
     results_by_facility_df = facility_df[facility_df['total_h2_demand_kg'] > 0].copy()
 
     # Convert to GeoDataFrame
-    geometry = gp.points_from_xy(results_by_facility_df['longitude'], results_by_facility_df['latitude'])
+    geometry = gp.points_from_xy(results_by_facility_df['Longitude'], results_by_facility_df['Latitude'])
     facilities_gdf = gp.GeoDataFrame(results_by_facility_df, geometry=geometry, crs='EPSG:4326')
 
     # Ensure CRS consistency
@@ -72,12 +72,12 @@ def plot(filtered_df, year):
     Returns: None
     """
     #  Plotting setup 
-    filtered_df['sector'] = filtered_df['sector'].replace('Iron_and_Steel', 'Iron & Steel')
-    sectors = filtered_df['sector'].unique()
+    filtered_df['Sector'] = filtered_df['Sector'].replace('Iron_and_Steel', 'Iron & Steel')
+    sectors = filtered_df['Sector'].unique()
 
     colors = plt.cm.Set1(np.linspace(0, 1, len(sectors)))
     color_map = {sector: colors[i] for i, sector in enumerate(sectors)}
-    filtered_df['color'] = filtered_df['sector'].map(color_map)
+    filtered_df['color'] = filtered_df['Sector'].map(color_map)
 
     # Normalize marker sizes
     max_h2_demand = filtered_df['total_h2_demand_kg'].max()
@@ -97,8 +97,8 @@ def plot(filtered_df, year):
         print(f"Warning: Could not plot load zones: {e}")
 
     # Axis limits with padding
-    lat_min, lat_max = filtered_df['latitude'].min(), filtered_df['latitude'].max()
-    lon_min, lon_max = filtered_df['longitude'].min(), filtered_df['longitude'].max()
+    lat_min, lat_max = filtered_df['Latitude'].min(), filtered_df['Latitude'].max()
+    lon_min, lon_max = filtered_df['Longitude'].min(), filtered_df['Longitude'].max()
     lat_padding = (lat_max - lat_min) * 0.1
     lon_padding = (lon_max - lon_min) * 0.1
     ax.set_xlim(lon_min - lon_padding, lon_max + lon_padding)
@@ -107,11 +107,11 @@ def plot(filtered_df, year):
     # Plot each sector 
     legend_handles = []
     for sector in sectors:
-        subset = filtered_df[filtered_df['sector'] == sector]
+        subset = filtered_df[filtered_df['Sector'] == sector]
         if not subset.empty:
             ax.scatter(
-                subset['longitude'], 
-                subset['latitude'],
+                subset['Longitude'], 
+                subset['Latitude'],
                 s=subset['marker_size'],
                 c=[color_map[sector]],
                 label=sector,
@@ -159,7 +159,7 @@ def plot(filtered_df, year):
 
      # Total hydrogen demand label for each sector
     sector_totals = (
-        filtered_df.groupby('sector')['total_h2_demand_kg']
+        filtered_df.groupby('Sector')['total_h2_demand_kg']
         .sum()
         .sort_values(ascending=False)
     )

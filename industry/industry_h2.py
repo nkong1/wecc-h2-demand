@@ -112,17 +112,19 @@ def get_sector(naics):
             break
     return sector
 
+
 def calc_discrepancies(breakdown_by_fuel_df):
 
     west_breakdown_by_fuel_df = breakdown_by_fuel_df[breakdown_by_fuel_df['inWestCensus'] == True].copy()
-    west_breakdown_by_fuel_df['naics'] = west_breakdown_by_fuel_df['naics'].astype(str).str.split('.').str[0]
-    west_breakdown_by_fuel_df_grouped = west_breakdown_by_fuel_df.groupby('naics')
+    west_breakdown_by_fuel_df['NAICS Code'] = west_breakdown_by_fuel_df['NAICS Code'].astype(str).str.split('.').str[0]
+
+    west_breakdown_by_fuel_df_grouped = west_breakdown_by_fuel_df.groupby('NAICS Code')
     mecs_data = pd.read_csv(mecs_data_path, index_col='NAICS Code', dtype={"NAICS Code": str})
 
     discrepancy_list = []
 
     all_naics = [str(code) for codes in sector_by_naics.values() for code in codes]
-
+    
     for naics in all_naics:
         naics = str(naics)
 
@@ -133,7 +135,7 @@ def calc_discrepancies(breakdown_by_fuel_df):
             ghgrp_fuel_total_mmbtu = 0
         
         mecs_fuel_total_mmbtu = mecs_data.loc[naics]['Fossil Fuels Total'] * 1e6
-        print(f'naics: {naics} mecs total: {mecs_fuel_total_mmbtu}, ghgrp total: {ghgrp_fuel_total_mmbtu // 1e6}')
+        print(f'naics: {naics} mecs total: {mecs_fuel_total_mmbtu // 1e6}, ghgrp total: {ghgrp_fuel_total_mmbtu // 1e6}')
 
         discrepancy_mmbtu = int(mecs_fuel_total_mmbtu) - ghgrp_fuel_total_mmbtu
         if ghgrp_fuel_total_mmbtu != 0:
@@ -141,13 +143,13 @@ def calc_discrepancies(breakdown_by_fuel_df):
         else:
             mecs_to_ghgrp_ratio = np.inf
 
-        discrepancy_list.append({'naics': naics, 'sector': get_sector(naics), 'mecs_mmbtu': mecs_fuel_total_mmbtu, 'ghgrp_mmbtu': ghgrp_fuel_total_mmbtu, \
+        discrepancy_list.append({'NAICS Code': naics, 'Sector': get_sector(naics), 'mecs_mmbtu': mecs_fuel_total_mmbtu, 'ghgrp_mmbtu': ghgrp_fuel_total_mmbtu, \
                                  'discrepancy_mmbtu': discrepancy_mmbtu, 'mecs_to_ghgrp_ratio': mecs_to_ghgrp_ratio})
         
     naics_discrepancy_df = pd.DataFrame(discrepancy_list)
 
     # Sum discrepancies within each sector
-    sector_discrepancy_df = naics_discrepancy_df.groupby('sector').agg(
+    sector_discrepancy_df = naics_discrepancy_df.groupby('Sector').agg(
         discrepancy_mmbtu=('discrepancy_mmbtu', 'sum'),
         mecs_mmbtu=('mecs_mmbtu', 'sum'),
         ghgrp_mmbtu=('ghgrp_mmbtu', 'sum'),
@@ -221,13 +223,42 @@ def model_one_year(decarb_by_sector, year):
     sector_fuel_pivot.to_csv(logs_path / "sector_fuel_breakdown.csv")
     print("Saved sector_fuel_breakdown.csv")
     """
+    
+    #========================
+    # Step 2: For EPA GHGRP facilities missing stationary combustion values, fill in their values for
+    # projected fuel demand using sector-wide averages  
+    #========================
+
+    missing_combustion_data_folder = base_path / 'inputs' / 'facilities_missing_unit_fuel_2022'
+
+    # Get average fuel consumption totals for facilities in each sector
+    average_facility_proj_demand_by_sector = results_by_facility_df.groupby('Sector')['proj_fuel_demand_mmBtu'].mean()
+    average_facility_demand_by_sector = results_by_facility_df.groupby('Sector')['fuel_demand_mmBtu'].mean()
+
+    for file_path in missing_combustion_data_folder.glob('*csv'):
+        missing_facilities_df = pd.read_csv(file_path)
+
+        if missing_facilities_df.empty:
+            continue
+
+        sector = file_path.stem.replace('_facilities', '')
+
+        missing_facilities_df['proj_fuel_demand_mmBtu'] = average_facility_proj_demand_by_sector[sector]
+        missing_facilities_df['fuel_demand_mmBtu'] = average_facility_demand_by_sector[sector]
+
+        missing_facilities_df = missing_facilities_df[['Facility Id', 'Facility Name', 'Primary NAICS Code', 'Latitude', \
+                    'Longitude', 'fuel_demand_mmBtu', 'proj_fuel_demand_mmBtu', 'inWestCensus', 'inWECC']].rename({'Primary NAICS Code': 'NAICS Code'})
+        
+        results_by_facility_df = pd.concat([results_by_facility_df, missing_facilities_df])
+
+
 
     #========================
-    # Step 2: Call the calc_discrepancies function to calculate the discrepancy in fuel consumption between that 
+    # Step 3: Call the calc_discrepancies function to calculate the discrepancy in fuel consumption between that 
     # found in Step 1 using the EPA GHGRP data and the fuel consumption totals from the EIA MECS Survey in the 
     # West Census Region. 
     #========================
-
+    
     discrepancies_by_sector = calc_discrepancies(breakdown_by_fuel_df)
 
     # Next: get a list of all facilities in the EPA FRS not in the EPA GHGRP (that we used) and disaggregate across those
@@ -237,7 +268,7 @@ def model_one_year(decarb_by_sector, year):
 
     # Filter the facilities to only those within WECC bundaries and save this as the final result
     filtered_df = results_by_facility_df[results_by_facility_df['inWECC'] == True].copy()
-    filtered_df['sector'] = filtered_df['naics'].map(get_sector)
+    filtered_df['Sector'] = filtered_df['NAICS Code'].map(get_sector)
     
     aggregated_by_lz = aggregate_and_plot.aggregate_by_lz(results_by_facility_df)
 
@@ -290,6 +321,8 @@ def calc_epa_ghgrp_fuel_consumption(pct_decarbonize_by_sector, fuel_growth_by_ca
             inWestCensus = facility_df['inWestCensus'].iloc[0]
 
             proj_facility_fuel_demand_mmBtu = 0
+            facility_fuel_demand_mmBtu = 0
+
             facility_units_grouped = facility_df.groupby('Unit Name')
 
             # Process each unit in the facility
@@ -339,17 +372,17 @@ def calc_epa_ghgrp_fuel_consumption(pct_decarbonize_by_sector, fuel_growth_by_ca
                 decarb_factor = decarb_pct / 100
 
                 unit_demand_mmBtu = unit_CO2_emissions * 1000 / avg_emissions_factor  # multiplying by 1000 to convert from mt to kg
-                unit_fuel_CO2_emissions = unit_CO2_emissions / len(unit_fuels)
-                unit_fuel_energy_demand = unit_demand_mmBtu / len(unit_fuels)
 
                 if consumes_biofuels:
                     unit_demand_mmBtu *= len(unit_fuels) / (len(unit_fuels) + 1)
-                    unit_fuel_CO2_emissions = unit_CO2_emissions / (len(unit_fuels) + 1)
-                    unit_fuel_energy_demand = unit_demand_mmBtu / (len(unit_fuels) + 1)
+                    unit_demand_mmBtu *= len(unit_fuels) / (len(unit_fuels) + 1)
 
+                CO2_emissions_by_unit_fuel = unit_CO2_emissions / len(unit_fuels)
+                fuel_demand_by_unit_fuel = unit_demand_mmBtu / len(unit_fuels)
+
+                
                 # Add detailed results to the breakdown in the logs and adjust for the model year
                 for fuel in unit_fuels:
-                    unit_fuel_demand = unit_demand_mmBtu / len(unit_fuels) if unit_demand_mmBtu != 0 else 0
 
                     # Project fuel use for fuels that are in the EIA AEO 25 projections
                     aeo_fuel_category = aeo_fuel_category_dict[fuel]
@@ -360,21 +393,23 @@ def calc_epa_ghgrp_fuel_consumption(pct_decarbonize_by_sector, fuel_growth_by_ca
                     else:
                         projected_fuel_growth =  fuel_growth_by_category_dict[aeo_fuel_category]
 
-                    projected_fuel_demand = (1 + projected_fuel_growth) * unit_fuel_demand * decarb_factor
+                    projected_fuel_demand_mmbtu = (1 + projected_fuel_growth) * fuel_demand_by_unit_fuel * decarb_factor
 
-                    breakdown_by_fuel.append({'facility_id': facility_id, 'facility_name': facility_name, 'unit_name': unit_name, 'fuel': fuel, \
-                                'naics': naics, 'latitude': latitude, 'longitude': longitude, 'co2_emissions': unit_fuel_CO2_emissions, \
-                                'fuel_demand_mmBtu': unit_fuel_energy_demand, 'proj_fuel_demand_mmBtu': projected_fuel_demand, \
+                    breakdown_by_fuel.append({'Facility Id': facility_id, 'Facility Name': facility_name, 'Unit Name': unit_name, 'Fuel': fuel, \
+                                'NAICS Code': naics, 'Latitude': latitude, 'Longitude': longitude, 'CO2_Emissions': CO2_emissions_by_unit_fuel, \
+                                'fuel_demand_mmBtu': fuel_demand_by_unit_fuel, 'proj_fuel_demand_mmBtu': projected_fuel_demand_mmbtu, \
                                 'inWestCensus': fuel_df['inWestCensus']})
                     
                     # Add the unit's fuel demand to the facility's running total for fuel demand, scaled by scale_demand
-                    proj_facility_fuel_demand_mmBtu += projected_fuel_demand
+                    proj_facility_fuel_demand_mmBtu += projected_fuel_demand_mmbtu
+                    facility_fuel_demand_mmBtu += fuel_demand_by_unit_fuel
             
             # Add the facility results to the final output result DataFrame
-            results_by_sector.append({'facility_id': facility_id, 'facility_name': facility_name, 'naics': naics, \
-                                    'latitude': latitude, 'longitude': longitude, 'proj_fuel_demand_mmBtu': proj_facility_fuel_demand_mmBtu, \
-                                    'inWestCensus': inWestCensus,'inWECC': inWECC})
+            results_by_sector.append({'Facility Id': facility_id, 'Facility Name': facility_name, 'NAICS Code': naics, 'Sector': get_sector(naics), \
+                                    'Latitude': latitude, 'Longitude': longitude, 'fuel_demand_mmBtu': facility_fuel_demand_mmBtu, 'proj_fuel_demand_mmBtu': \
+                                        proj_facility_fuel_demand_mmBtu, 'inWestCensus': inWestCensus,'inWECC': inWECC})
         
+
         # Save the results for hydrogen demand by facility for each industry
         industry_results_df = pd.DataFrame(results_by_sector)
 
