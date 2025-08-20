@@ -38,6 +38,9 @@ fuel_use_projection_path = base_path / 'inputs' / 'eia_aeo_industrial_fuel_use_p
 # CO2 emissions breakdown by sector (from DOE Pathways to Commercial Liftoff: Industrial Decarbonization Fig 2a.2)
 co2_emissions_breakdown_path = base_path / 'inputs' / 'doe_co2_emissions_breakdown_by_industry.csv'
 
+# Existing hydrogen production facilities (EPA GHGRP facilities with 'Hydrogen Production' emissions)
+existing_h2_plants_path = base_path / 'inputs' / 'existing_hydrogen_plants_wecc_2023.csv'
+
 # Create a new logs path
 logs_path = base_path / 'logs'
 if logs_path.exists():
@@ -255,11 +258,12 @@ def cached_project_sector_consumption(sector, fuel_demand, year):
     return project_sector_consumption(sector, fuel_demand, year)
 
 
-def model_one_year(high_temp_decarb_by_sector, year):
+def model_one_year(existing_h2_pct_decarb, high_temp_decarb_by_sector, year):
     """
     Models industrial hydrogen demand for a single model year.
 
     Parameters:
+    - existing_h2_pct_decarb: the percentage of existing hydrogen demand to model
     - high_temp_decarb_by_sector: A list containing the percent decarbonization of projected 
         fuel use high-temp combustion via hydrogen for each industrial sector.
     - year: The model year for which industrial hydrogen demand is being modeled.
@@ -343,6 +347,7 @@ def model_one_year(high_temp_decarb_by_sector, year):
         missing_facilities_df = missing_facilities_df[['Facility Id', 'Facility Name', 'Primary NAICS Code', 'Latitude', \
                     'Longitude', 'fuel_demand_mmBtu', 'proj_fuel_demand_mmBtu', 'inWestCensus', 'inWECC']].rename({'Primary NAICS Code': 'NAICS Code'})
         
+    
         # Add results to the running list
         results_by_facility_df = pd.concat([results_by_facility_df, missing_facilities_df])
 
@@ -388,14 +393,14 @@ def model_one_year(high_temp_decarb_by_sector, year):
             # Format to match columns in the results_by_facility_df
             extra_facilities_df = extra_facilities_df[['registry_id', 'primary_name', 'naics_code', 'latitude83', 
                   'longitude83', 'fuel_demand_mmBtu', 'proj_fuel_demand_mmBtu', 'inWestCensus', 'inWECC']].rename(
-                      columns={'primary_name': 'Facility Name', 'naics_code': 'Primary NAICS Code', 'latitude83': 'Latitude', 
+                      columns={'primary_name': 'Facility Name', 'naics_code': 'NAICS Code', 'latitude83': 'Latitude', 
                                'longitude83': 'Longitude'})
 
             # Add results to the running list
             results_by_facility_df = pd.concat([results_by_facility_df, extra_facilities_df])
 
     #========================
-    # Step 4: Filter for facilities in the WECC, convert hydrogen demand to kg, plot results, and create demand profiles
+    # Step 4: Filter for facilities in the WECC and convert hydrogen demand to kg
     #========================
 
     # Convert H2 demand from mmBtu to kg
@@ -405,6 +410,24 @@ def model_one_year(high_temp_decarb_by_sector, year):
     filtered_df = results_by_facility_df[results_by_facility_df['inWECC'] == True].copy()
     filtered_df['Sector'] = filtered_df['NAICS Code'].map(get_sector)
     
+    #========================
+    # Step 5: Include demand from existing hydrogen facilities
+    #========================
+    existing_h2_plants_df = pd.read_csv(existing_h2_plants_path)
+
+    existing_h2_plants_df['inWECC'] = True
+    existing_h2_plants_df['total_h2_demand_kg'] = existing_h2_plants_df['hydrogen_demand_kg'] * existing_h2_pct_decarb / 100
+    existing_h2_plants_df['Sector'] = 'Existing Hydrogen Plants'
+
+    existing_h2_plants_df = existing_h2_plants_df.rename(columns={'Primary NAICS Code': 'NAICS Code'})
+    existing_h2_plants_df = existing_h2_plants_df[['Facility Id', 'Facility Name', 'NAICS Code', 'Sector', 'Latitude', \
+                    'Longitude', 'hydrogen_demand_kg', 'total_h2_demand_kg', 'inWECC']]
+
+    filtered_df = pd.concat([filtered_df, existing_h2_plants_df])
+
+    #========================
+    # Step 6: Plot results, and create demand profiles
+    #========================
     aggregated_by_lz = aggregate_and_plot.aggregate_by_lz(results_by_facility_df)
 
     # Plot the filtered facilities and their corresponding hydrogen demand
@@ -603,13 +626,14 @@ def calc_epa_ghgrp_fuel_consumption(high_temp_pct_decarb_by_sector: list, fuel_g
 #====================
 # Main Function:
 #====================
-def model_industry_demand(pct_decarbonization, years):
+def model_industry_demand(existing_h2_pct_decarb, high_temp_pct_decarbonization, years):
     """
     Estimates hydrogen demand from each industrial sector over several model years, aggregated by load zone.
 
     Parameters:
-    - pct_decarbonization: List of list of percentages of each sector's non-feedstock fuel consumption to 
-        decarbonize with hydrogen. (each outer list contains paramters for one model year)
+    - existing_h2_pct_decarb: List of floats representing the percent of existing h2 demand to decarbonize in each year
+    - pct_decarbonization: List of list of percentages of each sector's fuel consumed via high-temperature combustion  
+        to decarbonize with hydrogen. (each outer list contains paramters for one model year)
     - years: List of model years 
 
     Returns:
@@ -625,9 +649,10 @@ def model_industry_demand(pct_decarbonization, years):
     for year in years:
         print(f'\nProcessing year {year}...')
 
-        pct_decarbonize_by_sector = pct_decarbonization[index]
+        pct_decarbonize_by_sector = high_temp_pct_decarbonization[index]
+        pct_decarbonize_existing_h2 = existing_h2_pct_decarb[index]
 
-        year_result = model_one_year(pct_decarbonize_by_sector, year)
+        year_result = model_one_year(pct_decarbonize_existing_h2, pct_decarbonize_by_sector, year)
         load_zone_summary = pd.concat([load_zone_summary, year_result])
 
         index += 1

@@ -16,7 +16,7 @@ from combine_results import combine
 
 # ============================================
 # Choose what sectors to model
-model_transport_h2 = True
+model_transport_h2 = False
 model_industry_h2 = True
 
 # Choose model years between 2023 and 2050 (inclusive)
@@ -52,20 +52,21 @@ def model_industry_sector():
     industry and, if desired, scale the demand.
     """
 
-    sectors = ['Iron & Steel', 'Aluminum', 'Cement', 'Chemicals', 'Refineries', 'Glass']
+    new_demand_sectors = ['Iron & Steel', 'Aluminum', 'Cement', 'Chemicals', 'Refineries', 'Glass']
 
     # ============================================
-    # Adjust the percentage of high-temp combustion fuel use decarbonization across each sector (between 0 and 100) 
-    # for each model year. 
+    # Adjust the percentage of high-temp combustion fuel use decarbonization across each new demand sector 
+    # (between 0 and 100) for each model year. 
 
     high_temp_combustion_pct_decarb = [[10, 15, 15, 15, 5, 20], 
                                         [20, 30, 30, 30, 10, 40], 
-                                        [40, 60, 60, 60, 15, 80]]
+                                        [100, 100, 100, 100, 100, 100]]
     
+    existing_h2_pct_decarb = [0, 10, 100]
     # ============================================
 
     # Call the industry module
-    lz_summary_industry = industry_h2.model_industry_demand(high_temp_combustion_pct_decarb, years)
+    lz_summary_industry = industry_h2.model_industry_demand(existing_h2_pct_decarb, high_temp_combustion_pct_decarb, years)
 
     # Temporally disaggregate into hourly profiles over the course of an average week
     build_industry_profile.build_profile(lz_summary_industry)
