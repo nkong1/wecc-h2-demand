@@ -457,32 +457,14 @@ def calc_epa_ghgrp_fuel_consumption(high_temp_pct_decarb_by_sector: list, fuel_g
 
     Returns:
     all_results_by_facility (DataFrame):
-        Contains facility-level fuel consumption and projected fuel demand. Columns include:
-            - Facility Id
-            - Facility Name
-            - NAICS Code
-            - Sector
-            - Latitude, Longitude
-            - fuel_demand_mmBtu
-            - proj_fuel_demand_mmBtu
-            - inWestCensus
-            - inWECC
+        Contains facility-level fuel consumption and projected fuel demand.
 
-    breakdown_by_fuel : list of dict
-        A detailed list of fuel consumption by individual units within each facility. Columns include:
-            - Facility Id, Facility Name, Unit Name
-            - Fuel
-            - NAICS Code
-            - Latitude, Longitude
-            - CO2_Emissions
-            - fuel_demand_mmBtu
-            - proj_fuel_demand_mmBtu
-            - inWestCensus
+    breakdown_by_fuel (list of dict):
+        A detailed list of fuel consumption by individual units within each facility. 
 
-    Notes
-    -----
+    Notes:
     - Units with missing fuel types are assumed to use Natural Gas by default.
-    - Biofuels are excluded from projected fuel demand calculations.
+    - Biofuels are excluded from fuel demand calculations.
     """
 
     # Create a dictionary mapping the fuel type to the CO2 emissions factor
@@ -541,7 +523,7 @@ def calc_epa_ghgrp_fuel_consumption(high_temp_pct_decarb_by_sector: list, fuel_g
                 unit_df['Specific Fuel Type'] = unit_df['Specific Fuel Type'].fillna('Natural Gas')       
 
                 # Retreive the unit's total CO2 emissions
-                unit_CO2_emissions = unit_df.iloc[0]['Unit CO2 emissions (non-biogenic)']
+                unit_CO2_emissions_mt = unit_df.iloc[0]['Unit CO2 emissions (non-biogenic)']
 
                 # If there are multiple fuels, find the average emissions factor and use this to
                 # calculate fuel demand in mmBtu assuming each fuel is consumed in equal quantities
@@ -556,7 +538,7 @@ def calc_epa_ghgrp_fuel_consumption(high_temp_pct_decarb_by_sector: list, fuel_g
 
                     # Skip if the fuel is a biofuel
                     if 'Biofuels' in aeo_fuel_category_dict[fuel]:
-                        consumes_biofuels = False
+                        consumes_biofuels = True
                         continue
 
                     # Get the emissions factor for the fuel if it exists
@@ -578,13 +560,13 @@ def calc_epa_ghgrp_fuel_consumption(high_temp_pct_decarb_by_sector: list, fuel_g
 
                 high_temp_decarb_factor = high_temp_decarb_pct / 100
 
-                unit_demand_mmBtu = unit_CO2_emissions * 1000 / avg_emissions_factor  # multiplying by 1000 to convert from mt to kg
+                unit_demand_mmBtu = unit_CO2_emissions_mt * 1000 / avg_emissions_factor  # multiplying by 1000 to convert from mt to kg
 
                 if consumes_biofuels:
                     unit_demand_mmBtu *= len(unit_fuels) / (len(unit_fuels) + 1)
-                    unit_demand_mmBtu *= len(unit_fuels) / (len(unit_fuels) + 1)
+                    unit_CO2_emissions_mt *= len(unit_fuels) / (len(unit_fuels) + 1)
 
-                CO2_emissions_by_unit_fuel = unit_CO2_emissions / len(unit_fuels)
+                CO2_emissions_by_unit_fuel = unit_CO2_emissions_mt / len(unit_fuels)
                 fuel_demand_by_unit_fuel = unit_demand_mmBtu / len(unit_fuels)
                 
                 # Add detailed results to the breakdown in the logs and adjust for the model year
