@@ -39,7 +39,7 @@ fuel_use_projection_path = base_path / 'inputs' / 'eia_aeo_industrial_fuel_use_p
 co2_emissions_breakdown_path = base_path / 'inputs' / 'doe_co2_emissions_breakdown_by_industry.csv'
 
 # Existing hydrogen production facilities (EPA GHGRP facilities with 'Hydrogen Production' emissions)
-existing_h2_plants_path = base_path / 'inputs' / 'existing_hydrogen_plants_wecc_2023.csv'
+existing_h2_plants_path = base_path / 'inputs' / 'wecc_existing_h2_plants_2022.csv'
 
 # Create a new logs path
 logs_path = base_path / 'logs'
