@@ -121,21 +121,21 @@ def get_high_heat_emissions_share(sector):
     return high_heat_share
     
 
-def calc_discrepancies(breakdown_by_fuel_df):
+def calc_discrepancies(results_by_facility_df):
     """
     Calculates the discrepancy between our fuel consumption estimates obtained using EPA GHGRP data
     and fuel consumption totals from the EIA MECS Survey. The comparison is made across the West Census
     Region. 
 
     Parameters:
-    - breakdown_by_fuel_df: a DataFrame containing GHGRP-derived fuel consumption estimates by each fuel
-        used in each industrial unit (a subset of each industrial facilitiy)
+    - results_by_facility_df: a DataFrame containing GHGRP-derived fuel consumption estimates by
+        industrial facility in the WECC and West Census Region (union)
 
     Returns:
     - a DataFrame containing the discrepancy in fuel demand for each sector (in MMBtu) 
     """
 
-    west_breakdown_by_fuel_df = breakdown_by_fuel_df[breakdown_by_fuel_df['inWestCensus'] == True].copy()
+    west_breakdown_by_fuel_df = results_by_facility_df[results_by_facility_df['inWestCensus'] == True].copy()
     west_breakdown_by_fuel_df['NAICS Code'] = west_breakdown_by_fuel_df['NAICS Code'].astype(str).str.split('.').str[0]
 
     west_breakdown_by_fuel_df_grouped = west_breakdown_by_fuel_df.groupby('NAICS Code')
@@ -345,7 +345,7 @@ def model_one_year(existing_h2_pct_decarb, high_temp_decarb_by_sector, year):
 
         # Format to match columns in the results_by_facility_df
         missing_facilities_df = missing_facilities_df[['Facility Id', 'Facility Name', 'Primary NAICS Code', 'Latitude', \
-                    'Longitude', 'fuel_demand_mmBtu', 'proj_fuel_demand_mmBtu', 'inWestCensus', 'inWECC']].rename({'Primary NAICS Code': 'NAICS Code'})
+                    'Longitude', 'fuel_demand_mmBtu', 'proj_fuel_demand_mmBtu', 'inWestCensus', 'inWECC']].rename(columns={'Primary NAICS Code': 'NAICS Code'})
         
         # Add results to the running list
         results_by_facility_df = pd.concat([results_by_facility_df, missing_facilities_df])
@@ -355,7 +355,7 @@ def model_one_year(existing_h2_pct_decarb, high_temp_decarb_by_sector, year):
     #========================
     
     # Calculate the discrepancy in fuel use for each sector in the West Census Region (similar to the WECC)
-    discrepancies_by_sector = calc_discrepancies(breakdown_by_fuel_df)
+    discrepancies_by_sector = calc_discrepancies(results_by_facility_df)
 
     # Iterate by sector to handle the discrepancies
     for sector in sector_by_naics.keys():
@@ -404,10 +404,13 @@ def model_one_year(existing_h2_pct_decarb, high_temp_decarb_by_sector, year):
 
     # Convert H2 demand from mmBtu to kg
     results_by_facility_df['total_h2_demand_kg'] = results_by_facility_df['proj_fuel_demand_mmBtu'] * ONE_MILLION / BTU_IN_1LB_H2 * LB_TO_KG
+    results_by_facility_df['Sector'] = results_by_facility_df['NAICS Code'].map(get_sector)
 
-    # Filter the facilities to only those within WECC bundaries and save this as the final result
+    # Save the combined results for the WECC and West Census Region for each of the sectors efore filtering
+    results_by_facility_df.to_csv(logs_path / f'{year}_west_census_and_wecc_final_demand_by_facility.csv', index=False)
+    
+    # Filter the facilities to only those within WECC bundaries
     filtered_df = results_by_facility_df[results_by_facility_df['inWECC'] == True].copy()
-    filtered_df['Sector'] = filtered_df['NAICS Code'].map(get_sector)
     
     #========================
     # Step 5: Include demand from existing hydrogen facilities
@@ -435,7 +438,7 @@ def model_one_year(existing_h2_pct_decarb, high_temp_decarb_by_sector, year):
     # Create the raster output for the 5x5km resolution of industry demand
     aggregate_and_plot.create_demand_grid(filtered_df, year)
 
-    filtered_df.to_csv(logs_path / f'{year}_final_demand_by_facility.csv', index = False)
+    filtered_df.to_csv(logs_path / f'{year}_wecc_final_demand_by_facility.csv', index = False)
     aggregated_by_lz['year'] = year
 
     return aggregated_by_lz
@@ -584,8 +587,10 @@ def calc_epa_ghgrp_fuel_consumption(high_temp_pct_decarb_by_sector: list, fuel_g
                         * get_high_heat_emissions_share(sector_name)
 
                     breakdown_by_fuel.append({'Facility Id': facility_id, 'Facility Name': facility_name, 'Unit Name': unit_name, 'Fuel': fuel, \
-                                'NAICS Code': naics, 'Latitude': latitude, 'Longitude': longitude, 'CO2_Emissions': CO2_emissions_by_unit_fuel, \
-                                'fuel_demand_mmBtu': fuel_demand_by_unit_fuel, 'proj_fuel_demand_mmBtu': projected_fuel_demand_mmbtu, \
+                                'NAICS Code': naics, 'Sector': get_sector(naics), 'Latitude': latitude, 'Longitude': longitude, 'unit_CO2_emissions': unit_CO2_emissions_mt, \
+                                'CO2_Eeissions': CO2_emissions_by_unit_fuel, \
+                                'high_temp_decarb_factor': high_temp_decarb_factor, 'high_temp_emissions_share': get_high_heat_emissions_share(sector_name), \
+                                'fuel_demand_mmBtu': fuel_demand_by_unit_fuel, 'proj_fuel_demand_mmBtu': projected_fuel_demand_mmbtu, 'avg_emissions_factor': avg_emissions_factor, \
                                 'inWestCensus': fuel_df['inWestCensus']})
                     
                     # Add the unit's fuel demand to the facility's running total for fuel demand, scaled by scale_demand

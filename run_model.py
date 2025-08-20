@@ -24,7 +24,7 @@ model_transport_h2 = False
 model_industry_h2 = True
 
 # Choose model years between 2023 and 2050 (inclusive)
-years = [2030, 2050]
+years = [2030, 2040, 2050]
 # ============================================
 
 
@@ -37,8 +37,8 @@ def model_transport_sector():
     # ============================================
     # Choose the LD and HD FCEV penetration among projected gasoline and diesel vehicle stock (as a percentage from 0 to 100)
     # The percentage of FCEV penetration is assumed to be the same as percentage of fuel use decarbonization
-    LD_FCEV_penetration = [5, 10]
-    HD_FCEV_penetration = [0, 50]
+    LD_FCEV_penetration = [0, 10, 20]
+    HD_FCEV_penetration = [0, 10, 20]
     # ============================================
 
     # Call the transport module
@@ -64,10 +64,11 @@ def model_industry_sector():
     # Adjust the percentage of high-temp combustion fuel use decarbonization across each new demand sector 
     # (between 0 and 100) for each model year. 
 
-    high_temp_combustion_pct_decarb = [[10, 15, 15, 15, 5, 20], 
-                                        [100, 100, 100, 100, 100, 100]]
+    high_temp_combustion_pct_decarb = [[0, 0, 0, 0, 0, 0], 
+                                        [10, 10, 10, 10, 10, 10],
+                                        [20, 20, 20, 20, 20, 20]]
     
-    existing_h2_pct_decarb = [0, 100]
+    existing_h2_pct_decarb = [0, 10, 20]
     # ============================================
 
     # Call the industry module
