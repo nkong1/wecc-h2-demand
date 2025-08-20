@@ -74,6 +74,8 @@ def plot(filtered_df, year):
 
     Returns: None
     """
+    filtered_df = filtered_df.copy()
+
     #  Plotting setup 
     filtered_df['Sector'] = filtered_df['Sector'].replace('Iron_and_Steel', 'Iron & Steel')
     sectors = filtered_df['Sector'].unique()
@@ -213,11 +215,11 @@ def create_demand_grid(filtered_df, year):
 
     # Ensure CRS match
     if wecc_grid.crs != facilities_gdf.crs:
-        facilities_gdf = facilities_gdf.to_crs(wecc_grid.crs)
+        wecc_grid = wecc_grid.to_crs(facilities_gdf.crs)
 
     # Spatial join: assign each facility to a grid cell
-    joined = gp.sjoin(facilities_gdf, wecc_grid, how='left', predicate='intersects')
-    
+    joined = gp.sjoin(facilities_gdf, wecc_grid, how='left', predicate='within')
+
     # Aggregate demand per grid cell
     demand_by_cell = joined.groupby('index_right')['total_h2_demand_kg'].sum().reset_index()
 
@@ -226,7 +228,7 @@ def create_demand_grid(filtered_df, year):
     result_grid['total_h2_demand_kg'] = result_grid['total_h2_demand_kg'].fillna(0)
 
     # Drop unwanted columns
-    result_grid = result_grid.drop(columns=['LD_VMT', 'HD_VMT'])
+    result_grid = result_grid.drop(columns=['LD_VMT', 'HD_VMT']).to_crs('EPSG:5070')
 
     grid_output_path = base_path.parent / 'outputs' / 'industry' / f'{year}_wecc_h2_demand_5km_resolution.gpkg'
     result_grid.to_file(grid_output_path, driver='GPKG')
