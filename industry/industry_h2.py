@@ -11,6 +11,8 @@ import os
 import shutil
 from pathlib import Path
 from industry import aggregate_and_plot 
+from functools import lru_cache
+
 
 #======================
 # File paths:
@@ -32,6 +34,9 @@ missing_combustion_data_folder = base_path / 'inputs' / 'missing_ghgrp_facilitie
 
 # Fuel use projections taken from the EIA Energy Outlook 2050 Reference Case Table 2:
 fuel_use_projection_path = base_path / 'inputs' / 'eia_aeo_industrial_fuel_use_projections.csv'
+
+# CO2 emissions breakdown by sector (from DOE Pathways to Commercial Liftoff: Industrial Decarbonization Fig 2a.2)
+co2_emissions_breakdown_path = base_path / 'inputs' / 'doe_co2_emissions_breakdown_by_industry.csv'
 
 # Create a new logs path
 logs_path = base_path / 'logs'
@@ -92,6 +97,26 @@ def get_sector(naics):
             break
     return sector
 
+def get_high_heat_emissions_share(sector):
+    """
+    Returns the share of CO2 emissions associated with high-temperature combustion 
+    relative to all combustion emissions in the given sector.
+    """
+    
+    # Read the input data from the DOE Pathways from Commercial Liftoff: Industrial Decarbonization report
+    co2_emissions_df = pd.read_csv(co2_emissions_breakdown_path)
+
+    # Filter for the input sector
+    sector_row = co2_emissions_df[co2_emissions_df['Sector'] == sector]
+    
+    # Compute total combustion (denominator)
+    total_combustion = sector_row[['low_temp_heat', 'mid_temp_heat', 'high_temp_heat', 'on_site_power']].sum(axis=1).iloc[0]
+
+    # Compute share (high-temp / total combustion)
+    high_heat_share = sector_row['high_temp_heat'].iloc[0] / total_combustion
+
+    return high_heat_share
+    
 
 def calc_discrepancies(breakdown_by_fuel_df):
     """
@@ -158,13 +183,85 @@ def calc_discrepancies(breakdown_by_fuel_df):
 
     return sector_discrepancy_df
 
+def project_sector_consumption(sector, fuel_use, year):
+    """
+    Projects the total fuel consumption for an entire given sector into the input year.
 
-def model_one_year(decarb_by_sector, year):
+    Parameters:
+    - sector: an industry sector (str)
+    - fuel use: the total fuel use in the given sector in the base year of 2022 
+    - year: a future model year (int)
+
+    Returns:
+    -  a fuel use value projected to the future year, in the same units as the input fuel use
+    """
+    mecs_fuel_data = pd.read_csv(mecs_data_path)
+
+    # Rename to match classifications used in the MECS fuel data DataFrame
+    if sector == 'Iron_and_Steel':
+        sector = 'Iron & Steel'
+
+    mecs_sector_row = (
+        mecs_fuel_data
+        .drop(columns=['EIA Sector:', 'NAICS Code', 'Total', 'Net Electricity', 'Other', 'Fossil Fuels Total'])
+        .replace('*', 0)                               # turn '*' into 0
+        .apply(pd.to_numeric, errors='coerce')         # force all remaining values numeric
+        .groupby(mecs_fuel_data['Sector Category'])    # group by sector
+        .sum(numeric_only=True)                        # sum only numeric cols
+        .loc[sector]                                  # first row
+    )    
+    sector_fuel_consumption = mecs_sector_row[1:]
+
+    # Create a dictionary mapping each MECS fuel type to its corresponding AEO25 fuel category
+    emissions_factors_df = pd.read_excel(fuel_emissions_factor_path)
+    emissions_factors_df = emissions_factors_df[~emissions_factors_df['EIA MECS Category'].isna()].groupby('EIA MECS Category').first().reset_index()
+
+    mecs_to_aeo_fuel_category_map = (
+        emissions_factors_df[['EIA MECS Category', 'EIA AEO Category']]
+        .set_index('EIA MECS Category')['EIA AEO Category']
+        .to_dict()
+    )
+
+    # Get the fuel use projections by AEO25 category
+    fuel_use_projections_df = pd.read_csv(fuel_use_projection_path, header=4)
+    fuel_use_by_category_filtered = fuel_use_projections_df[fuel_use_projections_df['Year'].isin([2022, year])].reset_index(drop=True)
+
+    # Create a dictionary mapping each fuel category to the relative growth it experiences from 2022 to the model year
+    fuel_growth_by_category_dict = {
+        col: (fuel_use_by_category_filtered[col].iloc[1] - fuel_use_by_category_filtered[col].iloc[0]) / fuel_use_by_category_filtered[col].iloc[0]
+        for col in fuel_use_by_category_filtered.columns if col != 'Year'
+    }
+
+    # Get the scaling factor from 2022 to the input year for the sector
+    base_year_fuel_use = 0
+    projected_fuel_use = 0
+
+    for mecs_fuel_type in sector_fuel_consumption.index:
+        fuel_use_mmbtu = sector_fuel_consumption[mecs_fuel_type] * 1e6
+
+        if fuel_use_mmbtu != 0:
+            base_year_fuel_use += fuel_use_mmbtu
+
+            aeo_fuel_type = mecs_to_aeo_fuel_category_map[mecs_fuel_type]
+            projected_fuel_use += fuel_use_mmbtu * (1 + fuel_growth_by_category_dict[aeo_fuel_type])
+
+    growth_factor = projected_fuel_use / base_year_fuel_use
+
+    return growth_factor * fuel_use
+
+# Wrap the function so it can be cached
+@lru_cache(maxsize=None)
+def cached_project_sector_consumption(sector, fuel_demand, year):
+    return project_sector_consumption(sector, fuel_demand, year)
+
+
+def model_one_year(high_temp_decarb_by_sector, year):
     """
     Models industrial hydrogen demand for a single model year.
 
     Parameters:
-    - decarb_by_sector: A list containing the percent decarbonization via hydrogen for each industrial sector.
+    - high_temp_decarb_by_sector: A list containing the percent decarbonization of projected 
+        fuel use high-temp combustion via hydrogen for each industrial sector.
     - year: The model year for which industrial hydrogen demand is being modeled.
 
     Returns:
@@ -187,7 +284,7 @@ def model_one_year(decarb_by_sector, year):
     }
 
     # Call the helper function to perform calculcations and retrieve results
-    results_by_facility, breakdown_by_fuel = calc_epa_ghgrp_fuel_consumption(decarb_by_sector, fuel_growth_by_category_dict)
+    results_by_facility, breakdown_by_fuel = calc_epa_ghgrp_fuel_consumption(high_temp_decarb_by_sector, fuel_growth_by_category_dict)
 
     # Save output lists as DataFrames
     results_by_facility_df = pd.DataFrame(results_by_facility)
@@ -263,10 +360,10 @@ def model_one_year(decarb_by_sector, year):
 
         # If we overestimate fuel consumption, we adjust by scaling down our estimates uniformly across all facilities in that sector
         if discrepancy_mmbtu < 0:
-            # Get the scaling ratio
+            # Get the scaling factor
             mecs_to_ghgrp_ratio = sector_row['mecs_to_ghgrp_ratio']
 
-            # Scale down fuel demand
+            # Scale down fuel demand (and projected fuel demand) accordingly
             results_by_facility_df.loc[results_by_facility_df['Sector'] == sector, 'fuel_demand_mmBtu'] *= mecs_to_ghgrp_ratio
             results_by_facility_df.loc[results_by_facility_df['Sector'] == sector, 'proj_fuel_demand_mmBtu'] *= mecs_to_ghgrp_ratio
 
@@ -279,10 +376,13 @@ def model_one_year(decarb_by_sector, year):
             # Fill in the fuel demand
             extra_facilities_df['fuel_demand_mmBtu'] = discrepancy_mmbtu / len(extra_facilities_df)
 
-            # Use the fuel demand and decarbonization percentage to get projected fuel demand
-            decarb_pct = decarb_by_sector[list(sector_by_naics.keys()).index(sector)]
-            extra_facilities_df['proj_fuel_demand_mmBtu'] = extra_facilities_df['fuel_demand_mmBtu'] * decarb_pct / 100
+            high_temp_decarb_pct = high_temp_decarb_by_sector[list(sector_by_naics.keys()).index(sector)]
 
+            # Apply cached function to the DataFrame
+            extra_facilities_df['proj_fuel_demand_mmBtu'] = extra_facilities_df['fuel_demand_mmBtu'].apply(
+                lambda x: cached_project_sector_consumption(sector, x, year) * high_temp_decarb_pct / 100 * \
+                    get_high_heat_emissions_share(sector)
+            )
             extra_facilities_df['inWestCensus'] = True
 
             # Format to match columns in the results_by_facility_df
@@ -318,17 +418,57 @@ def model_one_year(decarb_by_sector, year):
 
     return aggregated_by_lz
 
-def calc_epa_ghgrp_fuel_consumption(pct_decarbonize_by_sector, fuel_growth_by_category_dict):
-    """
-    Returns
-    """
 
-    # Create a dictionary mapping each fuel type to a broader fuel category for which we have fuel consumption projections
-    aeo_fuel_category_dict = fuel_emissions_df.set_index('Fuel Type')['EIA AEO Category'].to_dict() 
+def calc_epa_ghgrp_fuel_consumption(high_temp_pct_decarb_by_sector: list, fuel_growth_by_category_dict: dict):
+    """
+    Estimates fuel consumption for industrial facilities in the West Census Region and the WECC
+    based on CO2 emissions, fuel type, and decarbonization projections. Generates both facility-level 
+    totals and detailed unit-level breakdowns by facility units and fuel types.
+
+    Parameters:
+    high_temp_pct_decarb_by_sector (list of float):
+        The percent decarbonization of projected high-temp combustion fuel-use applied to each sector. 
+        The order should correspond to the keys in 'sector_by_naics'
+    fuel_growth_by_category_dict (dict):
+        A mapping of EIA fuel categories to projected growth factors between the baseline year 
+        (2022) and the model year.
+
+    Returns:
+    all_results_by_facility (DataFrame):
+        Contains facility-level fuel consumption and projected fuel demand. Columns include:
+            - Facility Id
+            - Facility Name
+            - NAICS Code
+            - Sector
+            - Latitude, Longitude
+            - fuel_demand_mmBtu
+            - proj_fuel_demand_mmBtu
+            - inWestCensus
+            - inWECC
+
+    breakdown_by_fuel : list of dict
+        A detailed list of fuel consumption by individual units within each facility. Columns include:
+            - Facility Id, Facility Name, Unit Name
+            - Fuel
+            - NAICS Code
+            - Latitude, Longitude
+            - CO2_Emissions
+            - fuel_demand_mmBtu
+            - proj_fuel_demand_mmBtu
+            - inWestCensus
+
+    Notes
+    -----
+    - Units with missing fuel types are assumed to use Natural Gas by default.
+    - Biofuels are excluded from projected fuel demand calculations.
+    """
 
     # Create a dictionary mapping the fuel type to the CO2 emissions factor
     fuel_emissions_df = pd.read_excel(fuel_emissions_factor_path)
     fuel_emissions_dict = fuel_emissions_df.set_index('Fuel Type')['kg CO2 per mmBtu'].to_dict()
+
+    # Create a dictionary mapping each fuel type to a broader fuel category for which we have fuel consumption projections
+    aeo_fuel_category_dict = fuel_emissions_df.set_index('Fuel Type')['EIA AEO Category'].to_dict() 
 
     # Create a DataFrame for the results for hydrogen demand from each facility
     all_results_by_facility = pd.DataFrame()
@@ -412,9 +552,9 @@ def calc_epa_ghgrp_fuel_consumption(pct_decarbonize_by_sector, fuel_growth_by_ca
                 
                 avg_emissions_factor = emissions_factor_total / len(unit_fuels) # emissions factor is in metric tons
 
-                decarb_pct = pct_decarbonize_by_sector[list(sector_by_naics.keys()).index(sector_name)]
+                high_temp_decarb_pct = high_temp_pct_decarb_by_sector[list(sector_by_naics.keys()).index(sector_name)]
 
-                decarb_factor = decarb_pct / 100
+                high_temp_decarb_factor = high_temp_decarb_pct / 100
 
                 unit_demand_mmBtu = unit_CO2_emissions * 1000 / avg_emissions_factor  # multiplying by 1000 to convert from mt to kg
 
@@ -424,21 +564,20 @@ def calc_epa_ghgrp_fuel_consumption(pct_decarbonize_by_sector, fuel_growth_by_ca
 
                 CO2_emissions_by_unit_fuel = unit_CO2_emissions / len(unit_fuels)
                 fuel_demand_by_unit_fuel = unit_demand_mmBtu / len(unit_fuels)
-
                 
                 # Add detailed results to the breakdown in the logs and adjust for the model year
                 for fuel in unit_fuels:
-
                     # Project fuel use for fuels that are in the EIA AEO 25 projections
                     aeo_fuel_category = aeo_fuel_category_dict[fuel]
 
                     if aeo_fuel_category == np.nan: 
-                        print(f'projected 0 for {fuel}')
+                        print(f'projected 0% growth for {fuel}')
                         projected_fuel_growth = 0
                     else:
                         projected_fuel_growth =  fuel_growth_by_category_dict[aeo_fuel_category]
 
-                    projected_fuel_demand_mmbtu = (1 + projected_fuel_growth) * fuel_demand_by_unit_fuel * decarb_factor
+                    projected_fuel_demand_mmbtu = (1 + projected_fuel_growth) * fuel_demand_by_unit_fuel * high_temp_decarb_factor \
+                        * get_high_heat_emissions_share(sector_name)
 
                     breakdown_by_fuel.append({'Facility Id': facility_id, 'Facility Name': facility_name, 'Unit Name': unit_name, 'Fuel': fuel, \
                                 'NAICS Code': naics, 'Latitude': latitude, 'Longitude': longitude, 'CO2_Emissions': CO2_emissions_by_unit_fuel, \
@@ -454,16 +593,12 @@ def calc_epa_ghgrp_fuel_consumption(pct_decarbonize_by_sector, fuel_growth_by_ca
                                     'Latitude': latitude, 'Longitude': longitude, 'fuel_demand_mmBtu': facility_fuel_demand_mmBtu, 'proj_fuel_demand_mmBtu': \
                                         proj_facility_fuel_demand_mmBtu, 'inWestCensus': inWestCensus,'inWECC': inWECC})
         
-
         # Save the results for hydrogen demand by facility for each industry
         industry_results_df = pd.DataFrame(results_by_sector)
 
         all_results_by_facility = pd.concat([all_results_by_facility, industry_results_df])
 
-    
     return all_results_by_facility, breakdown_by_fuel
-
-
 
 #====================
 # Main Function:

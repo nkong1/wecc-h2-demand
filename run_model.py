@@ -33,7 +33,7 @@ def model_transport_sector():
     # ============================================
     # Choose the LD and HD FCEV penetration among projected gasoline and diesel vehicle stock (as a percentage from 0 to 100)
     # The percentage of FCEV penetration is assumed to be the same as percentage of fuel decarbonization
-    LD_FCEV_penetration = [5, 0, 15]
+    LD_FCEV_penetration = [5, 0, 10]
     HD_FCEV_penetration = [0, 20, 50]
     # ============================================
 
@@ -48,23 +48,24 @@ def model_industry_sector():
     """
     Contains user input parameters for industry and runs the industry-side model. The model is currently capable of
     modeling demand from 6 hard-to-decarbonize industries: Iron & Steel, Aluminum, Cement, Chemicals, Glass, and 
-    Fertilizer. Adjust the percentage of fuel decarbonization via hydrogen in each industry and, if desired, 
-    scale the demand.
+    Fertilizer. Adjust the percent decarbonization of projected high-temp combustion fuel use via hydrogen in each 
+    industry and, if desired, scale the demand.
     """
 
     sectors = ['Iron & Steel', 'Aluminum', 'Cement', 'Chemicals', 'Refineries', 'Glass']
 
     # ============================================
-    # Adjust the percentage of fuel decarbonization across each sector (between 0 and 100) for each model year
-    # A value of 0 means that the corresponding sector will not be modeled
-    pct_decarbonization = [[10, 15, 15, 15, 20, 20], 
-                           [20, 30, 30, 30, 40, 40], 
-                           [40, 60, 60, 60, 80, 80]]
+    # Adjust the percentage of high-temp combustion fuel use decarbonization across each sector (between 0 and 100) 
+    # for each model year. 
+
+    high_temp_combustion_pct_decarb = [[10, 15, 15, 15, 5, 20], 
+                                        [20, 30, 30, 30, 10, 40], 
+                                        [40, 60, 60, 60, 15, 80]]
     
     # ============================================
 
     # Call the industry module
-    lz_summary_industry = industry_h2.model_industry_demand(pct_decarbonization, years)
+    lz_summary_industry = industry_h2.model_industry_demand(high_temp_combustion_pct_decarb, years)
 
     # Temporally disaggregate into hourly profiles over the course of an average week
     build_industry_profile.build_profile(lz_summary_industry)

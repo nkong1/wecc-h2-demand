@@ -1,4 +1,4 @@
-﻿EIA Sector:,Sector Category,NAICS Code,Total,Net Electricity,Residual Fuel Oil,Distillate Fuel Oil,Natural Gas,HGL (excluding natural gasoline),Coal,Coke and Breeze,Other (f),Fossil Fuels Total
+﻿EIA Sector:,Sector Category,NAICS Code,Total,Net Electricity,Residual Fuel Oil,Distillate Fuel Oil,Natural Gas,HGL (excluding natural gasoline),Coal,Coke and Breeze,Other,Fossil Fuels Total
 Iron and Steel Mills and Ferroalloys,Iron & Steel,331110,17,7,0,*,9,*,*,0,*,9
 Iron Foundries,Iron & Steel,331511,2,*,0,*,1,*,0,*,*,1
 Steel Products from Purchased Steel,Iron & Steel,3312,7,2,0,*,5,*,0,0,*,5
