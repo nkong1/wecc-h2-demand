@@ -57,7 +57,6 @@ load_zone_output_path = base_path.parent / 'outputs' / 'industry' / 'demand_by_l
 ONE_MILLION = 10 ** 6
 BTU_IN_1LB_H2 = 61013
 LB_TO_KG = 0.453592
-ONE_MILLION = 10 ** 6
 
 sector_by_naics = {'Iron_and_Steel': [331110, 331511, 3312], 'Aluminum': [3313], 'Cement': [327310],
                    'Chemicals': [325], 'Refineries': [324110], 'Glass': [ 327211, 
@@ -154,6 +153,7 @@ def calc_discrepancies(results_by_facility_df):
         except:
             ghgrp_fuel_total_mmbtu = 0
         
+        # Convert from trillion btu to mmbtu
         mecs_fuel_total_mmbtu = mecs_data.loc[naics]['Fossil Fuels Total'] * 1e6
 
         discrepancy_mmbtu = int(mecs_fuel_total_mmbtu) - ghgrp_fuel_total_mmbtu

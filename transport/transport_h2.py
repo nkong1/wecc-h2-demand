@@ -82,11 +82,6 @@ def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years
         DIESEL_FROM_ONROAD_TRANSPORT = assumptions[4]
         GASOLINE_FROM_ONROAD_TRANSPORT = assumptions[5]
 
-        print(year)
-        print(LD_FCEV_TO_ICEV_efficiency, HD_FCEV_TO_ICEV_efficiency)
-        print(rel_change_LD_fuel_consumption, rel_change_HD_fuel_consumption)
-        print(DIESEL_FROM_ONROAD_TRANSPORT, GASOLINE_FROM_ONROAD_TRANSPORT)
-
         # Create a dictionary to store the hydrogen demand for each state
         # Structure: {StateFips: [LD_demand, HD_demand, total_demand]}
         state_h2_demand = {}
