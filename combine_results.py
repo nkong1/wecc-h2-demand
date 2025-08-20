@@ -1,8 +1,8 @@
 """
-This module is only called when both the industry and transport parts of the model are run.
+This module is only called when both the industry and on-transport parts of the model are run.
 
-For each load zone, this module combines the hydrogen demand results from industry and transport 
-into a single csv file showing total hourly demand over each model year. 
+For each load zone, this module combines the hydrogen demand profiles from on-road transport and industry.
+It also combines 5x5km spatial distribution of on-road transport demand with that of industry demand.
 """
 
 import pandas as pd

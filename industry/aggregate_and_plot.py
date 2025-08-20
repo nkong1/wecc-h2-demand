@@ -1,7 +1,9 @@
 """
-This file contains two functions: filter and plot. Filter intersects the DataFrame containing hydrogen demand by facility
-with the WECC shp file to filter our facilities that do not fall within WECC boundaries. The plot function, which is called by
-default, plots the hydrogen demand by facility on the load zone map.
+This file contains three functions: aggregate_by_lz, plot, and create_demand_grid. aggregate_by_lz 
+aggregates the hydrogen demand from all industrial facilities within a load zone and returns the 
+aggregated results. The plot function plots the hydrogen demand by facility onto a map of the WECC.
+The create_dmeand_grid function saves a .gpkg file with the total industrial hydrogen demand in the WECC, 
+broken down into 5x5km squares for a high spatial resolution output.
 """
 
 import geopandas as gp
