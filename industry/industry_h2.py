@@ -347,7 +347,6 @@ def model_one_year(existing_h2_pct_decarb, high_temp_decarb_by_sector, year):
         missing_facilities_df = missing_facilities_df[['Facility Id', 'Facility Name', 'Primary NAICS Code', 'Latitude', \
                     'Longitude', 'fuel_demand_mmBtu', 'proj_fuel_demand_mmBtu', 'inWestCensus', 'inWECC']].rename({'Primary NAICS Code': 'NAICS Code'})
         
-    
         # Add results to the running list
         results_by_facility_df = pd.concat([results_by_facility_df, missing_facilities_df])
 
