@@ -50,8 +50,8 @@ def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years
     print('\n===================\nTRANSPORT H2 DEMAND\n==================')
 
     # Conversion factors
-    GASOLINE_TO_H2 = 1.0  # 1 kg H2 = 1 gallon gasoline (energy equivalence)
-    DIESEL_TO_H2 = 1.0 / 0.9 # 1 kg H2 = 0.9 gallons diesel (energy equivalence)
+    GAL_GASOLINE_TO_KG_H2 = 1.0  # 1 kg H2 = 1 gallon gasoline (energy equivalence)
+    GAL_DIESEL_TO_KG_H2 = 1.0 / 0.9 # 1 kg H2 = 0.9 gallons diesel (energy equivalence)
 
     # Load fuel consumption data by state (2023 data from the EIA)
     fuel_data = pd.read_excel(fuel_data_path)
@@ -82,6 +82,11 @@ def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years
         DIESEL_FROM_ONROAD_TRANSPORT = assumptions[4]
         GASOLINE_FROM_ONROAD_TRANSPORT = assumptions[5]
 
+        print(year)
+        print(LD_FCEV_TO_ICEV_efficiency, HD_FCEV_TO_ICEV_efficiency)
+        print(rel_change_LD_fuel_consumption, rel_change_HD_fuel_consumption)
+        print(DIESEL_FROM_ONROAD_TRANSPORT, GASOLINE_FROM_ONROAD_TRANSPORT)
+
         # Create a dictionary to store the hydrogen demand for each state
         # Structure: {StateFips: [LD_demand, HD_demand, total_demand]}
         state_h2_demand = {}
@@ -98,7 +103,7 @@ def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years
 
             # Narrow down from transport fuel consumption to on-road transport fuel consumption
             ref_gas_gallons *= GASOLINE_FROM_ONROAD_TRANSPORT
-            ref_diesel_gallons *= GASOLINE_FROM_ONROAD_TRANSPORT
+            ref_diesel_gallons *= DIESEL_FROM_ONROAD_TRANSPORT
 
             # Project the gas/diesel fuel consumption from on-road transport into the model year
             gas_gallons = ref_gas_gallons * (1 + rel_change_LD_fuel_consumption)
@@ -110,9 +115,9 @@ def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years
 
             # Convert fuel offset to hydrogen demand (accounting for FCEV efficiency)
             ld_h2_demand = gas_offset_gallons * \
-                GASOLINE_TO_H2 / LD_FCEV_TO_ICEV_efficiency
+                GAL_GASOLINE_TO_KG_H2 / LD_FCEV_TO_ICEV_efficiency
             hd_h2_demand = diesel_offset_gallons * \
-                DIESEL_TO_H2 / HD_FCEV_TO_ICEV_efficiency
+                GAL_DIESEL_TO_KG_H2 / HD_FCEV_TO_ICEV_efficiency
             total_h2 = ld_h2_demand + hd_h2_demand
 
             # Add results to the dictionary
