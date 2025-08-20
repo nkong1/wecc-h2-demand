@@ -1,0 +1,6 @@
+Facility Id,FRS Id,Facility Name_x,Latitude,Longitude,Unit Name,Primary NAICS Code_y,Unit CO2 emissions (non-biogenic),Specific Fuel Type,inWECC,inWestCensus
+1003562,110040947820.0,ALCOA INTALCO WORKS,48.8455,-122.7055,CP-Main_Metered_Line_Into_Intalco,331313.0,1385.4,Natural Gas (Weighted U.S. Average),True,True
+1013359,110000467539.0,Golden Aluminum Inc.,40.09581,-104.80277,GP-Facility Wide,331315.0,25136.0,Natural Gas (Weighted U.S. Average),True,True
+1002056,110043786285.0,Kaiser Aluminum Washington,47.687074,-117.212673,CP-Plant Gas Supply Line,331315.0,124312.8,Natural Gas (Weighted U.S. Average),True,True
+1002056,110043786285.0,Kaiser Aluminum Washington,47.687074,-117.212673,CP-Plant Gas Supply Line,331315.0,124312.8,Propane,True,True
+1005588,110000479312.0,VISTA METALS CORPORATION,34.0946,-117.51326,GP- Combustion Units,331314.0,34186.2,Natural Gas (Weighted U.S. Average),True,True

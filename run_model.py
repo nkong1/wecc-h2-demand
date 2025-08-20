@@ -20,7 +20,7 @@ model_transport_h2 = False
 model_industry_h2 = True
 
 # Choose model years between 2023 and 2050 (inclusive)
-years = [2030, 2040, 2050]
+years = [2030, 2050]
 # ============================================
 
 
@@ -33,8 +33,8 @@ def model_transport_sector():
     # ============================================
     # Choose the LD and HD FCEV penetration among projected gasoline and diesel vehicle stock (as a percentage from 0 to 100)
     # The percentage of FCEV penetration is assumed to be the same as percentage of fuel decarbonization
-    LD_FCEV_penetration = [5, 0, 10]
-    HD_FCEV_penetration = [0, 20, 50]
+    LD_FCEV_penetration = [5, 10]
+    HD_FCEV_penetration = [0, 50]
     # ============================================
 
     # Call the transport module
@@ -47,9 +47,10 @@ def model_transport_sector():
 def model_industry_sector():
     """
     Contains user input parameters for industry and runs the industry-side model. The model is currently capable of
-    modeling demand from 6 hard-to-decarbonize industries: Iron & Steel, Aluminum, Cement, Chemicals, Glass, and 
-    Fertilizer. Adjust the percent decarbonization of projected high-temp combustion fuel use via hydrogen in each 
-    industry and, if desired, scale the demand.
+    modeling demand from 6 hard-to-decarbonize industries: Iron & Steel, Aluminum, Cement, Chemicals, Refineries, and
+    Glass, in addition to existing demand from hydrogen production plants. Adjust the percent decarbonization of 
+    projected high-temp combustion fuel use via hydrogen in each industry. For the existing demand, adjust the percentage
+    of existing hydrogen production to include in the model outputs (helpful for modeling zero-emissions hydrogen scenarios).
     """
 
     new_demand_sectors = ['Iron & Steel', 'Aluminum', 'Cement', 'Chemicals', 'Refineries', 'Glass']
@@ -59,10 +60,9 @@ def model_industry_sector():
     # (between 0 and 100) for each model year. 
 
     high_temp_combustion_pct_decarb = [[10, 15, 15, 15, 5, 20], 
-                                        [20, 30, 30, 30, 10, 40], 
                                         [100, 100, 100, 100, 100, 100]]
     
-    existing_h2_pct_decarb = [0, 10, 100]
+    existing_h2_pct_decarb = [0, 100]
     # ============================================
 
     # Call the industry module
