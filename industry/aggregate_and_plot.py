@@ -29,7 +29,7 @@ def aggregate_by_lz(facility_df):
     Returns:
     A DataFrame displaying the total hydrogen demand across all facilities in each WECC load zone
     """
-
+    
     # Filter out any facilities with zero H2 demand 
     results_by_facility_df = facility_df[facility_df['total_h2_demand_kg'] > 0].copy()
 
@@ -42,8 +42,8 @@ def aggregate_by_lz(facility_df):
         load_zones.set_crs("EPSG:4326", inplace=True)
     facilities_gdf = facilities_gdf.to_crs(load_zones.crs)
 
-    # Spatial join: to filter out facilities not in the WECC
-    facilities_in_zones = gp.sjoin(
+    # Spatial join to get load areas
+    facilities_gdf = gp.sjoin(
         facilities_gdf, 
         load_zones[['LOAD_AREA', 'geometry']],  
         how='inner',
@@ -51,10 +51,10 @@ def aggregate_by_lz(facility_df):
     ).copy()
 
     # Keep only desired columns
-    facilities_in_zones = facilities_in_zones[results_by_facility_df.columns.tolist() + ['LOAD_AREA', 'geometry']]
+    facilities_gdf = facilities_gdf[results_by_facility_df.columns.tolist() + ['LOAD_AREA', 'geometry']]
 
     # Create summary grouped by LOAD_AREA
-    load_zone_summary = facilities_in_zones.groupby('LOAD_AREA', as_index=False)[
+    load_zone_summary = facilities_gdf.groupby('LOAD_AREA', as_index=False)[
         ['total_h2_demand_kg']
     ].sum()
 

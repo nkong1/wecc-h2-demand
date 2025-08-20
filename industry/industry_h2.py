@@ -430,7 +430,7 @@ def model_one_year(existing_h2_pct_decarb, high_temp_decarb_by_sector, year):
     #========================
     # Step 6: Plot results, and create demand profiles
     #========================
-    aggregated_by_lz = aggregate_and_plot.aggregate_by_lz(results_by_facility_df)
+    aggregated_by_lz = aggregate_and_plot.aggregate_by_lz(filtered_df)
 
     # Plot the filtered facilities and their corresponding hydrogen demand
     aggregate_and_plot.plot(filtered_df, year)
