@@ -140,6 +140,19 @@ def calc_discrepancies(results_by_facility_df):
     west_breakdown_by_fuel_df_grouped = west_breakdown_by_fuel_df.groupby('NAICS Code')
     mecs_data = pd.read_csv(mecs_data_path, index_col='NAICS Code', dtype={"NAICS Code": str})
 
+    mecs_data = (
+        mecs_data
+        .replace('*', 0.25)                          # turn '*' into 0.25
+        .dropna(subset=['Sector Category'])          # remove rows missing Sector Category
+        .apply(pd.to_numeric, errors='ignore')       # convert all numeric-looking cols to numbers
+    )
+    
+
+    mecs_data['total_fossil_mmbtu'] = (mecs_data['Residual Fuel Oil'] + mecs_data['Distillate Fuel Oil'] + mecs_data['Natural Gas'] + \
+        mecs_data['HGL (excluding natural gasoline)'] + mecs_data['Coal'] + mecs_data['Coke and Breeze']) * 1e6
+
+    print(mecs_data.iloc[:, :])
+
     discrepancy_list = []
 
     all_naics = [str(code) for codes in sector_by_naics.values() for code in codes]
@@ -154,7 +167,7 @@ def calc_discrepancies(results_by_facility_df):
             ghgrp_fuel_total_mmbtu = 0
         
         # Convert from trillion btu to mmbtu
-        mecs_fuel_total_mmbtu = mecs_data.loc[naics]['Fossil Fuels Total'] * 1e6
+        mecs_fuel_total_mmbtu = mecs_data.loc[naics, 'total_fossil_mmbtu']
 
         discrepancy_mmbtu = int(mecs_fuel_total_mmbtu) - ghgrp_fuel_total_mmbtu
         if ghgrp_fuel_total_mmbtu != 0:
@@ -206,11 +219,11 @@ def project_sector_consumption(sector, fuel_use, year):
 
     mecs_sector_row = (
         mecs_fuel_data
-        .drop(columns=['EIA Sector:', 'NAICS Code', 'Total', 'Net Electricity', 'Other', 'Fossil Fuels Total'])
-        .replace('*', 0)                               # turn '*' into 0
-        .apply(pd.to_numeric, errors='coerce')         # force all remaining values numeric
+        .drop(columns=['EIA Sector:', 'NAICS Code', 'Total', 'Net Electricity', 'Other'])
+        .replace('*', 0.25)                               # turn '*' into 0.25
+        .apply(pd.to_numeric, errors='coerce')                            # force all remaining values numeric
         .groupby(mecs_fuel_data['Sector Category'])    # group by sector
-        .sum(numeric_only=True)                        # sum only numeric cols
+        .sum()                                         # sum
         .loc[sector]                                  # first row
     )    
     sector_fuel_consumption = mecs_sector_row[1:]
