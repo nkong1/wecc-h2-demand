@@ -144,14 +144,12 @@ def calc_discrepancies(results_by_facility_df):
         mecs_data
         .replace('*', 0.25)                          # turn '*' into 0.25
         .dropna(subset=['Sector Category'])          # remove rows missing Sector Category
-        .apply(pd.to_numeric, errors='ignore')       # convert all numeric-looking cols to numbers
+        .apply(pd.to_numeric, errors='coerce')       # convert all numeric-looking cols to numbers
     )
     
 
     mecs_data['total_fossil_mmbtu'] = (mecs_data['Residual Fuel Oil'] + mecs_data['Distillate Fuel Oil'] + mecs_data['Natural Gas'] + \
         mecs_data['HGL (excluding natural gasoline)'] + mecs_data['Coal'] + mecs_data['Coke and Breeze']) * 1e6
-
-    print(mecs_data.iloc[:, :])
 
     discrepancy_list = []
 
@@ -339,9 +337,11 @@ def model_one_year(existing_h2_pct_decarb, high_temp_decarb_by_sector, year):
     # Step 2: For GHGRP facilities with missing stationary combustion data, fill in fuel demand using sector-wide averages.
     #========================
 
-    # Get average fuel consumption totals by facility for each sector
-    average_facility_proj_demand_by_sector = results_by_facility_df.groupby('Sector')['proj_fuel_demand_mmBtu'].mean()
-    average_facility_demand_by_sector = results_by_facility_df.groupby('Sector')['fuel_demand_mmBtu'].mean()
+    # Get WECC-wide average fuel consumption totals by facility for each sector
+    wecc_results_by_facility = results_by_facility_df[results_by_facility_df['inWECC'] == True]
+
+    average_facility_proj_demand_by_sector = wecc_results_by_facility.groupby('Sector')['proj_fuel_demand_mmBtu'].mean()
+    average_facility_demand_by_sector = wecc_results_by_facility.groupby('Sector')['fuel_demand_mmBtu'].mean()
 
     # Iterate through the files containing the facilities with missing data for each sector
     for file_path in missing_combustion_data_folder.glob('*csv'):
