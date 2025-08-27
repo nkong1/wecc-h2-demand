@@ -1,15 +1,5 @@
 """
 Use this file to run the WECC hydrogen demand model and adjust inputs. 
-
-This model generates hydrogen demand profiles from the on-road transport and industry end-use sectors at an hourly resolution 
-over one or more model years. These profiles are generated for 47 load zones in the SWITCH-WECC model (excluding 2 load zones 
-in Canada and one in Mexico). 
-
-The sectors are broken down by vehicle type (light-duty/heavy-duty) and by industry. The percentage of fuel decarbonization 
-across LD on-road transport, HD on-road transport, and industry can be modified for each model year. For industry, this 
-percentage is specifically the percent decarbonization of high-temperature combustion fuel consumption (the type of fuel use 
-that is most promising for hydrogen). Existing hydrogen demand can also be modeled. LD on-road transport is defined as gasoline 
-vehicles, and HD on-road transport is defined as diesel-powered vehicles.
 """
 
 from pathlib import Path
@@ -38,7 +28,7 @@ def model_transport_sector():
     # Choose the LD and HD FCEV penetration among projected gasoline and diesel vehicle stock (as a percentage from 0 to 100)
     # The percentage of FCEV penetration is assumed to be the same as percentage of fuel use decarbonization
     LD_FCEV_penetration = [0, 0, 0]
-    HD_FCEV_penetration = [5, 10, 20]
+    HD_FCEV_penetration = [10, 20, 50]
     # ============================================
 
     # Call the transport module
@@ -64,11 +54,11 @@ def model_industry_sector():
     # Adjust the percentage of high-temp combustion fuel use decarbonization across each new demand sector 
     # (between 0 and 100) for each model year. 
 
-    high_temp_combustion_pct_decarb = [[5, 5, 5, 5, 5, 5], 
-                                        [10, 10, 10, 10, 10, 10],
-                                        [20, 20, 20, 20, 20, 20]]
+    high_temp_combustion_pct_decarb = [[10, 10, 10, 10, 10, 10], 
+                                        [40, 40, 40, 40, 40, 40],
+                                        [70, 70, 70, 70, 70, 70]]
     
-    existing_h2_pct_decarb = [5, 10, 20]
+    existing_h2_pct_decarb = [10, 20, 70]
     # ============================================
 
     # Call the industry module
@@ -106,3 +96,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

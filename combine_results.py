@@ -46,12 +46,22 @@ def combine_demand_grids():
         industry_grid = gpd.read_file(industry_grid_path)
         transport_grid = gpd.read_file(transport_profiles_path / industry_grid_path.name)
 
+        print(f'Combining grids for year {year}...')
+        print(f'Industry grid path is {industry_grid_path}')
+        print(f'Transport grid path is {transport_profiles_path / industry_grid_path.name}')
+        print(f'Industry grid length: {industry_grid.shape[0]}')
+
+        print(f'Transport crs: {transport_grid.crs}')
+        print(f'Industry crs: {industry_grid.crs}')
+
         # Merge by geometry
         combined = industry_grid.merge(
             transport_grid[['geometry', 'total_h2_demand_kg']],
             on='geometry',
-            how='outer',
+            how='inner',
             suffixes=('_industry', '_transport'))
+
+        print(f'Combined grid length: {combined.shape[0]}')
 
         # Compute total demand
         combined['total_h2_demand_kg'] = combined['total_h2_demand_kg_industry'] + combined['total_h2_demand_kg_transport']
@@ -88,24 +98,17 @@ def combine_profiles():
 
         # Load available datasets
         transport_df = pd.read_csv(transport_profiles_path / file) 
-        industry_df = pd.read_csv(industry_profiles_path / file) if file in industry_files else None
+        industry_df = pd.read_csv(industry_profiles_path / file) 
 
-        # If they both exist, sum their values for h2 demand
-        if transport_df is not None and industry_df is not None:
-            # Reset index to ensure row alignment
-            transport_df = transport_df.reset_index(drop=True)
-            industry_df = industry_df.reset_index(drop=True)
+        # Sum their values for h2 demand
+        # Reset index to ensure row alignment
+        transport_df = transport_df.reset_index(drop=True)
+        industry_df = industry_df.reset_index(drop=True)
 
-            combined_df = pd.DataFrame({
-                'datetime': transport_df['datetime'],
-                'h2_demand_kg': transport_df['total_h2_demand_kg'] + industry_df['total_h2_demand_kg']
-            })
-        elif transport_df is not None:
-            combined_df = transport_df[['datetime', 'total_h2_demand_kg']].copy()
-            combined_df = combined_df.rename(columns={'total_h2_demand_kg': 'h2_demand_kg'})
-        else:
-            combined_df = industry_df[['datetime', 'total_h2_demand_kg']].copy()
-            combined_df = combined_df.rename(columns={'total_h2_demand_kg': 'h2_demand_kg'})
+        combined_df = pd.DataFrame({
+            'datetime': transport_df['datetime'],
+            'h2_demand_kg': transport_df['total_h2_demand_kg'] + industry_df['total_h2_demand_kg']
+        })
 
         # Add SWITCH timescale formatting
         combined_df['datetime'] = pd.to_datetime(combined_df['datetime'])

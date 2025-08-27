@@ -661,3 +661,4 @@ def model_industry_demand(existing_h2_pct_decarb, high_temp_pct_decarbonization,
 
     return load_zone_summary
 
+

@@ -207,7 +207,7 @@ def create_demand_grid(filtered_df, year):
         square geometries. These squares constitute the entire WECC. 
     """
     wecc_grid_path = base_path.parent / 'transport' / 'input_files' / 'vmt_grid_wecc.gpkg'
-    wecc_grid = gp.read_file(wecc_grid_path).copy()
+    wecc_grid = gp.read_file(wecc_grid_path).copy().to_crs('EPSG:5070')
 
     # Convert to GeoDataFrame
     geometry = gp.points_from_xy(filtered_df['Longitude'], filtered_df['Latitude'])
@@ -215,7 +215,7 @@ def create_demand_grid(filtered_df, year):
 
     # Ensure CRS match
     if wecc_grid.crs != facilities_gdf.crs:
-        wecc_grid = wecc_grid.to_crs(facilities_gdf.crs)
+        facilities_gdf = facilities_gdf.to_crs(crs='EPSG:5070')
 
     # Spatial join: assign each facility to a grid cell
     joined = gp.sjoin(facilities_gdf, wecc_grid, how='left', predicate='within')
@@ -228,7 +228,7 @@ def create_demand_grid(filtered_df, year):
     result_grid['total_h2_demand_kg'] = result_grid['total_h2_demand_kg'].fillna(0)
 
     # Drop unwanted columns
-    result_grid = result_grid.drop(columns=['LD_VMT', 'HD_VMT']).to_crs('EPSG:5070')
+    result_grid = result_grid.drop(columns=['LD_VMT', 'HD_VMT'])
 
     grid_output_path = base_path.parent / 'outputs' / 'industry' / f'{year}_wecc_h2_demand_5km_resolution.gpkg'
     result_grid.to_file(grid_output_path, driver='GPKG')
