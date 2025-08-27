@@ -46,22 +46,12 @@ def combine_demand_grids():
         industry_grid = gpd.read_file(industry_grid_path)
         transport_grid = gpd.read_file(transport_profiles_path / industry_grid_path.name)
 
-        print(f'Combining grids for year {year}...')
-        print(f'Industry grid path is {industry_grid_path}')
-        print(f'Transport grid path is {transport_profiles_path / industry_grid_path.name}')
-        print(f'Industry grid length: {industry_grid.shape[0]}')
-
-        print(f'Transport crs: {transport_grid.crs}')
-        print(f'Industry crs: {industry_grid.crs}')
-
         # Merge by geometry
         combined = industry_grid.merge(
             transport_grid[['geometry', 'total_h2_demand_kg']],
             on='geometry',
             how='inner',
             suffixes=('_industry', '_transport'))
-
-        print(f'Combined grid length: {combined.shape[0]}')
 
         # Compute total demand
         combined['total_h2_demand_kg'] = combined['total_h2_demand_kg_industry'] + combined['total_h2_demand_kg_transport']
