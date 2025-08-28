@@ -1,8 +1,10 @@
-This model is designed to generate hydrogen demand profiles at a high spatial and temporal resolution as an input to the SWITCH-WECC capacity expansion platform (https://github.com/REAM-lab/switch)
+**This model is designed to generate hydrogen demand profiles at a high spatial and temporal resolution as an input to the SWITCH-WECC capacity expansion platform (https://github.com/REAM-lab/switch)**
+
+**Overview:**
 
 Hydrogen demand is modeled for on-road transport and key hard-to-decarbonize industrial end-use sectors across 47 load zones, over the input model years. The transportation sector is broken down into light-duty and heavy-duty on-road transport, and the industrial sector is broken down into Iron & Steel, Aluminum, Cement, Refining, Chemicals, and Glass. Existing hydrogen demand can also be modeled.
 
-**Inputs:**
+**Key Inputs:**
 
 Decarbonization percentages across light-duty (LD) on-road transport, heavy-duty (HD) on-road transport, and each industry can be modified for each model year. 
 
@@ -12,7 +14,8 @@ Decarbonization percentages across light-duty (LD) on-road transport, heavy-duty
 
 Note: The LD on-road transport category is defined as gasoline vehicles, and the HD on-road transport category is defined as diesel-powered vehicles.
 
-**Outputs:**
+**Key Outputs:**
+
 For each model year, main outputs include:
 1) Hourly hydrogen demand profiles for each load zone
 2) A GeoPackage consisting of 5x5km squares spanning the WECC. Each square contains an attribute representing the hydrogen demand in that region. This allows for a higher spatial resolution output, used in hydrogen plant siting (https://github.com/nkong1/wecc-h2-siting).
