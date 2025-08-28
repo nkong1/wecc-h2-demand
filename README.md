@@ -1,3 +1,5 @@
+# WECC H2 Demand
+
 This model generates hydrogen demand profiles at a high spatial and temporal resolution for SWITCH-WECC (https://github.com/REAM-lab/switch)
 
 Hydrogen demand is modeled for on-road transport and key hard-to-decarbonize industrial end-use sectors across 47 load zones, over the input model years. The transportation sector is broken down into light-duty and heavy-duty on-road transport, and the industrial sector is broken down into Iron & Steel, Aluminum, Cement, Refining, Chemicals, and Glass. Existing hydrogen demand can also be modeled.
