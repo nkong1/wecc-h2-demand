@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36" version="28.1.2">
   <diagram name="Page-1" id="tvLAB2uGc-5grK_Enac1">
-    <mxGraphModel dx="2594" dy="1349" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+    <mxGraphModel dx="2827" dy="1507" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -82,13 +82,13 @@
           <mxGeometry x="-997.5" y="-330" width="197.5" height="70" as="geometry" />
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-23" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 17px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Step 2: Calculate projected&amp;nbsp; H2 demand by State&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;labelBackgroundColor=none;" parent="1" vertex="1">
-          <mxGeometry x="-727" y="-327.5" width="230" height="51" as="geometry" />
+          <mxGeometry x="-727" y="-323.5" width="230" height="51" as="geometry" />
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-24" value="&lt;span style=&quot;font-family: Helvetica; font-size: 17px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Step 3: Spatially disaggregate by load zone&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;fontColor=default;labelBackgroundColor=none;align=center;" parent="1" vertex="1">
           <mxGeometry x="-440" y="-331.5" width="200" height="52.5" as="geometry" />
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-35" value="&lt;span style=&quot;font-family: Helvetica; font-size: 17px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Step 4: Temporally disaggregate&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;fontColor=default;labelBackgroundColor=none;align=center;" parent="1" vertex="1">
-          <mxGeometry x="-165.5" y="-328" width="190" height="50" as="geometry" />
+          <mxGeometry x="-165.5" y="-317" width="190" height="50" as="geometry" />
         </mxCell>
         <mxCell id="dEbh50wQoavsR-OBHUa4-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-36" target="cWuKMoKahMMsqKZCvLfM-39">
           <mxGeometry relative="1" as="geometry" />
