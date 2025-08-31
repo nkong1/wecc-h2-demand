@@ -46,9 +46,6 @@
         <mxCell id="cWuKMoKahMMsqKZCvLfM-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="cWuKMoKahMMsqKZCvLfM-10" target="cWuKMoKahMMsqKZCvLfM-39" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="dEbh50wQoavsR-OBHUa4-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-10" target="cWuKMoKahMMsqKZCvLfM-35">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-10" value="Hourly LDV Fueling Profile" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=vB_j5El_Hg4W;" parent="1" vertex="1">
           <mxGeometry x="-160" y="-242.5" width="195" height="95" as="geometry" />
         </mxCell>
