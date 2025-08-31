@@ -1,11 +1,11 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36" version="28.1.2">
   <diagram name="Page-1" id="tvLAB2uGc-5grK_Enac1">
-    <mxGraphModel dx="2702" dy="1422" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="2702" dy="1422" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="dEbh50wQoavsR-OBHUa4-4" value="" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=vB_j5El_Hg4W;fillColor=#EBEBEB;" vertex="1" parent="1">
-          <mxGeometry x="-440" y="158.75" width="540" height="92.5" as="geometry" />
+          <mxGeometry x="-451" y="155.75" width="670" height="91.25" as="geometry" />
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontStyle=1;fontSize=16;strokeWidth=2;" parent="1" source="cWuKMoKahMMsqKZCvLfM-1" target="cWuKMoKahMMsqKZCvLfM-13" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -34,26 +34,28 @@
         <mxCell id="cWuKMoKahMMsqKZCvLfM-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="cWuKMoKahMMsqKZCvLfM-6" target="cWuKMoKahMMsqKZCvLfM-36" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="cWuKMoKahMMsqKZCvLfM-6" value=" Projected LD Transport H2 Demand by State" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#cfe4ff;strokeWidth=2.3;lucidId=0c_j3FTjjWoH;" parent="1" vertex="1">
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-6" value=" Projected LD Transport H2 Demand by State" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#BAB2FF;strokeWidth=2.3;lucidId=0c_j3FTjjWoH;" parent="1" vertex="1">
           <mxGeometry x="-440" y="27" width="195" height="90" as="geometry" />
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="cWuKMoKahMMsqKZCvLfM-8" target="cWuKMoKahMMsqKZCvLfM-36" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="cWuKMoKahMMsqKZCvLfM-8" value="LD VMT by Load Zone Region within Each State" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#cfe4ff;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;" parent="1" vertex="1">
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-8" value="LD VMT by Load Zone Region within Each State" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#BAB2FF;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;" parent="1" vertex="1">
           <mxGeometry x="-440" y="-109" width="195" height="90" as="geometry" />
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="cWuKMoKahMMsqKZCvLfM-10" target="cWuKMoKahMMsqKZCvLfM-39" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="dEbh50wQoavsR-OBHUa4-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-10" target="cWuKMoKahMMsqKZCvLfM-35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-10" value="Hourly LDV Fueling Profile" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=vB_j5El_Hg4W;" parent="1" vertex="1">
           <mxGeometry x="-160" y="-242.5" width="195" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="cWuKMoKahMMsqKZCvLfM-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="cWuKMoKahMMsqKZCvLfM-11" target="cWuKMoKahMMsqKZCvLfM-6" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="cWuKMoKahMMsqKZCvLfM-11" value="FCEV Market Penetration Among  LD Vehicles " style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.7;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=k7AmEFViBjR.;" parent="1" vertex="1">
-          <mxGeometry x="-720" y="-240" width="195" height="90" as="geometry" />
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" target="cWuKMoKahMMsqKZCvLfM-6" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-525" y="-195" as="sourcePoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="cWuKMoKahMMsqKZCvLfM-12" target="cWuKMoKahMMsqKZCvLfM-6" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -64,7 +66,7 @@
         <mxCell id="cWuKMoKahMMsqKZCvLfM-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="cWuKMoKahMMsqKZCvLfM-13" target="cWuKMoKahMMsqKZCvLfM-6" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="cWuKMoKahMMsqKZCvLfM-13" value="Projected State-level Gasoline Consumption from LD Transport" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#cfe4ff;strokeWidth=2.3;lucidId=~h6rGYWSRmal;" parent="1" vertex="1">
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-13" value="Projected State-level Gasoline Consumption from LD Transport" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#BAB2FF;strokeWidth=2.3;lucidId=~h6rGYWSRmal;" parent="1" vertex="1">
           <mxGeometry x="-720" y="-120" width="195" height="112" as="geometry" />
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="cWuKMoKahMMsqKZCvLfM-18" target="cWuKMoKahMMsqKZCvLfM-39" edge="1">
@@ -96,23 +98,29 @@
             <mxPoint x="120" y="-63.28571428571422" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="cWuKMoKahMMsqKZCvLfM-36" value="Projected LD Transport H2 Demand by Load Zone" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#cfe4ff;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;" parent="1" vertex="1">
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-36" value="Projected LD Transport H2 Demand by Load Zone" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#BAB2FF;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;" parent="1" vertex="1">
           <mxGeometry x="-160" y="-109" width="195" height="90" as="geometry" />
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-39" value="&lt;font&gt;LD Transport&amp;nbsp;H2 Demand Profile by Load Zone&lt;/font&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;shadow=1;fillColor=#6666FF;fontColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="120" y="-109" width="195" height="90" as="geometry" />
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-44" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Legend:&lt;/font&gt;" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-420" y="185" width="250" height="40" as="geometry" />
+          <mxGeometry x="-431" y="182" width="250" height="40" as="geometry" />
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-45" value="&lt;font style=&quot;font-size: 15px; font-weight: normal;&quot;&gt;Input Data&lt;/font&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.7;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=k7AmEFViBjR.;" parent="1" vertex="1">
-          <mxGeometry x="-340" y="175" width="110" height="60" as="geometry" />
+          <mxGeometry x="-351" y="172" width="110" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="cWuKMoKahMMsqKZCvLfM-46" value="&lt;font style=&quot;font-size: 15px; font-weight: normal;&quot;&gt;Intermediate Outputs&lt;/font&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#cfe4ff;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;" parent="1" vertex="1">
-          <mxGeometry x="-210" y="175" width="127.5" height="60" as="geometry" />
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-46" value="&lt;font style=&quot;font-size: 15px; font-weight: normal;&quot;&gt;Intermediate Outputs&lt;/font&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#BAB2FF;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;" parent="1" vertex="1">
+          <mxGeometry x="-91" y="172" width="127.5" height="60" as="geometry" />
         </mxCell>
         <mxCell id="cWuKMoKahMMsqKZCvLfM-48" value="&lt;font style=&quot;font-size: 14px; font-weight: normal;&quot;&gt;Final Outputs&lt;/font&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;shadow=1;fillColor=#6666FF;fontColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
-          <mxGeometry x="-60" y="175" width="140" height="60" as="geometry" />
+          <mxGeometry x="59" y="172" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dEbh50wQoavsR-OBHUa4-7" value="% of Projected Gasoline Demand Offset by H2" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#DDD6FF;strokeWidth=2.3;lucidId=0c_j3FTjjWoH;" vertex="1" parent="1">
+          <mxGeometry x="-720" y="-250" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dEbh50wQoavsR-OBHUa4-8" value="&lt;span style=&quot;font-weight: normal;&quot;&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;Scenario Inputs&lt;/font&gt;&lt;/span&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#DDD6FF;strokeWidth=2.3;lucidId=0c_j3FTjjWoH;" vertex="1" parent="1">
+          <mxGeometry x="-221" y="171" width="110" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
