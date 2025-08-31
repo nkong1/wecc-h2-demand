@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36" version="28.1.2">
   <diagram name="Page-1" id="Sk-UAw3IjdKQqPnJdrxi">
-    <mxGraphModel dx="2302" dy="1422" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2752" dy="1728" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -16,8 +16,8 @@
         <mxCell id="2BgXQ9gDA_9UjF-8s2wS-6" value="CO2 Emissions Factor by Fuel Type" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=fg6rZgMcyNaT;strokeColor=light-dark(#1c9b1f, #ededed);" parent="1" vertex="1">
           <mxGeometry x="-656.25" y="-21" width="195" height="112" as="geometry" />
         </mxCell>
-        <mxCell id="2BgXQ9gDA_9UjF-8s2wS-7" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;Step 1: Estimate Fuel Consumption by Facility Unit&lt;/b&gt;&lt;/font&gt;&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;fontStyle=0" parent="1" vertex="1">
-          <mxGeometry x="-653.75" y="-390" width="197.5" height="70" as="geometry" />
+        <mxCell id="2BgXQ9gDA_9UjF-8s2wS-7" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;Step 1: Estimate Fuel Use for Combustion by Facility Unit&lt;/b&gt;&lt;/font&gt;&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;fontStyle=0" parent="1" vertex="1">
+          <mxGeometry x="-655" y="-381" width="197.5" height="70" as="geometry" />
         </mxCell>
         <mxCell id="sNm1VXjRkImq6HYzUvwD-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="2BgXQ9gDA_9UjF-8s2wS-9" target="sNm1VXjRkImq6HYzUvwD-19">
           <mxGeometry relative="1" as="geometry">
@@ -30,21 +30,12 @@
         <mxCell id="sNm1VXjRkImq6HYzUvwD-44" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="2BgXQ9gDA_9UjF-8s2wS-9" target="sNm1VXjRkImq6HYzUvwD-31">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="2BgXQ9gDA_9UjF-8s2wS-9" value="EIA AEO25 Industrial Fuel Use Projections (2023-2050)" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Ra_jEc_tzvwS;fillStyle=solid;strokeColor=light-dark(#1c9b1f, #ededed);" parent="1" vertex="1">
+        <mxCell id="2BgXQ9gDA_9UjF-8s2wS-9" value="EIA AEO25 Industrial Fuel Use Projections (2022-2050)" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Ra_jEc_tzvwS;fillStyle=solid;strokeColor=light-dark(#1C9B1F,#EDEDED);" parent="1" vertex="1">
           <mxGeometry x="-387.5" y="-298" width="187.5" height="112" as="geometry" />
         </mxCell>
         <mxCell id="sNm1VXjRkImq6HYzUvwD-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" target="sNm1VXjRkImq6HYzUvwD-32">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="92" y="-242" as="sourcePoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="sNm1VXjRkImq6HYzUvwD-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" target="sNm1VXjRkImq6HYzUvwD-27">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="92" y="-242" as="sourcePoint" />
-            <Array as="points">
-              <mxPoint x="124" y="-242" />
-              <mxPoint x="124" y="29" />
-            </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="sNm1VXjRkImq6HYzUvwD-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="2BgXQ9gDA_9UjF-8s2wS-17" target="sNm1VXjRkImq6HYzUvwD-14">
@@ -62,7 +53,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="sNm1VXjRkImq6HYzUvwD-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="2BgXQ9gDA_9UjF-8s2wS-34" target="sNm1VXjRkImq6HYzUvwD-31">
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="2BgXQ9gDA_9UjF-8s2wS-34" target="sNm1VXjRkImq6HYzUvwD-31">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="2BgXQ9gDA_9UjF-8s2wS-34" value="EPA FRS Facilities not in GHGRP, by Industry" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=Bf6ri0L1tkaB;strokeColor=light-dark(#1c9b1f, #ededed);" parent="1" vertex="1">
@@ -77,11 +68,10 @@
         <mxCell id="2BgXQ9gDA_9UjF-8s2wS-45" value="EIA MECS Non-Feedstock Fuel Use Mix by Industry (2022)" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Bf6ri0L1tkaB;strokeColor=light-dark(#1c9b1f, #ededed);" parent="1" vertex="1">
           <mxGeometry x="-379.25" y="374" width="180" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="sNm1VXjRkImq6HYzUvwD-81" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sNm1VXjRkImq6HYzUvwD-6" target="sNm1VXjRkImq6HYzUvwD-34">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="sNm1VXjRkImq6HYzUvwD-6" value="% Decarbonization of High-Temp Combustion Fuel Use via H2" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=Bf6ri0L1tkaB;strokeColor=light-dark(#1c9b1f, #ededed);" vertex="1" parent="1">
-          <mxGeometry x="174" y="241" width="190" height="108" as="geometry" />
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-81" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" target="sNm1VXjRkImq6HYzUvwD-34">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="366" y="294" as="sourcePoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="sNm1VXjRkImq6HYzUvwD-12" value="" style="endArrow=none;startArrow=classic;html=1;rounded=0;startFill=1;endFill=0;strokeWidth=2;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -108,13 +98,13 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="sNm1VXjRkImq6HYzUvwD-23" value="Projected High-Temp Combustion Fuel Use by Facility Unit" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#C6CEFF;strokeWidth=2.3;lucidId=~h6rGYWSRmal;" vertex="1" parent="1">
-          <mxGeometry x="171" y="-154.5" width="190" height="100" as="geometry" />
+          <mxGeometry x="176" y="-155.25" width="190" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="sNm1VXjRkImq6HYzUvwD-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sNm1VXjRkImq6HYzUvwD-27" target="sNm1VXjRkImq6HYzUvwD-34">
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="sNm1VXjRkImq6HYzUvwD-27" target="sNm1VXjRkImq6HYzUvwD-34">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="sNm1VXjRkImq6HYzUvwD-27" value="Projected High-Temp Combustion Fuel Use by Facility" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#C6CEFF;strokeWidth=2.3;lucidId=~h6rGYWSRmal;" vertex="1" parent="1">
-          <mxGeometry x="171" y="-21" width="190" height="100" as="geometry" />
+          <mxGeometry x="176" y="-21.25" width="190" height="100" as="geometry" />
         </mxCell>
         <mxCell id="sNm1VXjRkImq6HYzUvwD-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="sNm1VXjRkImq6HYzUvwD-30" target="sNm1VXjRkImq6HYzUvwD-31">
           <mxGeometry relative="1" as="geometry" />
@@ -131,14 +121,17 @@
         <mxCell id="sNm1VXjRkImq6HYzUvwD-31" value="Projected Combustion Fuel Use by Facility" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#FFB570;strokeWidth=2.3;lucidId=~h6rGYWSRmal;" vertex="1" parent="1">
           <mxGeometry x="-88" y="113" width="195" height="101" as="geometry" />
         </mxCell>
-        <mxCell id="sNm1VXjRkImq6HYzUvwD-80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sNm1VXjRkImq6HYzUvwD-32" target="sNm1VXjRkImq6HYzUvwD-34">
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="sNm1VXjRkImq6HYzUvwD-32" target="sNm1VXjRkImq6HYzUvwD-34">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="sNm1VXjRkImq6HYzUvwD-32" value="Projected High-Temp Combustion Fuel Use by Facility" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#FFB570;strokeWidth=2.3;lucidId=~h6rGYWSRmal;" vertex="1" parent="1">
           <mxGeometry x="171" y="111" width="195" height="104" as="geometry" />
         </mxCell>
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="sNm1VXjRkImq6HYzUvwD-34" target="sNm1VXjRkImq6HYzUvwD-84">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="sNm1VXjRkImq6HYzUvwD-34" value="&lt;span&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;Projected Hydrogen Demand by Facility&lt;/font&gt;&lt;/span&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;shadow=1;fillColor=#907FFF;fontColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="423" y="-22.75" width="190" height="103.5" as="geometry" />
+          <mxGeometry x="435" y="-88.25" width="190" height="103.5" as="geometry" />
         </mxCell>
         <mxCell id="sNm1VXjRkImq6HYzUvwD-60" value="" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=vB_j5El_Hg4W;fillColor=#EBEBEB;" vertex="1" parent="1">
           <mxGeometry x="-110" y="375" width="633" height="148" as="geometry" />
@@ -164,14 +157,50 @@
         <mxCell id="sNm1VXjRkImq6HYzUvwD-74" value="&lt;font style=&quot;font-size: 15px; font-weight: normal;&quot;&gt;Combined Intermediate Outputs&lt;/font&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#907FFF;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;" vertex="1" parent="1">
           <mxGeometry x="301" y="448" width="173" height="58.25" as="geometry" />
         </mxCell>
-        <mxCell id="sNm1VXjRkImq6HYzUvwD-75" value="% of Projected Gasoline Demand Offset by H2" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#97D077;strokeWidth=2.3;lucidId=0c_j3FTjjWoH;" vertex="1" parent="1">
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-87" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="sNm1VXjRkImq6HYzUvwD-75" target="sNm1VXjRkImq6HYzUvwD-23">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="92" y="-242" />
+              <mxPoint x="122" y="-242" />
+              <mxPoint x="122" y="-105" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-75" value="% of Combusion Fuel Use for High-Temp Combustion&amp;nbsp;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=default;strokeWidth=2.3;lucidId=0c_j3FTjjWoH;strokeColor=#1C9B1F;" vertex="1" parent="1">
           <mxGeometry x="-101.5" y="-298" width="193.5" height="107" as="geometry" />
         </mxCell>
-        <mxCell id="sNm1VXjRkImq6HYzUvwD-76" value="&lt;span&gt;&lt;font style=&quot;&quot;&gt;EPRI Industrial Process Heating Profile&lt;/font&gt;&lt;/span&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;shadow=1;fillColor=none;fontColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="675" y="-23" width="190" height="103.5" as="geometry" />
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-83" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="sNm1VXjRkImq6HYzUvwD-76" target="sNm1VXjRkImq6HYzUvwD-78">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="sNm1VXjRkImq6HYzUvwD-78" value="&lt;span&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;Projected Hydrogen Demand by Facility&lt;/font&gt;&lt;/span&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;shadow=1;fillColor=#5947FF;fontColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="546" y="113" width="190" height="103.5" as="geometry" />
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-76" value="&lt;span&gt;&lt;font style=&quot;&quot;&gt;EPRI Industrial Process Heating Profile&lt;/font&gt;&lt;/span&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;shadow=1;fillColor=none;fontColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="675" y="46" width="190" height="103.5" as="geometry" />
+        </mxCell>
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-78" value="&lt;span&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;Hydrogen Demand Profile by Load Zone&lt;/font&gt;&lt;/span&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;shadow=1;fillColor=#5947FF;fontColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="554" y="209" width="190" height="103.5" as="geometry" />
+        </mxCell>
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-86" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="sNm1VXjRkImq6HYzUvwD-84" target="sNm1VXjRkImq6HYzUvwD-78">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-84" value="&lt;span&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;Projected Hydrogen Demand by Load Zone&lt;/font&gt;&lt;/span&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;shadow=1;fillColor=#907FFF;fontColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="437" y="46" width="190" height="103.5" as="geometry" />
+        </mxCell>
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-88" value="% of Projected High-Temp Combustion Fuel Use Decarbonized via H2" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#97D077;strokeWidth=2.3;lucidId=0c_j3FTjjWoH;" vertex="1" parent="1">
+          <mxGeometry x="171" y="249" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-89" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;Step 2: Project Combustion Fuel Use into the Model Year&lt;/b&gt;&lt;/font&gt;&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;fontStyle=0" vertex="1" parent="1">
+          <mxGeometry x="-393.75" y="-380" width="197.5" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-90" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;Step 3: Narrow Down to Fuel Use for High-Temp Combustion&amp;nbsp;&lt;/b&gt;&lt;/font&gt;&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;fontStyle=0" vertex="1" parent="1">
+          <mxGeometry x="-103.5" y="-380" width="197.5" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-91" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;Step 4: Estimate H2 Demand for High-Temp Combustion&lt;/b&gt;&lt;/font&gt;&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;fontStyle=0" vertex="1" parent="1">
+          <mxGeometry x="169.75" y="-234.25" width="197.5" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-92" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;Step 5: Aggregate by Load Zone&lt;/b&gt;&lt;/font&gt;&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;fontStyle=0" vertex="1" parent="1">
+          <mxGeometry x="429.5" y="-151.25" width="197.5" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-93" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;Step 6: Temporally Disaggregate&lt;/b&gt;&lt;/font&gt;&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;fontStyle=0" vertex="1" parent="1">
+          <mxGeometry x="675" y="-19" width="197.5" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
