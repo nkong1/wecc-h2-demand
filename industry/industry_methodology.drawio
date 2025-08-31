@@ -166,7 +166,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="sNm1VXjRkImq6HYzUvwD-75" value="% of Combusion Fuel Use for High-Temp Combustion&amp;nbsp;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=default;strokeWidth=2.3;lucidId=0c_j3FTjjWoH;strokeColor=#1C9B1F;" vertex="1" parent="1">
+        <mxCell id="sNm1VXjRkImq6HYzUvwD-75" value="% of Combusion Fuel Use for High-Temp Combustion (DOE)" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=default;strokeWidth=2.3;lucidId=0c_j3FTjjWoH;strokeColor=#1C9B1F;" vertex="1" parent="1">
           <mxGeometry x="-101.5" y="-298" width="193.5" height="107" as="geometry" />
         </mxCell>
         <mxCell id="sNm1VXjRkImq6HYzUvwD-83" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="sNm1VXjRkImq6HYzUvwD-76" target="sNm1VXjRkImq6HYzUvwD-78">
