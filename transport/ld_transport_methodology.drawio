@@ -1,0 +1,120 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36" version="28.1.2">
+  <diagram name="Page-1" id="tvLAB2uGc-5grK_Enac1">
+    <mxGraphModel dx="2702" dy="1422" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontStyle=1;fontSize=16;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-1" target="cWuKMoKahMMsqKZCvLfM-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-1" value="Gasoline Consumption from Transport by State (2023)" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Ra_jEc_tzvwS;" vertex="1" parent="1">
+          <mxGeometry x="-1000" y="-240" width="195" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontStyle=1;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-2" target="cWuKMoKahMMsqKZCvLfM-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-2" value="% of U.S. Transport Gasoline Use from On-Road Transport (2024)" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=Bf6ri0L1tkaB;" vertex="1" parent="1">
+          <mxGeometry x="-1000" y="-109" width="195" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontStyle=1;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-3" target="cWuKMoKahMMsqKZCvLfM-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-3" value="U.S. On-Road Transport Gasoline Consumption by Year (2023 to 2050)" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=fg6rZgMcyNaT;" vertex="1" parent="1">
+          <mxGeometry x="-1000" y="32" width="195" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-4" target="cWuKMoKahMMsqKZCvLfM-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-4" value="Relative Fuel Economy of LD FCEVs to ICEVs " style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.7;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=.a_jLDfp3aDH;" vertex="1" parent="1">
+          <mxGeometry x="-720" y="144" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-6" target="cWuKMoKahMMsqKZCvLfM-36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-6" value=" Projected LD Transport H2 Demand by State" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#cfe4ff;strokeWidth=2.3;lucidId=0c_j3FTjjWoH;" vertex="1" parent="1">
+          <mxGeometry x="-440" y="27" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-8" target="cWuKMoKahMMsqKZCvLfM-36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-8" value="LD VMT by Load Zone Region within Each State" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#cfe4ff;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;" vertex="1" parent="1">
+          <mxGeometry x="-440" y="-109" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-10" target="cWuKMoKahMMsqKZCvLfM-39">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-10" value="Hourly LDV Fueling Profile" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=vB_j5El_Hg4W;" vertex="1" parent="1">
+          <mxGeometry x="-160" y="-242.5" width="195" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-11" target="cWuKMoKahMMsqKZCvLfM-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-11" value="FCEV Market Penetration Among  LD Vehicles " style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.7;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=k7AmEFViBjR.;" vertex="1" parent="1">
+          <mxGeometry x="-720" y="-240" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-12" target="cWuKMoKahMMsqKZCvLfM-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-12" value="Gasoline to H2 Energy Equivalence" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.7;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=4p.pPyBsTCvJ;" vertex="1" parent="1">
+          <mxGeometry x="-720" y="27" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-13" target="cWuKMoKahMMsqKZCvLfM-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-13" value="Projected State-level Gasoline Consumption from LD Transport" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#cfe4ff;strokeWidth=2.3;lucidId=~h6rGYWSRmal;" vertex="1" parent="1">
+          <mxGeometry x="-720" y="-120" width="195" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-18" target="cWuKMoKahMMsqKZCvLfM-39">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-18" value="Weekly 4-Week Moving Average of U.S. Product Supplied of Gasoline in 2024" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=none;strokeWidth=2.3;lucidId=L5OtnDn3VvMG;" vertex="1" parent="1">
+          <mxGeometry x="-160" y="27" width="195" height="107" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-19" target="cWuKMoKahMMsqKZCvLfM-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-19" value="HPMS 2023 Road Traffic Data" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=MCaMwGwd_Zn1;" vertex="1" parent="1">
+          <mxGeometry x="-440" y="-240" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-22" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 17px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Step 1: Project fuel consumption by state to the model year&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="-1002.5" y="-330" width="197.5" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-23" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 17px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Step 2: Calculate projected state-level H2 demand&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="-730" y="-327.5" width="230" height="51" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-24" value="&lt;span style=&quot;font-family: Helvetica; font-size: 17px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Step 3: Spatially disaggregate by load zone&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;fontColor=default;labelBackgroundColor=none;align=center;" vertex="1" parent="1">
+          <mxGeometry x="-440" y="-331.5" width="200" height="52.5" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-35" value="&lt;span style=&quot;font-family: Helvetica; font-size: 17px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Step 4: Temporally disaggregate&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;fontColor=default;labelBackgroundColor=none;align=center;" vertex="1" parent="1">
+          <mxGeometry x="-157.5" y="-330" width="190" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="cWuKMoKahMMsqKZCvLfM-36">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="120" y="-63.28571428571422" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-36" value="Projected LD Transport H2 Demand by Load Zone" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#cfe4ff;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;" vertex="1" parent="1">
+          <mxGeometry x="-160" y="-109" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-39" value="&lt;font&gt;LD Transport&amp;nbsp;H2 Demand Profile by Load Zone&lt;/font&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;shadow=1;fillColor=#6666FF;fontColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="120" y="-109" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-43" value="" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=default;strokeWidth=1;lucidId=MCaMwGwd_Zn1;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="-440" y="155" width="540" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-44" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Legend:&lt;/font&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-420" y="185" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-45" value="&lt;font style=&quot;font-size: 15px; font-weight: normal;&quot;&gt;Input Data&lt;/font&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.7;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=0;rounded=0;absoluteArcSize=1;arcSize=12;fillColor=#000000;strokeWidth=2.3;lucidId=k7AmEFViBjR.;" vertex="1" parent="1">
+          <mxGeometry x="-340" y="175" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-46" value="&lt;font style=&quot;font-size: 15px; font-weight: normal;&quot;&gt;Intermediate Outputs&lt;/font&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#cfe4ff;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;" vertex="1" parent="1">
+          <mxGeometry x="-210" y="175" width="127.5" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cWuKMoKahMMsqKZCvLfM-48" value="&lt;font style=&quot;font-size: 14px; font-weight: normal;&quot;&gt;Final Outputs&lt;/font&gt;" style="html=1;overflow=block;blockSpacing=1;whiteSpace=wrap;fontSize=16.8;fontStyle=1;align=center;spacing=9;strokeOpacity=100;fillOpacity=100;rounded=1;absoluteArcSize=1;arcSize=12;strokeWidth=2.3;lucidId=Qf_jCI67Q3wd;shadow=1;fillColor=#6666FF;fontColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="-60" y="175" width="140" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
