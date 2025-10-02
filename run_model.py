@@ -34,7 +34,7 @@ def model_transport_sector():
     # Call the transport module
     lz_summary_transport = transport_h2.model_transport_demand(LD_FCEV_penetration, HD_FCEV_penetration, years)
     
-    # Temporally disaggregate into hourly profiles over the course of an average week
+    # Temporally disaggregate into hourly profiles 
     build_transport_profile.build_profile(lz_summary_transport)
 
 
@@ -62,7 +62,7 @@ def model_industry_sector():
     # Call the industry module
     lz_summary_industry = industry_h2.model_industry_demand(existing_h2, high_temp_combustion_pct_decarb, years)
 
-    # Temporally disaggregate into hourly profiles over the course of an average week
+    # Temporally disaggregate into hourly profiles 
     build_industry_profile.build_profile(lz_summary_industry)
 
 
