@@ -1,8 +1,8 @@
-**This model is designed to generate hydrogen demand profiles at a high spatial and temporal resolution as an input to the SWITCH-WECC capacity expansion platform (https://github.com/REAM-lab/switch)**
+**This model is designed to generate hydrogen demand profiles at a high spatial and temporal resolution as an input to SWITCH-WECC (https://github.com/REAM-lab/switch)**
 
 **Overview:**
 
-Hydrogen demand is modeled for on-road transport and key hard-to-decarbonize industrial end-use sectors across 47 load zones, over the input model years. The transportation sector is broken down into light-duty and heavy-duty on-road transport, and the industrial sector is broken down into Iron & Steel, Aluminum, Cement, Refining, Chemicals, and Glass. Existing hydrogen demand can also be modeled.
+Hydrogen demand is modeled for on-road transport and key hard-to-decarbonize industrial end-use sectors across 47 load zones, over the input model years. The transportation sector is broken down into light-duty and heavy-duty on-road transport, and the industrial sector is broken down into Iron & Steel, Aluminum, Cement, Refining, Chemicals, and Glass. Existing hydrogen demand is included as a baseline.
 
 **Key Inputs:**
 
@@ -10,7 +10,6 @@ Decarbonization percentages across light-duty (LD) on-road transport, heavy-duty
 
 1) For on-road transport, this percentage is the percent decarbonization of projected fuel use (gasoline for LD, diesel for HD).
 2) For industry, this percentage is the percent decarbonization of projected fuel-use for high-temp combustion, excluding fuel used for hydrogen production. 
-3) For existing hydroegn demand, this percentage is the percent decarbonization of existing hydrogen demand, which is currently served almost entirely by steam methane reforming.
 
 Note: The LD on-road transport category is defined as gasoline vehicles, and the HD on-road transport category is defined as diesel-powered vehicles.
 
