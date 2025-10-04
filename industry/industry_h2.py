@@ -146,7 +146,6 @@ def calc_discrepancies(results_by_facility_df):
         .dropna(subset=['Sector Category'])          # remove rows missing Sector Category
         .apply(pd.to_numeric, errors='coerce')       # convert all numeric-looking cols to numbers
     )
-    
 
     mecs_data['total_fossil_mmbtu'] = (mecs_data['Residual Fuel Oil'] + mecs_data['Distillate Fuel Oil'] + mecs_data['Natural Gas'] + \
         mecs_data['HGL (excluding natural gasoline)'] + mecs_data['Coal'] + mecs_data['Coke and Breeze']) * 1e6
@@ -196,6 +195,7 @@ def calc_discrepancies(results_by_facility_df):
     sector_discrepancy_df.to_csv(logs_path / 'sector_discrepancies.csv', index=False)
 
     return sector_discrepancy_df
+
 
 def project_sector_consumption(sector, fuel_use, year):
     """
@@ -269,12 +269,11 @@ def cached_project_sector_consumption(sector, fuel_demand, year):
     return project_sector_consumption(sector, fuel_demand, year)
 
 
-def model_one_year(existing_h2_pct_decarb, high_temp_decarb_by_sector, year):
+def model_one_year(high_temp_decarb_by_sector, year):
     """
     Models industrial hydrogen demand for a single model year.
 
     Parameters:
-    - existing_h2_pct_decarb: the percentage of existing hydrogen demand to model
     - high_temp_decarb_by_sector: A list containing the percent decarbonization of projected 
         fuel use high-temp combustion via hydrogen for each industrial sector.
     - year: The model year for which industrial hydrogen demand is being modeled.
@@ -431,8 +430,8 @@ def model_one_year(existing_h2_pct_decarb, high_temp_decarb_by_sector, year):
     existing_h2_plants_df = pd.read_csv(existing_h2_plants_path)
 
     existing_h2_plants_df['inWECC'] = True
-    existing_h2_plants_df['total_h2_demand_kg'] = existing_h2_plants_df['hydrogen_demand_kg'] * existing_h2_pct_decarb / 100
-    existing_h2_plants_df['Sector'] = 'Existing Hydrogen Plants'
+    existing_h2_plants_df['total_h2_demand_kg'] = existing_h2_plants_df['hydrogen_demand_kg'] 
+    existing_h2_plants_df['Sector'] = 'Existing Hydrogen Demand'
 
     existing_h2_plants_df = existing_h2_plants_df.rename(columns={'Primary NAICS Code': 'NAICS Code'})
     existing_h2_plants_df = existing_h2_plants_df[['Facility Id', 'Facility Name', 'NAICS Code', 'Sector', 'Latitude', \
@@ -625,7 +624,7 @@ def calc_epa_ghgrp_fuel_consumption(high_temp_pct_decarb_by_sector: list, fuel_g
 #====================
 # Main Function:
 #====================
-def model_industry_demand(existing_h2_pct_decarb, high_temp_pct_decarbonization, years):
+def model_industry_demand(high_temp_pct_decarbonization, years):
     """
     Estimates hydrogen demand from each industrial sector over several model years, aggregated by load zone.
 
@@ -649,9 +648,8 @@ def model_industry_demand(existing_h2_pct_decarb, high_temp_pct_decarbonization,
         print(f'\nProcessing year {year}...')
 
         pct_decarbonize_by_sector = high_temp_pct_decarbonization[index]
-        pct_decarbonize_existing_h2 = existing_h2_pct_decarb[index]
 
-        year_result = model_one_year(pct_decarbonize_existing_h2, pct_decarbonize_by_sector, year)
+        year_result = model_one_year(pct_decarbonize_by_sector, year)
         load_zone_summary = pd.concat([load_zone_summary, year_result])
 
         index += 1

@@ -60,8 +60,6 @@ def combine_demand_grids():
         combined_output_path = combined_grids_path / f"{year}_wecc_h2_demand_5km_combined.gpkg"
         combined.to_file(combined_output_path, driver='GPKG')
 
-        print('\nCombined 5x5km demand grids saved. Model successfully run')
-
 def combine_profiles():
     """
     Combines the hydrogen demand profiles from industry and transport into a single, total profile

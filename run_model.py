@@ -1,5 +1,5 @@
 """
-Use this file to run the WECC hydrogen demand model and adjust inputs. 
+Use this file to run the model and adjust inputs. 
 """
 
 from pathlib import Path
@@ -11,10 +11,10 @@ from combine_results import combine
 # ============================================
 # Choose what sectors to model
 model_transport_h2 = True
-model_industry_h2 = False
+model_industry_h2 = True
 
 # Choose model years between 2023 and 2050 (inclusive)
-years = [2030, 2040, 2050]
+years = [2030, 2040]
 # ============================================
 
 
@@ -27,8 +27,8 @@ def model_transport_sector():
     # ============================================
     # Choose the LD and HD FCEV penetration among projected gasoline and diesel vehicle stock (as a percentage from 0 to 100)
     # The percentage of FCEV penetration is assumed to be the same as percentage of fuel use decarbonization
-    LD_FCEV_penetration = [0, 0, 0]
-    HD_FCEV_penetration = [10, 20, 100]
+    LD_FCEV_penetration = [0, 0,]
+    HD_FCEV_penetration = [10, 20]
     # ============================================
 
     # Call the transport module
@@ -40,27 +40,21 @@ def model_transport_sector():
 
 def model_industry_sector():
     """
-    Contains user input parameters for industry and runs the industry-side model. The model is capable of
-    modeling demand from 6 hard-to-decarbonize industries: Iron & Steel, Aluminum, Cement, Chemicals, Refineries, and
-    Glass, in addition to existing demand from hydrogen production plants. Adjust the percent decarbonization of 
-    projected high-temp combustion fuel use via hydrogen in each industry in each model year.
+    Contains user input parameters for industry and runs the industry-side model. 
+    Adjust the decarbonization of projected high-temp combustion fuel use via hydrogen in each industry and model year.
     """
-
-    new_demand_sectors = ['Iron & Steel', 'Aluminum', 'Cement', 'Chemicals', 'Refineries', 'Glass']
+    sectors = ['Iron & Steel', 'Aluminum', 'Cement', 'Chemicals', 'Refineries', 'Glass']
 
     # ============================================
-    # Adjust the percentage of high-temp combustion fuel use decarbonization across each new demand sector 
+    # Adjust the percentage of high-temp combustion fuel use decarbonization in corresponding sector 
     # (between 0 and 100) for each model year. 
 
     high_temp_combustion_pct_decarb = [[10, 10, 10, 10, 10, 10], 
-                                        [40, 40, 40, 40, 40, 40],
-                                        [70, 70, 70, 70, 70, 70]]
+                                        [40, 40, 40, 40, 40, 40]]
     
     # ============================================
-    existing_h2 = [100] * len(high_temp_combustion_pct_decarb)
-
     # Call the industry module
-    lz_summary_industry = industry_h2.model_industry_demand(existing_h2, high_temp_combustion_pct_decarb, years)
+    lz_summary_industry = industry_h2.model_industry_demand(high_temp_combustion_pct_decarb, years)
 
     # Temporally disaggregate into hourly profiles 
     build_industry_profile.build_profile(lz_summary_industry)
@@ -91,6 +85,8 @@ def main():
     # Aggregate results from industry and transport
     if model_industry_h2 and model_transport_h2:
         combine()
+
+    print('\nFinished!')
 
 if __name__ == "__main__":
     main()
