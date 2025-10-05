@@ -23,7 +23,7 @@ For each model year, main outputs include:
 **Methodology Flowcharts:**
 
 **Industry**:
-<img width="1532" height="901" alt="Image" src="https://github.com/user-attachments/assets/72a3d6c6-27da-43b1-99bc-7be1f5c8a872" />
+<img width="766" height="450" alt="Image" src="https://github.com/user-attachments/assets/72a3d6c6-27da-43b1-99bc-7be1f5c8a872" />
 
-**On-Road Transport:
-**<img width="1311" height="580" alt="ld_transport_methodology drawio (1)" src="https://github.com/user-attachments/assets/2deaba2c-6cfc-4a1b-8f4a-ca84fd2dcdfb" />
+**On-Road Transport:**
+<img width="1311" height="580" alt="ld_transport_methodology drawio (1)" src="https://github.com/user-attachments/assets/2deaba2c-6cfc-4a1b-8f4a-ca84fd2dcdfb" />
