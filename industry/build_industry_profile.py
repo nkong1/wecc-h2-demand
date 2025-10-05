@@ -18,7 +18,7 @@ from transport.build_transport_profile import disaggregate_annual_to_hourly
 base_path  = Path(__file__).parent
 profile_path = base_path / 'inputs' / 'EPRI_Profile_WSCC_CNV_Offpeak.xlsx'
 
-def build_profile(lz_summary_df):
+def build_profile(lz_summary_df, output_profiles_path, flat=False):
     """
     Disaggregates the annual total for industrial hydrogen demand in each load zone into an hourly profile
     spanning a year. Saves the output profiles and plots the profile for the load zone with the highest
@@ -31,11 +31,7 @@ def build_profile(lz_summary_df):
     Returns: None
     """
 
-    print('\nBuilding industry demand profiles...')
-
-    # Create output profiles directory
-    output_profiles_path = base_path.parent / 'outputs' / 'industry' / 'demand_profiles'
-    output_profiles_path.mkdir()
+    print('\nBuilding demand profiles...')
 
     # Load hourly profiles for weekday and weekend
     demand_profile_df = pd.read_excel(profile_path)
@@ -48,8 +44,8 @@ def build_profile(lz_summary_df):
 
     # Find load zone and year combination with highest demand (for plotting purposes)
     row = lz_summary_df.loc[lz_summary_df['total_h2_demand_kg'].idxmax()]
-    highest_demand_lz = str(row['load_zone'])
-    highest_demand_year = int(row['year'])
+    """highest_demand_lz = str(row['load_zone'])
+    highest_demand_year = int(row['year'])"""
 
     # Get the first load_zone in the DataFrame
     previous_load_zone = lz_summary_df.iloc[0].loc['load_zone']
@@ -75,22 +71,23 @@ def build_profile(lz_summary_df):
         h2_demand = lz_row['total_h2_demand_kg']
 
         # Generate the profile for one year
-        one_year_profile = disaggregate_annual_to_hourly(h2_demand, weekly_profile_array, np.full(53, 1), year)
+        if not flat:
+            one_year_profile = disaggregate_annual_to_hourly(h2_demand, weekly_profile_array, np.full(53, 1), year)
+        else:
+            one_year_profile = disaggregate_annual_to_hourly(h2_demand, np.full(168, 1), np.full(53, 1), year)
+
         one_year_profile = one_year_profile.rename(columns={'hourly_value': 'total_h2_demand_kg'})
 
         # Join to make a combined DataFrame with the profiles across all years within a load zone
         profile_across_years = pd.concat([profile_across_years, one_year_profile], ignore_index=True)
 
-        # Plot for highest demand zone/year combination
+        """# Plot for highest demand zone/year combination
         if load_zone == highest_demand_lz and year == highest_demand_year:
             plot_output_path = base_path.parent / 'outputs' / 'industry' / f'{load_zone}_demand_profile.png'
-            plot_demand_profile(one_year_profile, load_zone, plot_output_path)
+            plot_demand_profile(one_year_profile, load_zone, plot_output_path)"""
 
-    # Save the profile for the last load zone
-    output_path = output_profiles_path / f'{load_zone}_profile.csv'
-    profile_across_years.to_csv(output_path, index=False)
-    profile_across_years = profile_across_years.sort_values(by='datetime').reset_index(drop=True)
 
+    profile_across_years.to_csv(output_profiles_path / f'{load_zone}_profile.csv', index=False)
     print(f'\nProfiles saved to {output_profiles_path}')
 
 

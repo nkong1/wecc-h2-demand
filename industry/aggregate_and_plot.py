@@ -193,17 +193,16 @@ def plot(filtered_df, year):
     plt.savefig(output_path_map, dpi=300, bbox_inches='tight')
 
 
-def create_demand_grid(filtered_df, year):
+def get_demand_grid(filtered_df):
     """
     Geographically aggregates hydrogen demand from industrial facilities in the WECC, producing
     a raster file with 5x5km resolution.
     
     Inputs:
     - filtered_df: a DataFrame containing hydrogen demand projections from industrial facilities
-    - year: the model year
 
-    Outputs:
-    - Saves a GeoPackage containing the estimated hydrogen demand from industry in 5x5km-sized 
+    Returns:
+    - A GeoDataFrame containing the estimated hydrogen demand from industry in 5x5km-sized 
         square geometries. These squares constitute the entire WECC. 
     """
     wecc_grid_path = base_path.parent / 'transport' / 'input_files' / 'vmt_grid_wecc.gpkg'
@@ -230,5 +229,4 @@ def create_demand_grid(filtered_df, year):
     # Drop unwanted columns
     result_grid = result_grid.drop(columns=['LD_VMT', 'HD_VMT'])
 
-    grid_output_path = base_path.parent / 'outputs' / 'industry' / f'{year}_wecc_h2_demand_5km_resolution.gpkg'
-    result_grid.to_file(grid_output_path, driver='GPKG')
+    return result_grid

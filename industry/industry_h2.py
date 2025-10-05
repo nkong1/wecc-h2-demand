@@ -38,9 +38,6 @@ fuel_use_projection_path = base_path / 'inputs' / 'eia_aeo_industrial_fuel_use_p
 # CO2 emissions breakdown by sector (from DOE Pathways to Commercial Liftoff: Industrial Decarbonization Fig 2a.2)
 co2_emissions_breakdown_path = base_path / 'inputs' / 'doe_co2_emissions_breakdown_by_industry.csv'
 
-# Existing hydrogen production facilities (EPA GHGRP facilities with 'Hydrogen Production' emissions)
-existing_h2_plants_path = base_path / 'inputs' / 'wecc_existing_h2_plants_2022.csv'
-
 # Create a new logs path
 logs_path = base_path / 'logs'
 if logs_path.exists():
@@ -48,8 +45,7 @@ if logs_path.exists():
 logs_path.mkdir()
 
 # Final output path
-load_zone_output_path = base_path.parent / 'outputs' / 'industry' / 'demand_by_load_zone.csv'
-
+demand_by_lz_path = base_path.parent / 'outputs' / 'industry' / 'demand_by_load_zone.csv'
 
 #====================
 # Constants:
@@ -423,34 +419,26 @@ def model_one_year(high_temp_decarb_by_sector, year):
     
     # Filter the facilities to only those within WECC bundaries
     filtered_df = results_by_facility_df[results_by_facility_df['inWECC'] == True].copy()
-    
-    #========================
-    # Step 5: Include demand from existing hydrogen facilities
-    #========================
-    existing_h2_plants_df = pd.read_csv(existing_h2_plants_path)
-
-    existing_h2_plants_df['inWECC'] = True
-    existing_h2_plants_df['total_h2_demand_kg'] = existing_h2_plants_df['hydrogen_demand_kg'] 
-    existing_h2_plants_df['Sector'] = 'Existing Hydrogen Demand'
-
-    existing_h2_plants_df = existing_h2_plants_df.rename(columns={'Primary NAICS Code': 'NAICS Code'})
-    existing_h2_plants_df = existing_h2_plants_df[['Facility Id', 'Facility Name', 'NAICS Code', 'Sector', 'Latitude', \
-                    'Longitude', 'hydrogen_demand_kg', 'total_h2_demand_kg', 'inWECC']]
-
-    filtered_df = pd.concat([filtered_df, existing_h2_plants_df])
 
     #========================
-    # Step 6: Plot results, and create demand profiles
+    # Step 5: Plot results, and create demand profiles
     #========================
-    aggregated_by_lz = aggregate_and_plot.aggregate_by_lz(filtered_df)
 
     # Plot the filtered facilities and their corresponding hydrogen demand
     aggregate_and_plot.plot(filtered_df, year)
 
-    # Create the raster output for the 5x5km resolution of industry demand
-    aggregate_and_plot.create_demand_grid(filtered_df, year)
+    # Create and save the raster output for the 5x5km resolution of industry demand
+    grid_output_path = base_path.parent / 'outputs' / 'industry' / f'{year}_wecc_h2_demand_5km_resolution.gpkg'
 
-    filtered_df.to_csv(logs_path / f'{year}_wecc_final_demand_by_facility.csv', index = False)
+    demand_grid = aggregate_and_plot.get_demand_grid(filtered_df)
+    demand_grid.to_file(grid_output_path, driver='GPKG')
+
+    # Save facilities to the logs
+    filtered_df.to_csv(logs_path / f'{year}industry_demand_by_facility.csv', index = False)
+    
+    # Aggregate demand by load zone
+    aggregated_by_lz = aggregate_and_plot.aggregate_by_lz(filtered_df)
+
     aggregated_by_lz['year'] = year
 
     return aggregated_by_lz
@@ -635,7 +623,7 @@ def model_industry_demand(high_temp_pct_decarbonization, years):
     - years: List of model years 
 
     Returns:
-    - A DataFrame containing hydrogen demand by load zone and year in kilograms.
+    - A DataFrame containing new industrial hydrogen demand by load zone and year in kilograms.
     """
 
     print('\n===================\nINDUSTRY H2 DEMAND\n==================')
@@ -648,14 +636,15 @@ def model_industry_demand(high_temp_pct_decarbonization, years):
         print(f'\nProcessing year {year}...')
 
         pct_decarbonize_by_sector = high_temp_pct_decarbonization[index]
+        aggregated_by_lz = model_one_year(pct_decarbonize_by_sector, year)
 
-        year_result = model_one_year(pct_decarbonize_by_sector, year)
-        load_zone_summary = pd.concat([load_zone_summary, year_result])
+        load_zone_summary = pd.concat([load_zone_summary, aggregated_by_lz])
 
         index += 1
 
+    # Save both files to the outputs
     load_zone_summary = load_zone_summary.sort_values(by=['load_zone', 'year']).reset_index(drop=True)
-    load_zone_summary.to_csv(load_zone_output_path, index=False)
+    load_zone_summary.to_csv(demand_by_lz_path, index=False)
 
     return load_zone_summary
 

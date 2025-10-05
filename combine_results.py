@@ -16,19 +16,23 @@ outputs_path = Path(__file__).parent / 'outputs'
 combined_profiles_path = outputs_path / 'combined_profile'
 combined_grids_path = outputs_path / 'combined_grid'
 
-def combine():
+def combine(years, transport, industry):
     print('\n===================\nCombining Results...\n==================')
 
     print('\nCombining demand profiles...')
-    combine_profiles()
+    combine_profiles(years, transport, industry)
 
     print('\nCombining demand grids...')
-    combine_demand_grids()
+    combine_demand_grids(transport, industry)
 
-def combine_demand_grids():
+def combine_demand_grids(transport=False, industry=False):
     """
-    Combines the 5x5km resolution demand grids from industry and transport into a single grid
-    for each model year, saving the result to the combined_grids folder in the outputs
+    Combines 5x5km resolution demand grids from baseline and optionally
+    transport and industry into a single grid for each model year.
+    
+    Parameters:
+    - transport (bool): If True, merge transport grids.
+    - industry (bool): If True, merge industry grids.
     """
     # Create new combined results folder
     if combined_grids_path.exists():
@@ -36,35 +40,69 @@ def combine_demand_grids():
     combined_grids_path.mkdir()
 
     # Input folders
-    industry_profiles_path = outputs_path / 'industry' 
+    baseline_profiles_path = outputs_path / 'baseline'
+    industry_profiles_path = outputs_path / 'industry'
     transport_profiles_path = outputs_path / 'transport'
 
-    # Combine the profiles for each year
-    for industry_grid_path in industry_profiles_path.glob('*gpkg'):
-        year = industry_grid_path.stem.split('_')[0] 
+    # Loop over baseline files (baseline always exists)
+    for baseline_grid_path in baseline_profiles_path.glob('*gpkg'):
+        year = baseline_grid_path.stem.split('_')[0]
 
-        industry_grid = gpd.read_file(industry_grid_path)
-        transport_grid = gpd.read_file(transport_profiles_path / industry_grid_path.name)
+        # Read baseline grid
+        combined = gpd.read_file(baseline_grid_path)
+        combined.rename(columns={'total_h2_demand_kg': 'total_h2_demand_kg_baseline'}, inplace=True)
 
-        # Merge by geometry
-        combined = industry_grid.merge(
-            transport_grid[['geometry', 'total_h2_demand_kg']],
-            on='geometry',
-            how='inner',
-            suffixes=('_industry', '_transport'))
+        # Merge industry if exists
+        if industry:
+            industry_grid = gpd.read_file(industry_profiles_path / baseline_grid_path.name)
+            combined = combined.merge(
+                industry_grid[['geometry', 'total_h2_demand_kg']],
+                on='geometry',
+                how='left'
+            )
+            combined.rename(columns={'total_h2_demand_kg': 'total_h2_demand_kg_industry'}, inplace=True)
+        else:
+            combined['total_h2_demand_kg_industry'] = 0
+
+        # Merge transport if exists
+        if transport:
+            transport_grid = gpd.read_file(transport_profiles_path / baseline_grid_path.name)
+            combined = combined.merge(
+                transport_grid[['geometry', 'total_h2_demand_kg']],
+                on='geometry',
+                how='left'
+            )
+            combined.rename(columns={'total_h2_demand_kg': 'total_h2_demand_kg_transport'}, inplace=True)
+        else:
+            combined['total_h2_demand_kg_transport'] = 0
 
         # Compute total demand
-        combined['total_h2_demand_kg'] = combined['total_h2_demand_kg_industry'] + combined['total_h2_demand_kg_transport']
+        combined['total_h2_demand_kg'] = (
+            combined['total_h2_demand_kg_baseline'] +
+            combined['total_h2_demand_kg_industry'] +
+            combined['total_h2_demand_kg_transport']
+        )
 
         # Save to combined grids folder
         combined_output_path = combined_grids_path / f"{year}_wecc_h2_demand_5km_combined.gpkg"
         combined.to_file(combined_output_path, driver='GPKG')
 
-def combine_profiles():
+
+def combine_profiles(years, transport=False, industry=False):
     """
-    Combines the hydrogen demand profiles from industry and transport into a single, total profile
-    for each load zone, saving the result to the combined_profiles folder in the outputs.
+    Combines the hydrogen demand profiles from baseline (always) and optionally
+    transport and industry into a single, total profile for each load zone.
+    
+    Parameters:
+    - years: list of model years (e.g., [2025, 2030])
+    - transport: bool, include transport profiles if True
+    - industry: bool, include industry profiles if True
+    
+    Saves the combined profiles to combined_profiles_path.
     """
+    # Load all load zones
+    load_zones_gdf = gpd.read_file('industry/inputs/load_zones/load_zones.shp')
+    load_zones = load_zones_gdf['LOAD_AREA'].tolist()
 
     # Create new combined results folder
     if combined_profiles_path.exists():
@@ -72,47 +110,82 @@ def combine_profiles():
     combined_profiles_path.mkdir()
 
     # Input folders
+    baseline_profiles_path = outputs_path / 'baseline' / 'demand_profiles'
     industry_profiles_path = outputs_path / 'industry' / 'demand_profiles'
     transport_profiles_path = outputs_path / 'transport' / 'demand_profiles'
 
-    # Get cleaned file sets
-    industry_files = {f for f in os.listdir(industry_profiles_path) if f.endswith('.csv') and '~' not in f}
-    transport_files = {f for f in os.listdir(transport_profiles_path) if f.endswith('.csv') and '~' not in f}
-
-    # Every load zone should have demand from transport, so we iterate by transport file
-    for file in transport_files:
-        # Initialize empty DataFrame
+    # Loop over each load zone
+    for zone in load_zones:
         combined_df = pd.DataFrame()
 
-        # Load available datasets
-        transport_df = pd.read_csv(transport_profiles_path / file) 
-        industry_df = pd.read_csv(industry_profiles_path / file) 
+        # -------------------------------
+        # Baseline profile (always included)
+        # -------------------------------
+        baseline_file = baseline_profiles_path / f"{zone}_profile.csv"
+        if baseline_file.exists():
+            baseline_df = pd.read_csv(baseline_file).reset_index(drop=True)
+            combined_df['h2_demand_kg_baseline'] = baseline_df['total_h2_demand_kg']
+            combined_df['datetime'] = pd.to_datetime(baseline_df['datetime'])
+        else:
+            # If baseline profile missing, create hourly timestamps for all model years
+            datetime_list = []
+            for year in years:
+                # 8760 hours per year (ignore leap years for simplicity)
+                datetime_list.extend(pd.date_range(start=f'{year}-01-01', periods=8760, freq='h'))
+            combined_df['datetime'] = pd.to_datetime(datetime_list)
+            combined_df['h2_demand_kg_baseline'] = 0
 
-        # Sum their values for h2 demand
-        # Reset index to ensure row alignment
-        transport_df = transport_df.reset_index(drop=True)
-        industry_df = industry_df.reset_index(drop=True)
+        # -------------------------------
+        # Optional: Industry
+        # -------------------------------
+        if industry:
+            industry_file = industry_profiles_path / f"{zone}_profile.csv"
+            if industry_file.exists():
+                industry_df = pd.read_csv(industry_file).reset_index(drop=True)
+                combined_df['h2_demand_kg_industry'] = industry_df['total_h2_demand_kg']
+            else:
+                combined_df['h2_demand_kg_industry'] = 0
+        else:
+            combined_df['h2_demand_kg_industry'] = 0
 
-        combined_df = pd.DataFrame({
-            'datetime': transport_df['datetime'],
-            'h2_demand_kg': transport_df['total_h2_demand_kg'] + industry_df['total_h2_demand_kg']
-        })
+        # -------------------------------
+        # Optional: Transport
+        # -------------------------------
+        if transport:
+            transport_file = transport_profiles_path / f"{zone}_profile.csv"
+            if transport_file.exists():
+                transport_df = pd.read_csv(transport_file).reset_index(drop=True)
+                combined_df['h2_demand_kg_transport'] = transport_df['total_h2_demand_kg']
+            else:
+                combined_df['h2_demand_kg_transport'] = 0
+        else:
+            combined_df['h2_demand_kg_transport'] = 0
 
-        # Add SWITCH timescale formatting
-        combined_df['datetime'] = pd.to_datetime(combined_df['datetime'])
+        # -------------------------------
+        # Compute total demand
+        # -------------------------------
+        combined_df['h2_demand_kg'] = (
+            combined_df['h2_demand_kg_baseline'] +
+            combined_df['h2_demand_kg_industry'] +
+            combined_df['h2_demand_kg_transport']
+        )
+
+        # -------------------------------
+        # SWITCH formatting
+        # -------------------------------
         combined_df['timepoint_id'] = range(len(combined_df))
         combined_df['timeseries'] = combined_df['datetime'].dt.year.astype(str) + '_all'
+        combined_df['timestamp'] = combined_df['datetime'].dt.strftime('%Y-%m-%d-%H')
 
-        combined_df = combined_df.rename(columns={'datetime': 'timestamp', 'total_h2_demand_kg': 'h2_demand_kg'})
-        combined_df['timestamp'] = pd.to_datetime(combined_df['timestamp']).dt.strftime('%Y-%m-%d-%H')
-        
-        # Organize the columns
+        # Organize columns
         combined_df = combined_df[['timepoint_id', 'timeseries', 'timestamp', 'h2_demand_kg']]
 
         # Save result
-        combined_df.to_csv(combined_profiles_path / file, index=False)
+        combined_df.to_csv(combined_profiles_path / f"{zone}_profile.csv", index=False)
 
     print("\nCombined profiles saved.")
+
+
 
 
 

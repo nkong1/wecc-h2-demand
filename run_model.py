@@ -7,6 +7,7 @@ import shutil
 from industry import industry_h2, build_industry_profile
 from transport import transport_h2, build_transport_profile
 from combine_results import combine
+from baseline import existing_demand
 
 # ============================================
 # Choose what sectors to model
@@ -14,7 +15,7 @@ model_transport_h2 = True
 model_industry_h2 = True
 
 # Choose model years between 2023 and 2050 (inclusive)
-years = [2030, 2040]
+years = [2030, 2035]
 # ============================================
 
 
@@ -27,8 +28,8 @@ def model_transport_sector():
     # ============================================
     # Choose the LD and HD FCEV penetration among projected gasoline and diesel vehicle stock (as a percentage from 0 to 100)
     # The percentage of FCEV penetration is assumed to be the same as percentage of fuel use decarbonization
-    LD_FCEV_penetration = [0, 0,]
-    HD_FCEV_penetration = [10, 20]
+    LD_FCEV_penetration = [0,5]
+    HD_FCEV_penetration = [10,20]
     # ============================================
 
     # Call the transport module
@@ -49,25 +50,37 @@ def model_industry_sector():
     # Adjust the percentage of high-temp combustion fuel use decarbonization in corresponding sector 
     # (between 0 and 100) for each model year. 
 
-    high_temp_combustion_pct_decarb = [[10, 10, 10, 10, 10, 10], 
-                                        [40, 40, 40, 40, 40, 40]]
-    
+    high_temp_combustion_pct_decarb = [[10, 10, 10, 10, 10, 10],
+                                       [20, 20, 20, 20, 20, 20]]
+     
     # ============================================
     # Call the industry module
     lz_summary_industry = industry_h2.model_industry_demand(high_temp_combustion_pct_decarb, years)
 
-    # Temporally disaggregate into hourly profiles 
-    build_industry_profile.build_profile(lz_summary_industry)
+    # Temporally disaggregate the new industrial demand into hourly profiles 
+    profiles_output_path = Path(__file__).parent / 'outputs' / 'industry' / 'demand_profiles'
+    build_industry_profile.build_profile(lz_summary_industry, profiles_output_path, flat=False)
+
+def model_baseline():
+    """
+    Models baseline hydrogen demand using 2022 hydrogen production estimates derived from the GHGRP. 
+    """
+    existing_demand.model_existing_demand(years)
 
 
 def main():
+
     # Create a new outputs folder
     output_path = Path(__file__).parent / 'outputs'
     if output_path.exists():
         shutil.rmtree(output_path)
     output_path.mkdir()
 
-    # Call the transport and industry hydrogen modules
+    # Model baseline demand
+    (output_path / 'baseline' / 'demand_profiles').mkdir(parents=True)
+    model_baseline()
+
+    # Model new transport demand
     if model_transport_h2:
         # Create a transport folder in the outputs
         (output_path / 'transport').mkdir()
@@ -75,16 +88,16 @@ def main():
         # Call the transport h2 function
         model_transport_sector()        
 
+    # Model new industry demand
     if model_industry_h2:
-        # Create an industry folder in the outputs
-        (output_path / 'industry').mkdir()
+        # Create an industry folder and profile subfolder in the outputs
+        (output_path / 'industry' / 'demand_profiles').mkdir(parents=True)
 
         # Call the industry h2 function
         model_industry_sector()
 
-    # Aggregate results from industry and transport
-    if model_industry_h2 and model_transport_h2:
-        combine()
+    # Aggregate results across all three categories
+    combine(years, model_transport_h2, model_industry_h2)
 
     print('\nFinished!')
 
