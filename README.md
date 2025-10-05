@@ -21,6 +21,7 @@ For each model year, main outputs include:
 3) Maps of hydrogen demand from on-road transport and industry.
 
 **Methodology Flowcharts:**
+
 Industry:
 <img width="1532" height="901" alt="Image" src="https://github.com/user-attachments/assets/72a3d6c6-27da-43b1-99bc-7be1f5c8a872" />
 
