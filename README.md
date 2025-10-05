@@ -30,4 +30,4 @@ For each model year, main outputs include:
 
 **On-Road Transport:**
 
-<img width="655" height="290" alt="ld_transport_methodology drawio (1)" src="https://github.com/user-attachments/assets/2deaba2c-6cfc-4a1b-8f4a-ca84fd2dcdfb" />
+<img width="670" height="300" alt="ld_transport_methodology drawio (1)" src="https://github.com/user-attachments/assets/2deaba2c-6cfc-4a1b-8f4a-ca84fd2dcdfb" />
