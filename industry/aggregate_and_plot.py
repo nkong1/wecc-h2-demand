@@ -18,16 +18,16 @@ base_path  = Path(__file__).parent
 # Import load zones file
 load_zones = gp.read_file(base_path / 'inputs' / 'load_zones' / 'load_zones.shp')
 
-def aggregate_by_lz(facility_df):
+def get_aggregate_by_lz(facility_df):
     """
-    Calculates the total hydrogen demand from industry by load zone.
+    Calculates and returns a DataFrame containing total hydrogen demand by load zone.
 
     Parameters:
-    - facility_df: a DataFrame containing latitute and longitude values for each facility, among 
-        other data, including total hydrogen demand
+    - facility_df: a GeoDataFrame containing latitute, longitude, and including total hydrogen demand for 
+    each facility ('Latitude', 'Longitude', 'total_h2_demand_kg')
 
     Returns:
-    A DataFrame displaying the total hydrogen demand across all facilities in each WECC load zone
+    A DataFrame indexed by 'load_zone' containing the total hydrogen demand in each load zone
     """
     
     # Filter out any facilities with zero H2 demand 
@@ -195,11 +195,12 @@ def plot(filtered_df, year):
 
 def get_demand_grid(filtered_df):
     """
-    Geographically aggregates hydrogen demand from industrial facilities in the WECC, producing
-    a raster file with 5x5km resolution.
+    Geographically aggregates hydrogen demand facilities in the WECC, producing a GeoPackage  
+    containing hydrogen demand at a 5x5km resolution.
     
     Inputs:
-    - filtered_df: a DataFrame containing hydrogen demand projections from industrial facilities
+    - filtered_df: a DataFrame containing hydrogen demand from various plants/facilities 
+    (must have 'Latitude', 'Longitude', and 'total_h2_demand_kg columns)
 
     Returns:
     - A GeoDataFrame containing the estimated hydrogen demand from industry in 5x5km-sized 

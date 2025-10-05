@@ -1,16 +1,5 @@
-"""
-This module uses data from the EPRI Load Shape Library to temporally disaggregate annual hydrogen demand 
-into an hourly profile over the course of multiple model years. Although the profile is taken from a offpeak 
-week in the WSCC/CNV region, it is also representative of weeks in peak weeks and of other regions in the WSCC, as
-the profiles across WSCC regions and peak/offpeak weeks are nearly identical when for average weekends and weekdays. 
-The End Use Shape for Industrial Process Heating is used.
-
-https://loadshape.epri.com/enduse
-"""
-
 from pathlib import Path
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
 from transport.build_transport_profile import disaggregate_annual_to_hourly
 
@@ -18,15 +7,18 @@ from transport.build_transport_profile import disaggregate_annual_to_hourly
 base_path  = Path(__file__).parent
 profile_path = base_path / 'inputs' / 'EPRI_Profile_WSCC_CNV_Offpeak.xlsx'
 
-def build_profile(lz_summary_df, output_profiles_path, flat=False):
+def build_profile(lz_yearly_summary_df, output_profiles_path, flat=False):
     """
-    Disaggregates the annual total for industrial hydrogen demand in each load zone into an hourly profile
-    spanning a year. Saves the output profiles and plots the profile for the load zone with the highest
-    annual demand.
+    Disaggregates annual hydrogen demand totals by load zone into an hourly profiles by load zone over each model year. 
+    Saves the output profiles to the given path. By default, this function uses an industrial heating energy use
+    profile from EPRI's End Use Load Shape Library. Specifically we use the profile for the WSCC/CNV region for 
+    an "offpeak week", but note that the profiles across WSCC regions and peak/offpeak weeks are nearly identical. 
 
     Parameters:
-    - lz_summary_df: a pandas DataFrame containing the industry hydrogen demand of each load zone in each model year.
-        Has columns 'load_zone', 'total_h2_demand', 'year'. Load zones are sorted alphabetically and by descending year.
+    - lz_summary_df: a DataFrame containing the industry hydrogen demand of each load zone in each model year.
+        Has columns 'load_zone', 'total_h2_demand', 'year'. Load zones should be sorted alphabetically and by descending year.
+    - output_profiles_path: the path to the folder where the hydrogen demand profiles will be saved 
+    - flat: if True, then a flat, contant profile is created, and the EPRI profile is not used.
     
     Returns: None
     """
@@ -42,19 +34,14 @@ def build_profile(lz_summary_df, output_profiles_path, flat=False):
     weekly_profile = generate_one_week_normalized_profile(weekday_profile, weekend_profile)
     weekly_profile_array = weekly_profile['demand'].values
 
-    # Find load zone and year combination with highest demand (for plotting purposes)
-    row = lz_summary_df.loc[lz_summary_df['total_h2_demand_kg'].idxmax()]
-    """highest_demand_lz = str(row['load_zone'])
-    highest_demand_year = int(row['year'])"""
-
     # Get the first load_zone in the DataFrame
-    previous_load_zone = lz_summary_df.iloc[0].loc['load_zone']
+    previous_load_zone = lz_yearly_summary_df.iloc[0].loc['load_zone']
     
     # Create a DataFrame which will contain the all the yearly profiles for one load zone, stacked on top of each other
     profile_across_years = pd.DataFrame()
 
     # Process each load zone/year combination
-    for _, lz_row in lz_summary_df.iterrows():
+    for _, lz_row in lz_yearly_summary_df.iterrows():
         load_zone = lz_row['load_zone']
         year = lz_row['year']
 
@@ -80,12 +67,6 @@ def build_profile(lz_summary_df, output_profiles_path, flat=False):
 
         # Join to make a combined DataFrame with the profiles across all years within a load zone
         profile_across_years = pd.concat([profile_across_years, one_year_profile], ignore_index=True)
-
-        """# Plot for highest demand zone/year combination
-        if load_zone == highest_demand_lz and year == highest_demand_year:
-            plot_output_path = base_path.parent / 'outputs' / 'industry' / f'{load_zone}_demand_profile.png'
-            plot_demand_profile(one_year_profile, load_zone, plot_output_path)"""
-
 
     profile_across_years.to_csv(output_profiles_path / f'{load_zone}_profile.csv', index=False)
     print(f'\nProfiles saved to {output_profiles_path}')
@@ -130,42 +111,3 @@ def generate_one_week_normalized_profile(weekday_profile, weekend_profile):
         'hour': range(168),
         'demand': energy_normalized
     })
-
-
-def plot_demand_profile(profile_df, lz_name, plot_output_path):
-    """
-    Generates a line plot showing the hourly hydrogen demand for the given load zone.
-
-    Parameters: 
-    - profile_df: A DataFrame containing columns 'datetime' and 'total_h2_demand_kg'
-    - lz_name: The name of the load zone for which the profile is being plotted
-    - plot_output_path: the path to which the plot should be saved
-
-    Returns: None
-    """
-    total_demand = profile_df['total_h2_demand_kg'].sum()
-
-    plt.figure(figsize=(12, 5))
-    plt.plot(profile_df['datetime'], profile_df['total_h2_demand_kg'], label='Hydrogen Demand', color='blue', linewidth=0.8)
-    plt.title(f"Hourly Hydrogen Demand Profile for {lz_name}")
-    plt.xlabel("Date")
-    plt.ylabel("Hydrogen Demand (kg)")
-    plt.legend()
-    plt.grid(True)
-
-    plt.text(
-        x=0.99, y=0.01,
-        s=f"Total Annual Demand: {total_demand:,.0f} kg",
-        transform=plt.gca().transAxes,
-        fontsize=12,
-        verticalalignment='bottom',
-        horizontalalignment='right',
-        bbox=dict(facecolor='white', alpha=0.7, edgecolor='gray')
-    )
-
-    plt.ylim(bottom=0)
-    plot_output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(plot_output_path, dpi=300, bbox_inches='tight')
-    plt.close()
-
-    print(f"\n{lz_name} profile graph saved to: {plot_output_path}")

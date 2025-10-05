@@ -1,8 +1,5 @@
 """
-This module contains calculates hydrogen demand from industrial facilities over several model years. 2023 emissions data from 
-US facilities with NAICS codes that match the industries we are modeling was collected. These emissions are broken down
-by facility, unit, and fuel. Emissions for each unit across all facilities are converted directly to an input energy value, 
-then to an amount of hydrogen (in kg) needed to provide an equivalent fuel energy for each facility.
+Projects hydrogen demand from industrial facilities over the model years. 
 """
 
 import pandas as pd
@@ -61,7 +58,6 @@ sector_by_naics = {'Iron_and_Steel': [331110, 331511, 3312], 'Aluminum': [3313],
 #====================
 # Helper Functions:
 #====================
-
 def get_naics_code(naics):
     """
     Returns the naics code (int) used in our model, corresponding to the input naics code (str or int).
@@ -97,7 +93,7 @@ def get_sector(naics):
 
 def get_high_heat_emissions_share(sector):
     """
-    Returns the share of CO2 emissions associated with high-temperature combustion 
+    Returns the share of CO2 emissions (between 0 and 1) associated with high-temperature combustion 
     relative to all combustion emissions in the given sector.
     """
     
@@ -434,10 +430,10 @@ def model_one_year(high_temp_decarb_by_sector, year):
     demand_grid.to_file(grid_output_path, driver='GPKG')
 
     # Save facilities to the logs
-    filtered_df.to_csv(logs_path / f'{year}industry_demand_by_facility.csv', index = False)
+    filtered_df.to_csv(logs_path / f'{year}_final_industry_demand_by_facility.csv', index = False)
     
     # Aggregate demand by load zone
-    aggregated_by_lz = aggregate_and_plot.aggregate_by_lz(filtered_df)
+    aggregated_by_lz = aggregate_and_plot.get_aggregate_by_lz(filtered_df)
 
     aggregated_by_lz['year'] = year
 

@@ -1,5 +1,5 @@
 """
-This code temporally disaggregates hydrogen demand by load zone over the course of a year using weekly and monthly profiles.
+This file temporally disaggregates hydrogen demand by load zone over the course of a year using weekly and monthly profiles.
 It saves a CSV profile for each load zone and plots the profile for the zone with the highest total transport hydrogen demand.
 """
 
