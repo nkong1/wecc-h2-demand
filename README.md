@@ -20,5 +20,7 @@ For each model year, main outputs include:
 2) A GeoPackage consisting of 5x5km squares spanning the WECC. Each square contains an attribute representing the hydrogen demand in that region. This allows for a higher spatial resolution output, used in hydrogen plant siting (https://github.com/nkong1/wecc-h2-siting).
 3) Maps of hydrogen demand from on-road transport and industry.
 
-**Methodology Flowchart:**
+**Methodology Flowcharts:**
+<img width="1532" height="901" alt="Image" src="https://github.com/user-attachments/assets/72a3d6c6-27da-43b1-99bc-7be1f5c8a872" />
 
+<img width="1311" height="580" alt="ld_transport_methodology drawio (1)" src="https://github.com/user-attachments/assets/2deaba2c-6cfc-4a1b-8f4a-ca84fd2dcdfb" />
