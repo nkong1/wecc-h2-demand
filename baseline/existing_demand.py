@@ -29,7 +29,7 @@ def model_existing_demand(years):
     output_profiles_path = base_path.parent / 'outputs' / 'baseline' / 'demand_profiles'
     grid_output_path = base_path.parent / 'outputs' / 'baseline' 
 
-    baseline_by_lz.to_csv(base_path.parent / 'outputs' / 'demand_by_load_zone.csv')
+    baseline_by_lz.to_csv(base_path.parent / 'outputs' / 'baseline' / 'demand_by_load_zone.csv')
 
     all_years_summary = pd.DataFrame()
     for year in years:
