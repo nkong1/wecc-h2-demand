@@ -11,10 +11,10 @@ from baseline import existing_demand
 
 # ============================================
 # Choose what sectors to model
-model_transport_h2 = True
+model_transport_h2 = False
 model_industry_h2 = True
 
-# Choose model years between 2023 and 2050 (inclusive)
+# Choose model years between 2026 and 2050 (inclusive)
 years = [2030, 2035]
 # ============================================
 
