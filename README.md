@@ -24,7 +24,7 @@ For each model year, main outputs include:
 
 **Industry**:
 
-<img width="766" height="450" alt="Image" src="https://github.com/user-attachments/assets/72a3d6c6-27da-43b1-99bc-7be1f5c8a872" />
+<img width="766" height="450" alt="Image" src="https://github.com/user-attachments/assets/727592d3-1146-4b98-9e7a-961c36ca4880" />
 
 
 
