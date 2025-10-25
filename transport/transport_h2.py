@@ -51,7 +51,7 @@ def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years
 
     # Conversion factors
     GAL_GASOLINE_TO_KG_H2 = 1.0  # 1 kg H2 = 1 gallon gasoline (energy equivalence)
-    GAL_DIESEL_TO_KG_H2 = 1.0 / 0.9 # 1 kg H2 = 0.9 gallons diesel (energy equivalence)
+    GAL_DIESEL_TO_KG_H2 = 1.14 # 1.14 kg H2 = 1 gallon diesel (energy equivalence)
 
     # Load fuel consumption data by state (2023 data from the EIA)
     fuel_data = pd.read_excel(fuel_data_path)

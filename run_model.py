@@ -11,13 +11,12 @@ from baseline import existing_demand
 
 # ============================================
 # Choose what sectors to model
-model_transport_h2 = False
+model_transport_h2 = True
 model_industry_h2 = True
 
 # Choose model years between 2026 and 2050 (inclusive)
-years = [2030, 2035]
+years = [2050]
 # ============================================
-
 
 def model_transport_sector():
     """
@@ -28,8 +27,8 @@ def model_transport_sector():
     # ============================================
     # Choose the LD and HD FCEV penetration among projected gasoline and diesel vehicle stock (as a percentage from 0 to 100)
     # The percentage of FCEV penetration is assumed to be the same as percentage of fuel use decarbonization
-    LD_FCEV_penetration = [0,5]
-    HD_FCEV_penetration = [10,20]
+    LD_FCEV_penetration = [5]
+    HD_FCEV_penetration = [10]
     # ============================================
 
     # Call the transport module
@@ -50,8 +49,7 @@ def model_industry_sector():
     # Adjust the percentage of high-temp combustion fuel use decarbonization in corresponding sector 
     # (between 0 and 100) for each model year. 
 
-    high_temp_combustion_pct_decarb = [[10, 10, 10, 10, 10, 10],
-                                       [20, 20, 20, 20, 20, 20]]
+    high_temp_combustion_pct_decarb = [[10, 10, 10, 10, 10, 10]]
      
     # ============================================
     # Call the industry module
