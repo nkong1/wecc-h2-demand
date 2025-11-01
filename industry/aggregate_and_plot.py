@@ -206,7 +206,7 @@ def get_demand_grid(filtered_df):
     - A GeoDataFrame containing the estimated hydrogen demand from industry in 5x5km-sized 
         square geometries. These squares constitute the entire WECC. 
     """
-    wecc_grid_path = base_path.parent / 'transport' / 'input_files' / 'vmt_grid_wecc.gpkg'
+    wecc_grid_path = base_path.parent / 'road_transport' / 'input_files' / 'vmt_grid_wecc.gpkg'
     wecc_grid = gp.read_file(wecc_grid_path).copy().to_crs('EPSG:5070')
 
     # Convert to GeoDataFrame

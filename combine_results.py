@@ -174,7 +174,7 @@ def combine_profiles(years, transport=False, industry=False):
         # -------------------------------
         # SWITCH formatting
         # -------------------------------
-        combined_df['TIMEPOINT'] = range(len(combined_df))
+        combined_df['TIMEPOINT'] = range(1, len(combined_df)+1)
         combined_df['LOAD_ZONE'] = zone
         #combined_df['timeseries'] = combined_df['datetime'].dt.year.astype(str) + '_all'
         #combined_df['timestamp'] = combined_df['datetime'].dt.strftime('%Y-%m-%d-%H')

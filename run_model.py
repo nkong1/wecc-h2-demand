@@ -5,14 +5,14 @@ Use this file to run the model and adjust inputs.
 from pathlib import Path
 import shutil
 from industry import industry_h2, build_industry_profile
-from transport import transport_h2, build_transport_profile
+from road_transport import transport_h2, build_transport_profile
 from combine_results import combine
 from baseline import existing_demand
 
 # ============================================
 # Choose what sectors to model
-model_transport_h2 = True
-model_industry_h2 = True
+model_transport_h2 = False
+model_industry_h2 = False
 
 # Choose model years between 2026 and 2050 (inclusive)
 years = [2050]
@@ -27,8 +27,8 @@ def model_transport_sector():
     # ============================================
     # Choose the LD and HD FCEV penetration among projected gasoline and diesel vehicle stock (as a percentage from 0 to 100)
     # The percentage of FCEV penetration is assumed to be the same as percentage of fuel use decarbonization
-    LD_FCEV_penetration = [5]
-    HD_FCEV_penetration = [10]
+    LD_FCEV_penetration = [0]
+    HD_FCEV_penetration = [0]
     # ============================================
 
     # Call the transport module
@@ -49,7 +49,7 @@ def model_industry_sector():
     # Adjust the percentage of high-temp combustion fuel use decarbonization in corresponding sector 
     # (between 0 and 100) for each model year. 
 
-    high_temp_combustion_pct_decarb = [[10, 10, 10, 10, 10, 10]]
+    high_temp_combustion_pct_decarb = [[0, 0, 0, 0, 0, 0]]
      
     # ============================================
     # Call the industry module

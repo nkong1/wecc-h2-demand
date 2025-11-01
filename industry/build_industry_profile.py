@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 import numpy as np
-from transport.build_transport_profile import disaggregate_annual_to_hourly
+from road_transport.build_transport_profile import disaggregate_annual_to_hourly
 
 # File paths
 base_path  = Path(__file__).parent
