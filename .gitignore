@@ -4,4 +4,6 @@
 
 outputs
 **/logs
-industry_processing_outputs
+pre-processing/industry/outputs
+pre-processing/onroad_transport/outputs
+pre-processing/onroad_transport/inputs/HPMS_2023

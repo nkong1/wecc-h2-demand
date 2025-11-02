@@ -13,37 +13,34 @@ from pathlib import Path
 # Define paths
 outputs_path = Path(__file__).parent / 'outputs'
 combined_profiles_path = outputs_path / 'combined_profile'
-combined_grids_path = outputs_path / 'combined_grid'
 
-def combine(years, transport, industry):
+def combine(years, transport, industry, aviation):
     print('\n===================\nCombining Results...\n==================')
 
     print('\nCombining demand profiles...')
     combine_profiles(years, transport, industry)
 
     print('\nCombining demand grids...')
-    combine_demand_grids(transport, industry)
+    combine_demand_grids(transport, industry, aviation)
 
-def combine_demand_grids(transport=False, industry=False):
+def combine_demand_grids(transport=False, industry=False, aviation=False):
     """
     Combines 5x5km resolution demand grids from baseline and optionally
-    transport and industry into a single grid for each model year.
+    transport, industry, and aviation into a single grid for each model year.
     
     Parameters:
-    - transport (bool): If True, merge transport grids.
-    - industry (bool): If True, merge industry grids.
+    - transport (bool): If True, merge transport grid.
+    - industry (bool): If True, merge industry grid.
+    - industry (bool): If True, merge aviation grid.
     """
-    # Create new combined results folder
-    if combined_grids_path.exists():
-        shutil.rmtree(combined_grids_path)
-    combined_grids_path.mkdir()
 
     # Input folders
     baseline_profiles_path = outputs_path / 'baseline'
     industry_profiles_path = outputs_path / 'industry'
     transport_profiles_path = outputs_path / 'transport'
+    aviation_profiles_path = outputs_path / 'aviation'
 
-    # Loop over baseline files (baseline always exists)
+    # Loop over baseline files (this always exists)
     for baseline_grid_path in baseline_profiles_path.glob('*gpkg'):
         year = baseline_grid_path.stem.split('_')[0]
 
@@ -75,15 +72,28 @@ def combine_demand_grids(transport=False, industry=False):
         else:
             combined['total_h2_demand_kg_transport'] = 0
 
+        # Merge aviation if exists
+        if aviation:
+            aviation_grid = gpd.read_file(aviation_profiles_path / baseline_grid_path.name)
+            combined = combined.merge(
+                aviation_grid[['geometry', 'total_h2_demand_kg']],
+                on='geometry',
+                how='left'
+            )
+            combined.rename(columns={'total_h2_demand_kg': 'total_h2_demand_kg_aviation'}, inplace=True)
+        else:
+            combined['total_h2_demand_kg_aviation'] = 0
+
         # Compute total demand
         combined['total_h2_demand_kg'] = (
             combined['total_h2_demand_kg_baseline'] +
             combined['total_h2_demand_kg_industry'] +
-            combined['total_h2_demand_kg_transport']
+            combined['total_h2_demand_kg_transport'] + 
+            combined['total_h2_demand_kg_aviation']
         )
 
         # Save to combined grids folder
-        combined_output_path = combined_grids_path / f"{year}_wecc_h2_demand_5km_combined.gpkg"
+        combined_output_path = outputs_path / f"{year}_wecc_h2_demand_grid_combined.gpkg"
         combined.to_file(combined_output_path, driver='GPKG')
 
 
@@ -176,7 +186,7 @@ def combine_profiles(years, transport=False, industry=False):
         # -------------------------------
         combined_df['TIMEPOINT'] = range(1, len(combined_df)+1)
         combined_df['LOAD_ZONE'] = zone
-        #combined_df['timeseries'] = combined_df['datetime'].dt.year.astype(str) + '_all'
+        combined_df['timeseries'] = combined_df['datetime'].dt.year.astype(str) + '_all'
         #combined_df['timestamp'] = combined_df['datetime'].dt.strftime('%Y-%m-%d-%H')
 
         # Organize columns

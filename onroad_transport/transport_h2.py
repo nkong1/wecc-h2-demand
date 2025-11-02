@@ -8,8 +8,8 @@ import pandas as pd
 import os
 from pathlib import Path
 import shutil
-from road_transport import plot_demand
-from road_transport.param_projections import get_transport_parameters
+from onroad_transport import plot_demand
+from onroad_transport.param_projections import get_transport_parameters
 import geopandas as gpd
 
 # Input file paths
@@ -47,7 +47,7 @@ def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years
         descending year). This DataFrame is saved to outputs from the run_model file.
     """
 
-    print('\n===================\nTRANSPORT H2 DEMAND\n==================')
+    print('\n===================\nON-ROAD TRANSPORT H2 DEMAND\n==================\n')
 
     # Conversion factors
     GAL_GASOLINE_TO_KG_H2 = 1.0  # 1 kg H2 = 1 gallon gasoline (energy equivalence)
@@ -111,6 +111,7 @@ def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years
             # Convert fuel offset to hydrogen demand (accounting for FCEV efficiency)
             ld_h2_demand = gas_offset_gallons * \
                 GAL_GASOLINE_TO_KG_H2 / LD_FCEV_TO_ICEV_efficiency
+            
             hd_h2_demand = diesel_offset_gallons * \
                 GAL_DIESEL_TO_KG_H2 / HD_FCEV_TO_ICEV_efficiency
             total_h2 = ld_h2_demand + hd_h2_demand
