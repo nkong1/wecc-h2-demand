@@ -18,7 +18,7 @@ def combine(years, transport, industry, aviation):
     print('\n===================\nCombining Results...\n==================')
 
     print('\nCombining demand profiles...')
-    combine_profiles(years, transport, industry)
+    combine_profiles(years, transport, industry, aviation)
 
     print('\nCombining demand grids...')
     combine_demand_grids(transport, industry, aviation)
@@ -97,7 +97,7 @@ def combine_demand_grids(transport=False, industry=False, aviation=False):
         combined.to_file(combined_output_path, driver='GPKG')
 
 
-def combine_profiles(years, transport=False, industry=False):
+def combine_profiles(years, transport=False, industry=False, aviation=False):
     """
     Combines the hydrogen demand profiles from baseline (always) and optionally
     transport and industry into a single, total profile for each load zone.
@@ -187,15 +187,16 @@ def combine_profiles(years, transport=False, industry=False):
         combined_df['TIMEPOINT'] = range(1, len(combined_df)+1)
         combined_df['LOAD_ZONE'] = zone
         combined_df['timeseries'] = combined_df['datetime'].dt.year.astype(str) + '_all'
-        #combined_df['timestamp'] = combined_df['datetime'].dt.strftime('%Y-%m-%d-%H')
+        combined_df['timestamp'] = combined_df['datetime'].dt.strftime('%Y-%m-%d-%H')
 
-        # Organize columns
-        combined_df = combined_df[['LOAD_ZONE', 'TIMEPOINT', 'zone_demand_mw_h2']]
-
-        # Save result
         # combined_df.to_csv(combined_profiles_path / f"{zone}_profile.csv", index=False)
         h2_timepoint_demand_df = pd.concat([h2_timepoint_demand_df, combined_df])
         h2_timepoint_demand_df = h2_timepoint_demand_df.sort_values(['LOAD_ZONE', 'TIMEPOINT'])
+
+    save_daily_profile(h2_timepoint_demand_df, aviation=aviation)
+
+    # Organize columns
+    h2_timepoint_demand_df = h2_timepoint_demand_df[['LOAD_ZONE', 'TIMEPOINT', 'zone_demand_mw_h2']]
 
     # Save final output
     h2_timepoint_demand_df.to_csv(outputs_path / "h2_timepoint_demand.csv", index=False)
@@ -204,4 +205,116 @@ def combine_profiles(years, transport=False, industry=False):
 
 
 
+import pandas as pd
+import matplotlib.pyplot as plt
 
+def save_daily_profile(profile_df, aviation=False):
+    """
+    Aggregates hourly hydrogen demand profiles to daily resolution and optionally
+    combines with aviation daily demand. Saves a CSV with one row per day (365 rows)
+    and generates a cumulative stacked line plot by demand source.
+    
+    Parameters:
+    - profile_df: pd.DataFrame with columns ['LOAD_ZONE', 'datetime', 'h2_demand_kg_baseline',
+                    'h2_demand_kg_industry', 'h2_demand_kg_transport']
+    - aviation: bool, whether to include aviation daily profile (from h2_daily_demand.csv)
+    """
+    print('saving combined dialy profile')
+    # -----------------------------
+    # Step 1: Compute day of year for each timestamp
+    # -----------------------------
+    profile_df['date'] = profile_df['datetime'].dt.dayofyear  # 1-365
+
+    # -----------------------------
+    # Step 2: Convert hourly kg demand to MW
+    # -----------------------------
+    for col in ['h2_demand_kg_baseline', 'h2_demand_kg_industry', 'h2_demand_kg_transport']:
+        if col not in profile_df.columns:
+            profile_df[col] = 0
+        profile_df[col + '_mw'] = profile_df[col] * 33.39 / 1000  # MW
+
+    # -----------------------------
+    # Step 3: Aggregate across all load zones and hours to daily MWh
+    # -----------------------------
+    daily_profile = profile_df.groupby('date').agg({
+    'h2_demand_kg_baseline_mw': 'sum',
+    'h2_demand_kg_industry_mw': 'sum',
+    'h2_demand_kg_transport_mw': 'sum'
+    }).reset_index()
+
+    daily_profile.rename(columns={
+        'h2_demand_kg_baseline_mw': 'demand_mwh_baseline',
+        'h2_demand_kg_industry_mw': 'demand_mwh_industry',
+        'h2_demand_kg_transport_mw': 'demand_mwh_transport'
+    }, inplace=True)
+
+    # -----------------------------
+    # Step 4: Combine with aviation daily demand if requested
+    # -----------------------------
+    if aviation:
+        aviation_daily_profile = pd.read_csv(outputs_path / 'h2_daily_demand.csv')  # columns: ['LOAD_AREA','date','demand_mwh_h2']
+        aviation_daily = aviation_daily_profile.groupby('date')['demand_mwh_h2'].sum().reset_index()
+        aviation_daily.rename(columns={'demand_mwh_h2': 'demand_mwh_aviation'}, inplace=True)
+        daily_profile = daily_profile.merge(aviation_daily, on='date', how='left')
+
+    # Fill missing days with 0
+    all_days = pd.DataFrame({'date': range(1, 366)})
+    daily_profile = all_days.merge(daily_profile, on='date', how='left').fillna(0)
+
+    # -----------------------------
+    # Step 5: Save final daily profile
+    # -----------------------------
+    output_csv_path = outputs_path / 'h2_daily_profile_combined.csv'
+    daily_profile.to_csv(output_csv_path, index=False)
+    print(f'\nDaily combined profile saved: {output_csv_path}')
+
+    # -----------------------------
+    # Step 6: Plot cumulative stacked demand
+    # -----------------------------
+    sources = ['demand_mwh_baseline', 'demand_mwh_industry', 'demand_mwh_transport']
+    if aviation:
+        sources.append('demand_mwh_aviation')
+
+    # Compute cumulative sums for stacking
+    cum_df = daily_profile.copy()
+    cum_df['baseline_cum'] = cum_df['demand_mwh_baseline']
+    if 'demand_mwh_industry' in cum_df.columns:
+        cum_df['industry_cum'] = cum_df['baseline_cum'] + cum_df['demand_mwh_industry']
+    else:
+        cum_df['industry_cum'] = cum_df['baseline_cum']
+    if 'demand_mwh_transport' in cum_df.columns:
+        cum_df['transport_cum'] = cum_df['industry_cum'] + cum_df['demand_mwh_transport']
+    else:
+        cum_df['transport_cum'] = cum_df['industry_cum']
+    if 'demand_mwh_aviation' in cum_df.columns:
+        cum_df['aviation_cum'] = cum_df['transport_cum'] + cum_df['demand_mwh_aviation']
+    else:
+        cum_df['aviation_cum'] = cum_df['transport_cum']
+
+    # Plot
+    plt.figure(figsize=(12,6))
+    plt.plot(cum_df['date'], cum_df['baseline_cum'], label='Baseline', color='blue')
+    plt.plot(cum_df['date'], cum_df['industry_cum'], label='Industry', color='green')
+    plt.plot(cum_df['date'], cum_df['transport_cum'], label='Transport', color='orange')
+    if aviation:
+        plt.plot(cum_df['date'], cum_df['aviation_cum'], label='Aviation', color='red')
+
+    # Fill between for stacked shading
+    plt.fill_between(cum_df['date'], 0, cum_df['baseline_cum'], color='blue', alpha=0.3)
+    plt.fill_between(cum_df['date'], cum_df['baseline_cum'], cum_df['industry_cum'], color='green', alpha=0.3)
+    plt.fill_between(cum_df['date'], cum_df['industry_cum'], cum_df['transport_cum'], color='orange', alpha=0.3)
+    if aviation:
+        plt.fill_between(cum_df['date'], cum_df['transport_cum'], cum_df['aviation_cum'], color='red', alpha=0.3)
+
+    plt.xlabel('Day of Year')
+    plt.ylabel('Cumulative Daily Demand (MWh)')
+    plt.title('Daily Hydrogen Demand by Source (Stacked)')
+    plt.legend(loc='upper left')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+
+    # Save figure
+    output_plot_path = outputs_path / 'h2_daily_profile_combined_cumulative.png'
+    plt.savefig(output_plot_path, dpi=300)
+    plt.show()
+    print(f'Cumulative daily demand plot saved as {output_plot_path}')

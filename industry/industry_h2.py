@@ -29,9 +29,8 @@ demand_by_lz_path = base_path.parent / "outputs" / "industry" / "demand_by_load_
 # Constants:
 # ====================
 
-ONE_MILLION = 10**6
-BTU_IN_1LB_H2 = 61013
-LB_TO_KG = 0.453592
+KWH_PER_MMBTU = 293
+KWH_PER_KG_H2 = 33.39
 
 sector_by_naics = {
     "Iron_and_Steel": [331110, 331511, 3312],
@@ -84,7 +83,7 @@ def get_sector(naics):
 
 def get_high_heat_emissions_share(sector):
     """
-    Returns the share of CO2 emissions (between 0 and 1) associated with high-temperature combustion
+    Returns the share of CO2 emissions (between 0 and 1) associated with high and mid-temperature combustion
     relative to all combustion emissions in the given sector.
     """
 
@@ -104,7 +103,7 @@ def get_high_heat_emissions_share(sector):
     )
 
     # Compute share (high-temp / total combustion)
-    high_heat_share = sector_row["high_temp_heat"].iloc[0] / total_combustion
+    high_heat_share = (sector_row["high_temp_heat"].iloc[0]) / total_combustion
 
     return high_heat_share
 
@@ -470,12 +469,11 @@ def model_one_year(high_temp_decarb_by_sector, year):
     # ========================
 
     # Convert H2 demand from mmBtu to kg
-    results_by_facility_df["total_h2_demand_kg"] = (
-        results_by_facility_df["proj_fuel_demand_mmBtu"]
-        * ONE_MILLION
-        / BTU_IN_1LB_H2
-        * LB_TO_KG
-    )
+    results_by_facility_df["total_h2_demand_kg"] = (results_by_facility_df["proj_fuel_demand_mmBtu"]
+            * KWH_PER_MMBTU
+            / KWH_PER_KG_H2
+        )
+
     results_by_facility_df["Sector"] = results_by_facility_df["NAICS Code"].map(
         get_sector
     )

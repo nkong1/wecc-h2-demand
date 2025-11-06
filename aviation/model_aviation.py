@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+import shutil
 
 from industry.aggregate_and_plot import get_demand_grid
 
@@ -14,12 +15,42 @@ aeo_projections_path = (
     base_path / "inputs" / "Transportation_Energy_Use_(Case_Reference_case).csv"
 )
 
+logs_path = base_path / 'logs'
+if logs_path.exists():
+    shutil.rmtree(logs_path)
+logs_path.mkdir()
+
 # Constants
 billion_btu_to_MWh_multiplier = 293.071070172
-h2_to_saf_efficiency = 0.47  # via the Fischer-Tropch process
+
+# Assumptions for final energy shares for aircraft fuel consumption
+final_energy_shares_ref = {
+    "electricity": 0.09,
+    "direct_H2": 0.34,
+    "ekerosene": 0.57
+}
+
+final_energy_shares_no_saf = {
+    "electricity": 0.09,
+    "direct_H2": 0.91,
+    "ekerosene": 0
+}
+
+# Aircraft efficiency relative to jet fuel (lower = more efficient)
+efficiencies = {
+    "electricity": 0.148 / 0.409, 
+    "H2": 0.285 / 0.409,        
+    "ekerosene": 1.0                
+}
+
+# Conversion efficiency of producing e-kerosene from H2
+h2_to_kerosene_conversion_efficiency = 0.47  # via the Fischer-Tropch process
+
+
+"""
 fuel_cell_efficiency = 0.60
 electric_plane_efficiency = (87.2 - 40.5) / 2
-jet_engine_efficiency = (38.6 - 15.6)/2
+jet_engine_efficiency = (38.6 - 15.6) / 2"""
 
 # =============
 # Read in AEO projections here to avoid reading it in every time a projection is needed
@@ -78,9 +109,10 @@ def project_fuel_use_profile(fuel_use_profile, fuel_type, year):
         projected_airport_profile["Latitude"] = airport_profile.loc["LATITUDE"]
                 
         projected_profile = pd.concat([projected_profile, projected_airport_profile])
-        projected_profile = projected_profile.sort_values(
-            by=["AIRPORT", "LOAD_AREA", "date"]
-        )
+
+    projected_profile = projected_profile.sort_values(
+        by=["AIRPORT", "LOAD_AREA", "date"]
+    )
 
     return projected_profile
 
@@ -108,42 +140,60 @@ def project_h2_series(h2_profile_series, fuel_type, year):
     h2_profile["date"] = range(1, 366, 1)
     return h2_profile[["date", "fuel_use_bBtu"]]
 
-
-def convert_to_h2_profile(daily_fuel_demand_df, decarb_pct, fuel_cell_pct, saf_pct):
+def convert_to_h2_profile(daily_fuel_demand_df, decarb_pct, fuel_cell_only=False):
     """
-     Inputs:
-    - daily_fuel_demand_df: a DataFrame of daily fuel demand by airport in the model year
-    - decarb_pct: a number between 0 and 100
-    - fuel_cell_pct: the percentage of aviation fuel decarbonization that occurs via h2 fuel cells (0 to 100)
-    - saf_pct: the percentage of aviation fuel decarbonization that occurs via e-kerosene (0 to 100).
-        Note: fuel_cell_pct + saf_pct must equal 100.
+    Inputs:
+    - daily_fuel_demand_df: DataFrame of daily jet fuel demand by airport in bBtu
+    - decarb_pct: percentage of demand to decarbonize (0-100)
 
     Returns:
-    - a DataFrame
+    - DataFrame with total H2 demand (fuel cell + e-kerosene) in MWh
     """
-    fuel_demand_df = daily_fuel_demand_df.copy()
 
-    fuel_demand_df["fuel_cell_h2_mwh"] = (
-        fuel_demand_df["fuel_use_bBtu"]
-        * (decarb_pct / 100)
-        * (fuel_cell_pct / 100)
-        * (jet_engine_efficiency / electric_plane_efficiency / fuel_cell_efficiency)
-        * billion_btu_to_MWh_multiplier
+    df = daily_fuel_demand_df.copy()
+
+    # Step 1 Jet fuel demand to replace
+    df["jet_fuel_to_replace_bBtu"] = df["fuel_use_bBtu"] * (decarb_pct / 100)
+
+    # Get the shares of final energy demand by fuel
+    if not fuel_cell_only:
+        final_energy_shares = final_energy_shares_ref
+    else: 
+        final_energy_shares = final_energy_shares_no_saf
+
+    # Step 2: Compute total final energy required (weighted by efficiency)
+    total_final_energy_factor = sum(
+        final_energy_shares[f] * efficiencies["H2" if f == "direct_H2" else f]
+        for f in final_energy_shares
     )
 
-    fuel_demand_df["saf_h2_mwh"] = (
-        fuel_demand_df["fuel_use_bBtu"]
-        * (decarb_pct / 100)
-        * (saf_pct / 100)
-        / h2_to_saf_efficiency
-        * billion_btu_to_MWh_multiplier
-    )
+    # Total final energy demand (all fuels combined)
+    df["total_final_energy_bBtu"] = df["jet_fuel_to_replace_bBtu"] * total_final_energy_factor
 
-    fuel_demand_df["demand_mwh_h2"] = (
-        fuel_demand_df["fuel_cell_h2_mwh"] + fuel_demand_df["saf_h2_mwh"]
-    )
-    fuel_demand_df.to_csv('ratio.csv', index=False)
-    return fuel_demand_df[["AIRPORT", "Latitude", "Longitude", "LOAD_AREA", "date", "demand_mwh_h2"]].copy()
+    # Step 3. Project total final energy demand (all fuels combined)
+    df["total_final_energy_bBtu"] = df["jet_fuel_to_replace_bBtu"] * total_final_energy_factor
+
+    # Step 4. Disaggregate by fuel, based on shares and efficiencies
+    for fuel, share in final_energy_shares.items():
+        eff_key = "H2" if fuel == "direct_H2" else fuel
+        df[f"{fuel}_final_bBtu"] = df["total_final_energy_bBtu"] * share
+
+    # Step 5. Hydrogen energy calculations
+    # Direct H2 (fuel cells)
+    df["fuel_cell_h2_bBtu"] = df["direct_H2_final_bBtu"]
+
+    # H2 for e-kerosene production
+    df["saf_h2_bBtu"] = (df["ekerosene_final_bBtu"] / h2_to_kerosene_conversion_efficiency)
+
+    # Step 6. Convert both to MWh
+    df["fuel_cell_h2_mwh"] = df["fuel_cell_h2_bBtu"] * billion_btu_to_MWh_multiplier
+    df["saf_h2_mwh"] = df["saf_h2_bBtu"] * billion_btu_to_MWh_multiplier
+
+    # Step 7. Total H2 demand
+    df["demand_mwh_h2"] = df["fuel_cell_h2_mwh"] + df["saf_h2_mwh"]
+
+    return df.copy()
+
 
 
 def get_airport_demand_grid(h2_profile_by_airport):
@@ -160,13 +210,11 @@ def get_airport_demand_grid(h2_profile_by_airport):
 
     h2_demand_by_airport['total_h2_demand_kg'] = h2_demand_by_airport['demand_mwh_h2'] / 33.39 * 1000
 
-    h2_demand_by_airport.to_csv('h2_demand_by_airport.csv', index=False)
-
     return get_demand_grid(h2_demand_by_airport)
 
 
 
-def model_aviation_demand(model_years, decarb_pcts, fuel_cell_pcts, saf_pcts):
+def model_aviation_demand(model_years, decarb_pcts, fuel_cell_only=False):
 
     print("\n===================\nAVIATION H2 DEMAND\n==================\n")
 
@@ -182,8 +230,6 @@ def model_aviation_demand(model_years, decarb_pcts, fuel_cell_pcts, saf_pcts):
 
         # Get the input parameters for the model year
         decarb_pct = decarb_pcts[iteration]
-        fuel_cell_pct = fuel_cell_pcts[iteration]
-        saf_pct = saf_pcts[iteration]
 
         av_gas_profile_by_airport = project_fuel_use_profile(
             get_fuel_use_profile_by_airport(av_df), "avgas", model_year
@@ -192,8 +238,6 @@ def model_aviation_demand(model_years, decarb_pcts, fuel_cell_pcts, saf_pcts):
             get_fuel_use_profile_by_airport(jet_df), "jetfuel", model_year
         )
 
-        # av_gas_profile.to_csv("av_gas_profile.csv", index=False)
-        # jet_fuel_profile.to_csv("jet_fuel_profile.csv", index=False)
 
         # Add aviation and jet fuel profiles
         combined_fuel_profile_by_airport = av_gas_profile_by_airport.merge(
@@ -206,17 +250,17 @@ def model_aviation_demand(model_years, decarb_pcts, fuel_cell_pcts, saf_pcts):
             + combined_fuel_profile_by_airport["fuel_use_bBtu_jet"]
         )
 
-        combined_fuel_profile_by_airport.to_csv("combined_fuel_profile.csv", index=False)
+        daily_h2_profile_by_airport = convert_to_h2_profile(combined_fuel_profile_by_airport, decarb_pct, fuel_cell_only)
 
-        daily_h2_profile_by_airport = convert_to_h2_profile(
-            combined_fuel_profile_by_airport, decarb_pct, fuel_cell_pct, saf_pct
-        )
+        daily_h2_profile_by_airport.to_csv(logs_path / 'daily_h2_profile_by_airport.csv', index=False)
 
         h2_profile_by_load_zone = (
             daily_h2_profile_by_airport[["date", "LOAD_AREA", "demand_mwh_h2"]]
             .groupby(["LOAD_AREA", "date"], as_index=False).sum()
             .rename({'demand_mwh_h2': 'zone_demand_mwh_h2'})
         )
+
+        h2_profile_by_load_zone['timeseries'] = f'{model_year}_all'
         
         combined_daily_profile = pd.concat([combined_daily_profile, h2_profile_by_load_zone])
 
@@ -229,5 +273,5 @@ def model_aviation_demand(model_years, decarb_pcts, fuel_cell_pcts, saf_pcts):
 
     # Save combined the daily profile
     combined_daily_profile = combined_daily_profile.rename({'date': 'TIMEPOINT'})
-    combined_daily_profile.to_csv(base_path.parent / 'outputs' / "h2_daily_profile.csv", index=False)
+    combined_daily_profile.to_csv(base_path.parent / 'outputs' / "h2_daily_demand.csv", index=False)
 

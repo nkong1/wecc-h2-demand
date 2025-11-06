@@ -47,7 +47,7 @@ def model_transport_demand(ld_penetration_by_year, hd_penetration_by_year, years
         descending year). This DataFrame is saved to outputs from the run_model file.
     """
 
-    print('\n===================\nON-ROAD TRANSPORT H2 DEMAND\n==================\n')
+    print('\n===================\nON-ROAD TRANSPORT H2 DEMAND\n==================')
 
     # Conversion factors
     GAL_GASOLINE_TO_KG_H2 = 1.0  # 1 kg H2 = 1 gallon gasoline (energy equivalence)
