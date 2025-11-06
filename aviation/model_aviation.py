@@ -18,7 +18,8 @@ aeo_projections_path = (
 billion_btu_to_MWh_multiplier = 293.071070172
 h2_to_saf_efficiency = 0.47  # via the Fischer-Tropch process
 fuel_cell_efficiency = 0.60
-jet_engine_efficiency = 0.30
+electric_plane_efficiency = (87.2 - 40.5) / 2
+jet_engine_efficiency = (38.6 - 15.6)/2
 
 # =============
 # Read in AEO projections here to avoid reading it in every time a projection is needed
@@ -126,7 +127,7 @@ def convert_to_h2_profile(daily_fuel_demand_df, decarb_pct, fuel_cell_pct, saf_p
         fuel_demand_df["fuel_use_bBtu"]
         * (decarb_pct / 100)
         * (fuel_cell_pct / 100)
-        * (jet_engine_efficiency / fuel_cell_efficiency)
+        * (jet_engine_efficiency / electric_plane_efficiency / fuel_cell_efficiency)
         * billion_btu_to_MWh_multiplier
     )
 
