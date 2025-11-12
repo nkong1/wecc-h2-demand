@@ -18,16 +18,62 @@ base_path  = Path(__file__).parent
 # Import load zones file
 load_zones = gp.read_file(base_path / 'inputs' / 'load_zones' / 'load_zones.shp')
 
+def get_aggregate_by_lz_and_industry(facility_df):
+    """
+    Calculates and returns a DataFrame containing total hydrogen demand by load zone and industry
+
+    Parameters:
+    - facility_df: a GeoDataFrame containing latitude, longitude, industry, and total hydrogen demand for 
+      each facility ('Latitude', 'Longitude', 'Sector', 'total_h2_demand_kg')
+
+    Returns:
+    A DataFrame indexed by 'load_zone' containing the total hydrogen demand in each industry (kg)
+    """
+    results = []
+    industries = ["Iron_and_Steel", "Aluminum", "Cement", "Chemicals", "Refineries", "Glass"]
+
+    for industry in industries:
+        filtered_facilities = facility_df[facility_df['Sector'] == industry].copy()
+
+        # Aggregate hydrogen demand by load zone
+        aggregated_facilities = get_aggregate_by_lz(filtered_facilities)
+        aggregated_facilities['industry'] = industry
+
+        # Add any missing load zones with 0 hydrogen demand
+        all_load_zones = pd.DataFrame({'load_zone': load_zones['LOAD_AREA'].unique()})
+        aggregated_facilities = all_load_zones.merge(
+            aggregated_facilities, on='load_zone', how='left'
+        ).fillna({'total_h2_demand_kg': 0, 'industry': industry})
+
+        results.append(aggregated_facilities)
+
+    # Combine all industries into one DataFrame
+    output_df = pd.concat(results, ignore_index=True)
+
+    # Pivot to make industries columns instead of rows
+    output_df = output_df.pivot(index='load_zone', columns='industry', values='total_h2_demand_kg').fillna(0)
+
+    # Reset index to return a clean DataFrame
+    output_df = output_df.reset_index()
+
+    # Add a column for the total demand across industries
+    output_df['total_h2_demand_kg'] = output_df.loc[:, output_df.columns != 'load_zone'].sum(axis=1)
+
+    return output_df
+
+
+
 def get_aggregate_by_lz(facility_df):
     """
     Calculates and returns a DataFrame containing total hydrogen demand by load zone.
 
     Parameters:
-    - facility_df: a GeoDataFrame containing latitute, longitude, and including total hydrogen demand for 
+    - facility_df: a GeoDataFrame containing latitute, longitude, and total hydrogen demand for 
     each facility ('Latitude', 'Longitude', 'total_h2_demand_kg')
 
     Returns:
     A DataFrame indexed by 'load_zone' containing the total hydrogen demand in each load zone
+
     """
     
     # Filter out any facilities with zero H2 demand 

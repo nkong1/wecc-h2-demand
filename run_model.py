@@ -14,7 +14,7 @@ from baseline import existing_demand
 # ADJUST INPUTS HERE
 # ============================================
 
-# Choose what sectors to model
+# Choose what sectors to model. Note, if you set one to False, you must change the corresponding decarbonization pcts to 0.
 model_transport_h2 = True
 model_industry_h2 = True
 model_aviation_h2 = True
@@ -23,20 +23,20 @@ model_aviation_h2 = True
 years = [2050]
 
 # Choose the LD and HD FCEV penetration among projected gasoline and diesel vehicle stock
-LD_FCEV_penetration_pcts = [30]
-HD_FCEV_penetration_pcts = [45]
+LD_FCEV_penetration_pcts = [20]
+HD_FCEV_penetration_pcts = [30]
 
 # Pct of high-temp combustion fuel use decarbonization for each sector in each model year.
-high_temp_combustion_pcts_decarb = [[100]*6]
+high_temp_combustion_pcts_decarb = [[75]*6]
 
 # Order of industries, for reference only (do not change)
 sectors = ["Iron & Steel", "Aluminum", "Cement", "Chemicals", "Refineries", "Glass"]
 
 # Percentage of aviation fuel to decarbonize in each model year
-aviation_decarb_pcts = [60] 
+aviation_decarb_pcts = [40] 
 
 # Choose whether to assume no e-kerosene (fuel cell only scenario)
-fuel_cell_only = True
+fuel_cell_only = False
 
 # ============================================
 
@@ -77,7 +77,7 @@ def model_industry_sector():
         Path(__file__).parent / "outputs" / "industry" / "demand_profiles"
     )
     build_industry_profile.build_profile(
-        lz_summary_industry, profiles_output_path, flat=False
+        lz_summary_industry, profiles_output_path, flat=False, by_industry=True
     )
 
 

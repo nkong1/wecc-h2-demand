@@ -7,7 +7,7 @@ from onroad_transport.build_transport_profile import disaggregate_annual_to_hour
 base_path  = Path(__file__).parent
 profile_path = base_path / 'inputs' / 'EPRI_Profile_WSCC_CNV_Offpeak.xlsx'
 
-def build_profile(lz_yearly_summary_df, output_profiles_path, flat=False):
+def build_profile(lz_yearly_summary_df, output_profiles_path, flat=False, by_industry=False):
     """
     Disaggregates annual hydrogen demand totals by load zone into an hourly profiles by load zone over each model year. 
     Saves the output profiles to the given path. By default, this function uses an industrial heating energy use
@@ -19,6 +19,7 @@ def build_profile(lz_yearly_summary_df, output_profiles_path, flat=False):
         Has columns 'load_zone', 'total_h2_demand', 'year'. Load zones should be sorted alphabetically and by descending year.
     - output_profiles_path: the path to the folder where the hydrogen demand profiles will be saved 
     - flat: if True, then a flat, contant profile is created, and the EPRI profile is not used.
+    - by_industry: if True, have a more detailed breakdown of demand by industry. if True, then flat must be False
     
     Returns: None
     """
@@ -60,6 +61,35 @@ def build_profile(lz_yearly_summary_df, output_profiles_path, flat=False):
         # Generate the profile for one year
         if not flat:
             one_year_profile = disaggregate_annual_to_hourly(h2_demand, weekly_profile_array, np.full(53, 1), year)
+
+            if by_industry:
+                industries = ["Iron_and_Steel", "Aluminum", "Cement", "Chemicals", "Refineries", "Glass"]
+                industry_profiles = []
+
+                for industry in industries:
+                    industry_demand = lz_row[industry]
+
+                    single_industry_profile = disaggregate_annual_to_hourly(
+                        industry_demand,
+                        weekly_profile_array,
+                        np.full(53, 1),
+                        year
+                    )
+
+                    single_industry_profile.rename(
+                        columns={'hourly_value': industry},
+                        inplace=True
+                    )
+
+                    industry_profiles.append(single_industry_profile)
+
+                # Start from one_year_profile (the base total profile)
+                one_year_profile.rename(columns={'hourly_value': 'total_h2_demand_kg'}, inplace=True)
+
+                # Merge all industry columns at once
+                for df in industry_profiles:
+                    one_year_profile = one_year_profile.merge(df, on=['datetime', 'day_of_week'], how='left')
+                
         else:
             one_year_profile = disaggregate_annual_to_hourly(h2_demand, np.full(168, 1), np.full(53, 1), year)
 

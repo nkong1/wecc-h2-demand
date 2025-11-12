@@ -513,7 +513,7 @@ def model_one_year(high_temp_decarb_by_sector, year):
     )
 
     # Aggregate demand by load zone
-    aggregated_by_lz = aggregate_and_plot.get_aggregate_by_lz(filtered_df)
+    aggregated_by_lz = aggregate_and_plot.get_aggregate_by_lz_and_industry(filtered_df)
 
     aggregated_by_lz["year"] = year
 
