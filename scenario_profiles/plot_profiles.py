@@ -6,8 +6,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-TONNES_PER_DAY_TO_MW = 33.32 / 24
-
 # File paths
 bau_path = "scenario_profiles/bau.csv"
 limited_progress_path = "scenario_profiles/limited_progress.csv"
@@ -55,8 +53,8 @@ sector_names = [
 ]
 
 colors = [
-    "#E9C2C2", "#C870F1", "#F7A670", "#DAE4AC", "#E07CBA", 
-    "#D85454", "#5D98A7", "#2AE93A", "#3E80FA", "#E0DE51"
+    "#F1B7B7", "#C870F1", '#8DA0CB', '#FFD92F', '#E78AC3', 
+    "#D85454", "#D1DFCE", "#2BFC3C", "#3E80FA", "#E0DE51"
 ]
 
 scenarios = ['Business As Usual (BAU)', 'Limited Progress', 'Moderate Action', 'Clean Air']
@@ -74,10 +72,10 @@ for i, ax in enumerate(axes):
     df = dfs[i]
 
     # Plot the month on the x axis
-    ax.stackplot(df['date'], [df[sub] / TONNES_PER_DAY_TO_MW / 1000 for sub in subsectors], colors=colors)
-    #ax.set_title(scenarios[i], fontsize=14)
-    ax.set_xlabel("Month", fontsize=16, labelpad=8)
-    ax.set_ylabel("Hydrogen Demand (kt/day)", fontsize=16, labelpad=8)
+    ax.stackplot(df['date'], [df[sub] / 1000 for sub in subsectors], colors=colors)
+    ax.set_title(scenarios[i], fontsize=14)
+    ax.set_xlabel("Month", fontsize=12, labelpad=8)
+    ax.set_ylabel("Hydrogen Demand (GWh)", fontsize=12, labelpad=8)
     
     # Month ticks
     ax.xaxis.set_major_locator(mdates.MonthLocator())
@@ -115,5 +113,4 @@ plt.subplots_adjust(
     wspace=0.2, hspace=0.3
 )
 
-plt.savefig('scenario_profiles/profiles_v2', dpi=500, bbox_inches='tight', pad_inches=0.3)
-print('saved!')
+plt.savefig('scenario_profiles/profiles_v1', dpi=300, bbox_inches='tight', pad_inches=0.3)
