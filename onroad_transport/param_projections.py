@@ -86,7 +86,7 @@ def rel_change_LD_fuel_consumption(year):
     """
     Returns the relative change in gasoline fuel consumption from on-road transport from 2023 to the 
     input year. Refer to Gasoline_Use_EIA_Ref_Case.csv in the input file for more details and data
-    derivation. Table 39 in the AEO2025 was used (Reference Case).
+    derivation. Table 36 in the AEO2025 was used (Reference Case).
     """
     return [0, 0.044296462, 0.045407622, 0.03879188, 0.026124817, 0.009437798,
     -0.011174183, -0.036683746, -0.06214544, -0.092381316, -0.123083584,

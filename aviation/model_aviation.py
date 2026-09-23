@@ -167,15 +167,11 @@ def convert_to_h2_profile(daily_fuel_demand_df, decarb_pct, fuel_cell_only=False
         for f in final_energy_shares
     )
 
-    # Total final energy demand (all fuels combined)
-    df["total_final_energy_bBtu"] = df["jet_fuel_to_replace_bBtu"] * total_final_energy_factor
-
     # Step 3. Project total final energy demand (all fuels combined)
     df["total_final_energy_bBtu"] = df["jet_fuel_to_replace_bBtu"] * total_final_energy_factor
 
     # Step 4. Disaggregate by fuel, based on shares and efficiencies
     for fuel, share in final_energy_shares.items():
-        eff_key = "H2" if fuel == "direct_H2" else fuel
         df[f"{fuel}_final_bBtu"] = df["total_final_energy_bBtu"] * share
 
     # Step 5. Hydrogen energy calculations
@@ -257,10 +253,10 @@ def model_aviation_demand(model_years, decarb_pcts, fuel_cell_only=False):
         h2_profile_by_load_zone = (
             daily_h2_profile_by_airport[["date", "LOAD_AREA", "demand_mwh_h2"]]
             .groupby(["LOAD_AREA", "date"], as_index=False).sum()
-            .rename({'demand_mwh_h2': 'zone_demand_mwh_h2'})
+            .rename(columns={'demand_mwh_h2': 'zone_demand_mwh_h2', 'date': 'h2_daily_ts'})
         )
 
-        h2_profile_by_load_zone['timeseries'] = f'{model_year}_all'
+        #h2_profile_by_load_zone['timeseries'] = f'{model_year}_all'
         
         combined_daily_profile = pd.concat([combined_daily_profile, h2_profile_by_load_zone])
 

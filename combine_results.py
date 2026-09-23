@@ -116,7 +116,7 @@ def combine_profiles(years, transport=False, industry=False, aviation=False):
     load_zones = load_zones_gdf['LOAD_AREA'].tolist()
 
     # Create new combined results folder
-    """if combined_profiles_path.exists():
+    """if combined_profiles_path.exists(): 
         shutil.rmtree(combined_profiles_path)
     combined_profiles_path.mkdir()"""
 
@@ -267,9 +267,9 @@ def save_daily_profile(profile_df, aviation=False):
     if aviation:
         aviation_daily_path = outputs_path / 'h2_daily_demand.csv'
         if aviation_daily_path.exists():
-            aviation_daily = pd.read_csv(aviation_daily_path)  # columns: LOAD_AREA,date,demand_mwh_h2,timeseries
-            aviation_daily = aviation_daily.groupby('date', as_index=False)['demand_mwh_h2'].sum()
-            aviation_daily.rename(columns={'date':'day_of_year', 'demand_mwh_h2':'demand_mwh_aviation'}, inplace=True)
+            aviation_daily = pd.read_csv(aviation_daily_path)  # columns: LOAD_AREA,h2_daily_ts,demand_mwh_h2
+            aviation_daily = aviation_daily.groupby('h2_daily_ts', as_index=False)['zone_demand_mwh_h2'].sum()
+            aviation_daily.rename(columns={'h2_daily_ts':'day_of_year', 'zone_demand_mwh_h2':'demand_mwh_aviation'}, inplace=True)
             daily_profile = daily_profile.merge(
                 aviation_daily[['day_of_year', 'demand_mwh_aviation']],
                 on='day_of_year', how='left'

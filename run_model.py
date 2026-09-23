@@ -23,20 +23,20 @@ model_aviation_h2 = True
 years = [2050]
 
 # Choose the LD and HD FCEV penetration among projected gasoline and diesel vehicle stock
-LD_FCEV_penetration_pcts = [20]
-HD_FCEV_penetration_pcts = [30]
+LD_FCEV_penetration_pcts = [10]
+HD_FCEV_penetration_pcts = [10]
 
 # Pct of high-temp combustion fuel use decarbonization for each sector in each model year.
-high_temp_combustion_pcts_decarb = [[75]*6]
+high_temp_combustion_pcts_decarb = [[10]*6]
 
 # Order of industries, for reference only (do not change)
 sectors = ["Iron & Steel", "Aluminum", "Cement", "Chemicals", "Refineries", "Glass"]
 
 # Percentage of aviation fuel to decarbonize in each model year
-aviation_decarb_pcts = [40] 
+aviation_decarb_pcts = [60] 
 
 # Choose whether to assume no e-kerosene (fuel cell only scenario)
-fuel_cell_only = False
+fuel_cell_only = True
 
 # ============================================
 
